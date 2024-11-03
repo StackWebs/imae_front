@@ -24,20 +24,19 @@ import {
   SidebarMenuItem,
 } from "../../ui/sidebar"
 import {NavMain} from "./nav-main";
-import {NavProjects} from "./nav-projects";
 import {NavSecondary} from "./nav-secondary";
 import {NavUser} from "./nav-user";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Marc Got",
+    email: "marc.got@imae.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "Expeditions",
+      url: "/expeditions",
       icon: SquareTerminal,
       isActive: true,
       items: [
@@ -56,69 +55,50 @@ const data = {
       ],
     },
     {
-      title: "Models",
+      title: "Clients",
       url: "#",
-      icon: Bot,
+      icon: SquareTerminal,
+      isActive: false,
       items: [
         {
-          title: "Genesis",
+          title: "History",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Starred",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Settings",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Providers",
       url: "#",
-      icon: BookOpen,
+      icon: SquareTerminal,
+      isActive: false,
       items: [
         {
-          title: "Introduction",
+          title: "History",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Starred",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Settings",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      title: "Login",
+      url: "/auth/login",
+      icon: SquareTerminal,
+      isActive: false,
     },
   ],
   navSecondary: [
@@ -131,23 +111,6 @@ const data = {
       title: "Feedback",
       url: "#",
       icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 }
@@ -164,7 +127,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
+                  <span className="truncate font-semibold">IMAE</span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>
               </a>
@@ -174,7 +137,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
