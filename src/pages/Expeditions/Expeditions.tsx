@@ -1,11 +1,27 @@
-import React from "react";
+import React, {useEffect} from "react";
+
+
+import { ColumnDef } from "@tanstack/react-table"
+import {DataTable} from "../../components/table/table";
+import {columnsFormat} from "../../components/table/columns";
+import {Button} from "../../ui/button";
+import {ArrowDown, ArrowUp, ArrowUpDown} from "lucide-react";
+
+
+
+
+
+
+
 
 
 export default function Expeditions() {
 
+
+
     return (
         <>
-            <h1>EXPEDITIONS</h1>
+            <DataTable type={"test"}/>
         </>
     )
 }

@@ -37,6 +37,7 @@ export default function App() {
                     <MemoryRouter initialEntries={[{ pathname: '/' }]}>
                         <Routes>
                             <Route path="/" element={<AuthGuard component={<RootLayout/>}/>}>
+                                <Route path="/" element={<AuthGuard component={<Expeditions/>}/>}/>
                                 <Route path="/expeditions" element={<AuthGuard component={<Expeditions/>}/>}/>
                             </Route>
                             <Route path="/auth" element={<AuthLayout/>}>

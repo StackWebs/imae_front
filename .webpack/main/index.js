@@ -998,11 +998,6 @@ module.exports = require("util");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat */
-/******/ 	
-/******/ 	if (typeof __webpack_require__ !== 'undefined') __webpack_require__.ab = __dirname + "/native_modules/";
-/******/ 	
-/************************************************************************/
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
@@ -1021,8 +1016,8 @@ if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electro
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new electron_1.BrowserWindow({
-        height: 600,
-        width: 800,
+        height: 800,
+        width: 1200,
         webPreferences: {
             preload: 'D:\\STACK\\Projects\\IMAE\\.webpack\\renderer\\main_window\\preload.js',
         },
