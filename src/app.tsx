@@ -14,6 +14,9 @@ import Login from "./pages/Auth/Login";
 import {ToastContainer} from "react-toastify";
 import AuthLayout from "./layouts/AuthLayout";
 import AuthGuard from "./guards/AuthGuard";
+import SettingsLayout from "./layouts/SettingsLayout";
+import Appearance from "./pages/Settings/Appearance/appearance";
+import Profile from "./pages/Settings/Profile/profile";
 
 
 export default function App() {
@@ -39,6 +42,11 @@ export default function App() {
                             <Route path="/" element={<AuthGuard component={<RootLayout/>}/>}>
                                 <Route path="/" element={<AuthGuard component={<Expeditions/>}/>}/>
                                 <Route path="/expeditions" element={<AuthGuard component={<Expeditions/>}/>}/>
+                                <Route path="/settings" element={<AuthGuard component={<SettingsLayout/>}/>}>
+                                    <Route path="/settings/" element={<AuthGuard component={<Profile/>}/>}/>
+                                    <Route path="/settings/profile" element={<AuthGuard component={<Profile/>}/>}/>
+                                    <Route path="/settings/appearance" element={<AuthGuard component={<Appearance/>}/>}/>
+                                </Route>
                             </Route>
                             <Route path="/auth" element={<AuthLayout/>}>
                                 <Route path="/auth/login" element={<Login/>}/>

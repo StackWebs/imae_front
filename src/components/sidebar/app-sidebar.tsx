@@ -100,11 +100,17 @@ const data = {
       icon: SquareTerminal,
       isActive: false,
     },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: SquareTerminal,
+      isActive: false,
+    },
   ],
   navSecondary: [
     {
-      title: "Support",
-      url: "#",
+      title: "Settings",
+      url: "/appearance",
       icon: LifeBuoy,
     },
     {
