@@ -1,8 +1,8 @@
 import {toast} from "react-toastify";
 import {useParams} from "react-router-dom";
 
-const apiBaseUrl = 'https://localhost:8080'
-const requiresCors = true
+const apiBaseUrl = 'http://localhost:8080/api'
+const requiresCors = false
 
 
 
@@ -65,6 +65,7 @@ async function send(method: any, relativePath: string, requestBody: any) {
         //options.mode = 'no-cors'
     }
     const response : Response = await fetch(apiBaseUrl + relativePath, options)
+    console.log(response)
     return getData(response,relativePath)
 }
 

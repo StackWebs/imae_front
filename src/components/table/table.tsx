@@ -3,48 +3,26 @@
 import React, {useEffect} from "react"
 import _ from 'lodash';
 
-import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from "@tanstack/react-table"
+import {ColumnDef, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table"
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "../../ui/table"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "../../ui/table"
 import {columnsFormat} from "./columns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
-import { Input } from "../../ui/input"
-import {ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal} from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "../../ui/dropdown-menu";
+import {Input} from "../../ui/input"
+import {ArrowDown, ArrowUp, ArrowUpDown} from "lucide-react";
+import api from "../../utils/Api";
 
 
-
-
-async function getData() {
-    const data : any[] = [
-        {
-            id: "728ed52f",
-            amount: 100,
-            status: "pending",
-            email: "m@example.com",
+async function apiCalls(dataType : string, call : string) {
+    const data : any = {
+        orders: {
+            get: ''
+        },
+        projects: {
+            get: '/projects'
         }
-    ]
-
-    return data
+    }
 }
 
 
@@ -164,6 +142,9 @@ export function DataTable<TData, TValue>(props: any) {
         console.log('Get Data Variables: Sorting => ', sortedColumns)
         console.log('Get Data Variables: Page => ', page)
         console.log('Get Data Variables: Page Size => ', pageSize)
+
+        const projects = api.get('/projects');
+        console.log('Projects: ', projects)
 
         const data : any[] = [
             {
