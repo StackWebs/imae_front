@@ -47,14 +47,14 @@ const data = {
       isActive: true,
     },
     {
-      title: "Login",
-      url: "/auth/login",
+      title: "Transportistas",
+      url: "/hauliers",
       icon: SquareTerminal,
       isActive: false,
     },
     {
-      title: "Settings",
-      url: "/settings",
+      title: "Clientes",
+      url: "/customers",
       icon: SquareTerminal,
       isActive: false,
     },

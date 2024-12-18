@@ -2,13 +2,8 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-import {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent"
 
-import { cn } from "@/lib/utils"
+import {cn} from "../lib/utils";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -331,10 +326,13 @@ function getPayloadConfigFromPayload(
     return undefined
   }
 
-  const payloadPayload =
+    const payloadPayload =
     "payload" in payload &&
+    // @ts-ignore
     typeof payload.payload === "object" &&
+    // @ts-ignore
     payload.payload !== null
+        // @ts-ignore
       ? payload.payload
       : undefined
 

@@ -16,7 +16,7 @@ export default function Projects() {
 
     return (
         <>
-            <DataTable type={"test"}/>
+            <DataTable type={"projects"}/>
         </>
     )
 }

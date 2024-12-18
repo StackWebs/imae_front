@@ -1,37 +1,84 @@
 import React from "react"
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "../../ui/dropdown-menu"
 import {Button} from "../../ui/button";
-import {ArrowDown, ArrowUp, ChevronRight, MoreHorizontal, Pencil, Trash} from "lucide-react";
-import { ArrowUpDown } from "lucide-react"
+import {Pencil, Trash} from "lucide-react";
 import {Link} from "react-router-dom";
-
 
 
 
 export const actions: any[] = [
     {
-        type: "test",
+        type: "orders",
         cell: ({ row } : any) => {
-            const payment = row.original
+            const editLink = `/order/${row.original.id}`
 
             return (
-                <div className={"flex items-end"}>
+                <div className={"flex items-end justify-end"}>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Link to="expeditions">
+                        <Link to={editLink}>
                             <Pencil />
                         </Link>
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Trash />
                     </Button>
+                </div>
+            )
+        },
+    },
+    {
+        type: "customers",
+        cell: ({ row } : any) => {
+            const editLink = `/customer/${row.original.id}`
+
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Link to={editLink}>
+                            <Pencil />
+                        </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Trash />
+                    </Button>
+                </div>
+            )
+        },
+    },
+    {
+        type: "hauliers",
+        cell: ({ row } : any) => {
+            const editLink = `/haulier/${row.original.id}`
+
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Link to={editLink}>
+                            <Pencil />
+                        </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Trash />
+                    </Button>
+                </div>
+            )
+        },
+    },
+    {
+        type: "projects",
+        cell: ({ row } : any) => {
+            const editLink = `/project/${row.original.id}`
+
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Link to={editLink}>
+                            <Pencil />
+                        </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Trash />
+                    </Button>
+                    {/*
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -51,6 +98,7 @@ export const actions: any[] = [
                             <DropdownMenuItem>View payment details</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    */}
                 </div>
             )
         },

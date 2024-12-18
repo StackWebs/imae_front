@@ -14,6 +14,12 @@ import Appearance from "./pages/Settings/Appearance/appearance";
 import Profile from "./pages/Settings/Profile/profile";
 import Orders from "./pages/Orders/Orders";
 import Projects from "./pages/Projects/Projects";
+import Project from "./pages/Project/Project";
+import Hauliers from "./pages/Hauliers/Hauliers";
+import Haulier from "./pages/Haulier/Haulier";
+import Customer from "./pages/Customer/Customer";
+import Customers from "./pages/Cutomers/Customers";
+import Order from "./pages/Order/Order";
 
 
 export default function App() {
@@ -27,8 +33,14 @@ export default function App() {
                         <Routes>
                             <Route path="/" element={<AuthGuard component={<RootLayout/>}/>}>
                                 <Route path="/" element={<AuthGuard component={<Projects/>}/>}/>
-                                <Route path="/projects" element={<AuthGuard component={<Projects/>}/>}/>
                                 <Route path="/orders" element={<AuthGuard component={<Orders/>}/>}/>
+                                <Route path="/order/:orderId" element={<AuthGuard component={<Order/>}/>}/>
+                                <Route path="/projects" element={<AuthGuard component={<Projects/>}/>}/>
+                                <Route path="/project/:projectId" element={<AuthGuard component={<Project/>}/>}/>
+                                <Route path="/hauliers" element={<AuthGuard component={<Hauliers/>}/>}/>
+                                <Route path="/haulier/:haulierId" element={<AuthGuard component={<Haulier/>}/>}/>
+                                <Route path="/customers" element={<AuthGuard component={<Customers/>}/>}/>
+                                <Route path="/customer/:customerId" element={<AuthGuard component={<Customer/>}/>}/>
                                 <Route path="/settings" element={<AuthGuard component={<SettingsLayout/>}/>}>
                                     <Route path="/settings/" element={<AuthGuard component={<Profile/>}/>}/>
                                     <Route path="/settings/profile" element={<AuthGuard component={<Profile/>}/>}/>

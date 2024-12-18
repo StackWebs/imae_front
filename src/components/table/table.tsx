@@ -14,15 +14,23 @@ import {ArrowDown, ArrowUp, ArrowUpDown} from "lucide-react";
 import api from "../../utils/Api";
 
 
-async function apiCalls(dataType : string, call : string) {
+function apiCalls(dataType : string, call: string, id: string ) {
     const data : any = {
         orders: {
-            get: ''
+            get: '/orders'
         },
         projects: {
             get: '/projects'
+        },
+        hauliers: {
+            get: '/hauliers'
+        },
+        customers: {
+            get: '/customers'
         }
     }
+
+    return data[dataType][call] || null;
 }
 
 
@@ -44,6 +52,7 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
 
             if (sorted) {
                 element.header = () => {
+                    console.log('column',column)
                     return (
                         <>
                             {column.header || _.capitalize(column.accessorKey) || ""}
@@ -94,6 +103,8 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
 
     })
 
+    columns.sort((a, b) => dataKeys.indexOf(a.accessorKey) - dataKeys.indexOf(b.accessorKey))
+
     // Afegim les accions a la darrera columna
     const action = actions.find((action) => action.type === type)
     columns.push({
@@ -142,21 +153,17 @@ export function DataTable<TData, TValue>(props: any) {
         console.log('Get Data Variables: Sorting => ', sortedColumns)
         console.log('Get Data Variables: Page => ', page)
         console.log('Get Data Variables: Page Size => ', pageSize)
+        console.log('type => ', type)
 
-        const projects = api.get('/projects');
-        console.log('Projects: ', projects)
+        const call = apiCalls(type, 'get', null)
+        if(!call) return
 
-        const data : any[] = [
-            {
-                id: "728ed52f",
-                amount: 100,
-                status: "pending",
-                email: "m@example.com",
-            }
-        ]
-
-        setData(data)
-        setTotalPages(1)
+        api.get(call).then((res) => {
+            setData(res.content)
+            setTotalPages(res.data.totalPages)
+        }).catch((err) => {
+            console.error('Error: ', err)
+        })
     }, [sortedColumns])
 
     useEffect(() => {
