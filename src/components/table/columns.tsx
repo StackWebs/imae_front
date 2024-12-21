@@ -1,10 +1,20 @@
 import React from "react"
+import {Input} from "../../ui/input";
 
 
-
+const liveChange = function(type: any, id: any, key: any, value: any) {
+    console.log('liveChange',type,id,key,value)
+}
 
 
 export const columnsFormat: any[] = [
+    {
+        accessorKey: "country",
+        header: "País",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("country")}</div>
+        },
+    },
     {
         accessorKey: "invoice",
         header: "Invoice",
@@ -75,11 +85,30 @@ export const columnsFormat: any[] = [
             return <div className="text-left font-medium">{row.getValue("orderNumber")}</div>
         },
     },
+    /*
     {
         accessorKey: "status",
         header: "Estado",
         cell: ({ row } : any) => {
             return <div className="text-left font-medium">{row.getValue("status")}</div>
+        },
+    },
+*/
+    {
+        accessorKey: "status",
+        header: "Project Number",
+        cell: ({ row } : any) => {
+            const [status, setStatus] = React.useState(row.getValue("status"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="status"
+                    placeholder="status"
+                    value={status}
+                    type="text"
+                    form={'form-' + row.id}
+                    onChange={(e) => setStatus(e.target.value)}/>
+            </div>
         },
     },
     {
@@ -163,7 +192,19 @@ export const columnsFormat: any[] = [
         accessorKey: "projectNumber",
         header: "Project Number",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("projectNumber")}</div>
+            const [test, setTest] = React.useState(row.getValue("projectNumber"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="projectNumber"
+                    placeholder="projectNumber"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
         },
     },
     {

@@ -16,7 +16,7 @@ export default function Orders() {
 
     return (
         <>
-            <DataTable type={"orders"}/>
+            <DataTable type={"orders"} editable={true}/>
         </>
     )
 }

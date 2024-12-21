@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 
 import {useParams} from "react-router-dom";
+import {DataTable} from "../../components/table/table";
 
 
 
@@ -9,7 +10,7 @@ export default function Project() {
 
     return (
         <>
-            <h1>PROJECT {projectId}</h1>
+            <DataTable type={"orders"} id={projectId}/>
         </>
     )
 }

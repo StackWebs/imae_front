@@ -65,7 +65,6 @@ async function send(method: any, relativePath: string, requestBody: any) {
         //options.mode = 'no-cors'
     }
     const response : Response = await fetch(apiBaseUrl + relativePath, options)
-    console.log(response)
     return getData(response,relativePath)
 }
 

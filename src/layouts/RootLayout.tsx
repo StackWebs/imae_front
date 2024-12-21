@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link, MemoryRouter, Outlet, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import Login from "../pages/Auth/Login";
 import {ArrowLeftFromLine, Trash} from "lucide-react";
@@ -19,19 +19,13 @@ import {
 } from "../ui/sidebar"
 import {AppSidebar} from "../components/sidebar/app-sidebar";
 import {Button} from "../ui/button";
+import api from "../utils/Api";
 
 export const iframeHeight = "800px"
 
 export const description = "An inset sidebar with secondary navigation."
 
 const getBreadcrumb = (pathname: string) => {
-
-    const originalPathname = pathname
-    if(pathname.includes('/project/')) pathname = '/project'
-    if(pathname.includes('/order/')) pathname = '/order'
-    if(pathname.includes('/haulier/')) pathname = '/haulier'
-    if(pathname.includes('/customer/')) pathname = '/customer'
-
     switch (pathname) {
         case "/":
             return [
@@ -53,26 +47,6 @@ const getBreadcrumb = (pathname: string) => {
             return [
                 { href: "/customers", label: "Clientes" }
             ]
-        case "/project":
-            return [
-                { href: "/projects", label: "Projects" },
-                { href: originalPathname, label: "Fixa Proyecto" }
-            ]
-        case "/order":
-            return [
-                { href: "/orders", label: "Orders" },
-                { href: originalPathname, label: "Fixa Order" }
-            ]
-        case "/haulier":
-            return [
-                { href: "/hauliers", label: "Transportistas" },
-                { href: originalPathname, label: "Fixa Transportista" }
-            ]
-        case "/customer":
-            return [
-                { href: "/customers", label: "Clientes" },
-                { href: originalPathname, label: "Fixa Cliente" }
-            ]
         default:
             return []
     }
@@ -82,7 +56,56 @@ const getBreadcrumb = (pathname: string) => {
 const RootLayout = () => {
 
     const navigate = useNavigate();
-    const breadcumb = getBreadcrumb(useLocation().pathname)
+    const pathname = useLocation().pathname
+    const [breadcumb , setBreadcrumb] = React.useState([])
+
+    useEffect(() => {
+        if(pathname.includes('/order/')) {
+            const orderId = pathname.split('/').pop()
+            api.get('/orders/' + orderId).then((res) => {
+                setBreadcrumb([
+                    ...breadcumb,
+                    { href: pathname, label: res.orderNumber }
+                ])
+            }).catch((err) => {
+                setBreadcrumb(getBreadcrumb(pathname))
+            })
+        }
+        else if(pathname.includes('/project/')) {
+            const projectId = pathname.split('/').pop()
+            api.get('/projects/' + projectId).then((res) => {
+                setBreadcrumb([
+                    { href: "/projects", label: "Projects" },
+                    { href: pathname, label: res.projectNumber }
+                ])
+            }).catch((err) => {
+                setBreadcrumb(getBreadcrumb(pathname))
+            })
+        }
+        else if(pathname.includes('/haulier/')) {
+            const haulierId = pathname.split('/').pop()
+            api.get('/hauliers/' + haulierId).then((res) => {
+                setBreadcrumb([
+                    { href: "/hauliers", label: "Transportistas" },
+                    { href: pathname, label: res.companyName }
+                ])
+            }).catch((err) => {
+                setBreadcrumb(getBreadcrumb(pathname))
+            })
+        }
+        else if(pathname.includes('/customer/')) {
+            const customerId = pathname.split('/').pop()
+            api.get('/customers/' + customerId).then((res) => {
+                setBreadcrumb([
+                    { href: "/customers", label: "Clientes" },
+                    { href: pathname, label: res.name }
+                ])
+            }).catch((err) => {
+                setBreadcrumb(getBreadcrumb(pathname))
+            })
+        }
+        setBreadcrumb(getBreadcrumb(pathname))
+    }, [navigate]);
 
     return (
         <>

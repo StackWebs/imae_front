@@ -20,13 +20,14 @@ import Haulier from "./pages/Haulier/Haulier";
 import Customer from "./pages/Customer/Customer";
 import Customers from "./pages/Cutomers/Customers";
 import Order from "./pages/Order/Order";
+import Address from "./pages/Address/Address";
 
 
 export default function App() {
 
     return (
         <>
-            <html lang="en" className="dark" >
+            <html lang="en" className="light_blue" >
                 <head />
                 <body className={"min-h-screen bg-background font-sans antialiased"} >
                     <MemoryRouter initialEntries={[{ pathname: '/' }]}>
@@ -41,6 +42,7 @@ export default function App() {
                                 <Route path="/haulier/:haulierId" element={<AuthGuard component={<Haulier/>}/>}/>
                                 <Route path="/customers" element={<AuthGuard component={<Customers/>}/>}/>
                                 <Route path="/customer/:customerId" element={<AuthGuard component={<Customer/>}/>}/>
+                                <Route path="/address/:addressId" element={<AuthGuard component={<Address/>}/>}/>
                                 <Route path="/settings" element={<AuthGuard component={<SettingsLayout/>}/>}>
                                     <Route path="/settings/" element={<AuthGuard component={<Profile/>}/>}/>
                                     <Route path="/settings/profile" element={<AuthGuard component={<Profile/>}/>}/>

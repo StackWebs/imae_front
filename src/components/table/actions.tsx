@@ -1,11 +1,36 @@
 import React from "react"
 import {Button} from "../../ui/button";
-import {Pencil, Trash} from "lucide-react";
-import {Link} from "react-router-dom";
+import {Pencil, Save, Trash} from "lucide-react";
+import {Link, useLocation} from "react-router-dom";
+import Api from "../../utils/Api";
 
-
+function deleteCustomer(id:number) {
+    Api.delete('/customers/' + id )
+}
+function deleteOrder(id:number) {
+    //Api.delete('/orders/' + id )
+}
 
 export const actions: any[] = [
+    {
+        type: "addresses",
+        cell: ({ row } : any) => {
+            const editLink = `/address/${row.original.id}`
+            console.log('editLink',editLink)
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Link to={editLink}>
+                            <Pencil />
+                        </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                        <Trash/>
+                    </Button>
+                </div>
+            )
+        },
+    },
     {
         type: "orders",
         cell: ({ row } : any) => {
@@ -18,7 +43,7 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteOrder(row.original.id)} >
                         <Trash />
                     </Button>
                 </div>
@@ -37,7 +62,7 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
                         <Trash />
                     </Button>
                 </div>
@@ -70,6 +95,9 @@ export const actions: any[] = [
 
             return (
                 <div className={"flex items-end justify-end"}>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
+                    </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Link to={editLink}>
                             <Pencil />
