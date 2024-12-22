@@ -9,6 +9,41 @@ const liveChange = function(type: any, id: any, key: any, value: any) {
 
 export const columnsFormat: any[] = [
     {
+        accessorKey: "weight",
+        header: "Peso",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("weight")}kg</div>
+        },
+    },
+    {
+        accessorKey: "length",
+        header: "Longitud",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("length")}cm</div>
+        },
+    },
+    {
+        accessorKey: "width",
+        header: "Anchura",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("width")}cm</div>
+        },
+    },
+    {
+        accessorKey: "height",
+        header: "Altura",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("height")}cm</div>
+        },
+    },
+    {
+        accessorKey: "description",
+        header: "Descripción",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("description")}</div>
+        },
+    },
+    {
         accessorKey: "country",
         header: "País",
         cell: ({ row } : any) => {

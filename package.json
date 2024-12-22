@@ -82,6 +82,7 @@
     "@tanstack/react-table": "^8.20.5",
     "class-variance-authority": "^0.7.0",
     "cmdk": "^0.1.7",
+    "date-fns": "^4.1.0",
     "electron-squirrel-startup": "^1.0.1",
     "embla-carousel-react": "^8.5.1",
     "input-otp": "^1.4.1",

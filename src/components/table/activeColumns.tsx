@@ -2,16 +2,17 @@
 export const activeColumns : any = {
     orders : [
         "id",
-        "orderNumber"
+        "orderNumber",
+        "status",
     ],
     hauliers : [
         "id",
         "companyName"
     ],
     customers : [
-        "id",
         "name",
         "nif",
-        "email"
+        "email",
+        "iban"
     ],
 }
