@@ -21,7 +21,9 @@ import Customer from "./pages/Customer/Customer";
 import Customers from "./pages/Cutomers/Customers";
 import Order from "./pages/Order/Order";
 import Address from "./pages/Address/Address";
-
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "./ui/toaster"
 
 export default function App() {
 
@@ -54,6 +56,9 @@ export default function App() {
                             </Route>
                         </Routes>
                     </MemoryRouter>
+                    <>
+                        <ToastContainer />
+                    </>
                 </body>
             </html>
         </>

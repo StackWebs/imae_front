@@ -1,5 +1,4 @@
 import {toast} from "react-toastify";
-import {useParams} from "react-router-dom";
 
 const apiBaseUrl = 'http://localhost:8080/api'
 const requiresCors = false
@@ -25,15 +24,18 @@ const  Api = {
 }
 
 async function getData(response: Response, relativePath: string) {
+
     let data = null
     if (response.status !== 204) {
         data = await response.json()
     }
+
     if (!response.ok) {
         if (data.message && data.message !== "" && data.message !== " " && data.message !== "null") {
             let expludedRelativePath = ['/tasks/new/history','/tasks/new/comments']
 
             if(!expludedRelativePath.includes(relativePath)) {
+
                 toast.error(data.message, {
                     position: "bottom-right",
                     autoClose: 5000,
