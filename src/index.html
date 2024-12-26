@@ -4,12 +4,38 @@
     <meta charset="UTF-8" />
     <title>IMAE</title>
   </head>
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* Esto lo centra verticalmente en toda la pantalla */
+    }
+
+    .loader {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: inline-block;
+      border-top: 3px solid #000000;
+      border-right: 3px solid transparent;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+  </style>
   <body>
-    <!-- CONTINGUT PANTALLA LOADING AQUI -->
-
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
-
-    <!-- FI CONTINGUT PANTALLA LOADING -->
+    <div class="container">
+      <span class="loader"></span>
+    </div>
   </body>
 </html>
