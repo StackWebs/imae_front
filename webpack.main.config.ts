@@ -1,7 +1,9 @@
 import type { Configuration } from 'webpack';
 
 import { rules } from './webpack.rules';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { plugins } from './webpack.plugins';
+import path from "path";
 
 export const mainConfig: Configuration = {
   /**
@@ -13,7 +15,16 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
-  plugins,
+  plugins:[
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/assets/logo.ico'),
+          to: path.resolve(__dirname, '.webpack/main/assets/'),
+        },
+      ],
+    }),
+  ],
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
