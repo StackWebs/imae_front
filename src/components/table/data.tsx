@@ -4,3 +4,4 @@ export const statusess : any = {
     DELIVERED: 'Entregada',
     CANCELLED: 'Cancelada',
 }
+

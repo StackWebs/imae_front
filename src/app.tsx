@@ -24,6 +24,8 @@ import Address from "./pages/Address/Address";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "./ui/toaster"
+import Providers from "./pages/Providers/Providers";
+import Provider from "./pages/Provider/Provider";
 
 export default function App() {
 
@@ -44,6 +46,8 @@ export default function App() {
                                 <Route path="/haulier/:haulierId" element={<AuthGuard component={<Haulier/>}/>}/>
                                 <Route path="/customers" element={<AuthGuard component={<Customers/>}/>}/>
                                 <Route path="/customer/:customerId" element={<AuthGuard component={<Customer/>}/>}/>
+                                <Route path="/providers" element={<AuthGuard component={<Providers/>}/>}/>
+                                <Route path="/provider/:providerId" element={<AuthGuard component={<Provider/>}/>}/>
                                 <Route path="/address/:addressId" element={<AuthGuard component={<Address/>}/>}/>
                                 <Route path="/settings" element={<AuthGuard component={<SettingsLayout/>}/>}>
                                     <Route path="/settings/" element={<AuthGuard component={<Profile/>}/>}/>

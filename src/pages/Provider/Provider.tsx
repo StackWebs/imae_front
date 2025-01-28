@@ -11,9 +11,10 @@ import {Separator} from "../../ui/separator";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
 
 
-export default function Customer() {
-    const { customerId } = useParams();
+export default function Provider() {
+    const { providerId } = useParams();
 
+    const [providerNumber, setProviderNumber] = React.useState<string | undefined>(undefined)
     const [name, setName] = React.useState<string | undefined>(undefined)
     const [nif, setNif] = React.useState<string | undefined>(undefined)
     const [email, setEmail] = React.useState<string | undefined>(undefined)
@@ -21,7 +22,8 @@ export default function Customer() {
     const [addresses, setAddresses] = React.useState<any | undefined>(undefined)
 
     useEffect(() => {
-        api.get('/customers/' + customerId).then((res) => {
+        api.get('/providers/' + providerId).then((res) => {
+            setProviderNumber(res.providerNumber)
             setName(res.name)
             setNif(res.nif)
             setEmail(res.email)
@@ -82,7 +84,7 @@ export default function Customer() {
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
 
-        api.put('/customers/' + customerId, {
+        api.put('/providers/' + providerId, {
             name: name,
             nif: nif,
             email: email,
@@ -97,10 +99,14 @@ export default function Customer() {
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
-                <div className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
-                    <h2 className="text-3xl font-bold tracking-tight w-full ">{name}</h2>
+                <div
+                    className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
+                    <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
+                        <h2 className="text-3xl font-bold tracking-tight w-full ">{name}</h2>
+                        <p className="text-muted-foreground">{providerNumber}</p>
+                    </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
-                        <Button onClick={submitForm} >Guardar</Button>
+                        <Button onClick={submitForm}>Guardar</Button>
                     </div>
                 </div>
                 <Separator/>

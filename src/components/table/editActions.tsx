@@ -11,12 +11,15 @@ function deleteOrder(id:number) {
     //Api.delete('/orders/' + id )
 }
 
-export const actions: any[] = [
+export const editActions: any[] = [
     {
         type: "packages",
         cell: ({ row } : any) => {
             return (
                 <div className={"flex items-end justify-end"}>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
+                    </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
                         <Trash/>
                     </Button>
@@ -31,10 +34,25 @@ export const actions: any[] = [
             console.log('editLink',editLink)
             return (
                 <div className={"flex items-end justify-end"}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Link to={editLink}>
-                            <Pencil />
-                        </Link>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                        <Trash/>
+                    </Button>
+                </div>
+            )
+        },
+    },
+    {
+        type: "address",
+        cell: ({ row } : any) => {
+            const editLink = `/address/${row.original.id}`
+            console.log('editLink',editLink)
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
                         <Trash/>
@@ -69,29 +87,8 @@ export const actions: any[] = [
 
             return (
                 <div className={"flex items-end justify-end"}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Link to={editLink}>
-                            <Pencil />
-                        </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
-                        <Trash />
-                    </Button>
-                </div>
-            )
-        },
-    },
-    {
-        type: "providers",
-        cell: ({ row } : any) => {
-            const editLink = `/provider/${row.original.id}`
-
-            return (
-                <div className={"flex items-end justify-end"}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Link to={editLink}>
-                            <Pencil />
-                        </Link>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
                         <Trash />
@@ -122,39 +119,15 @@ export const actions: any[] = [
     {
         type: "projects",
         cell: ({ row } : any) => {
-            const editLink = `/project/${row.original.id}`
 
             return (
                 <div className={"flex items-end justify-end"}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Link to={editLink}>
-                            <Pencil />
-                        </Link>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Trash />
                     </Button>
-                    {/*
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(payment.id)}
-                            >
-                                Copy payment ID
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View customer</DropdownMenuItem>
-                            <DropdownMenuItem>View payment details</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    */}
                 </div>
             )
         },

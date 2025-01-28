@@ -26,6 +26,7 @@ import {
 import {NavMain} from "./nav-main";
 import {NavSecondary} from "./nav-secondary";
 import {NavUser} from "./nav-user";
+import {SearchForm} from "./search-form";
 
 const data = {
   user: {
@@ -55,6 +56,12 @@ const data = {
     {
       title: "Clientes",
       url: "/customers",
+      icon: SquareTerminal,
+      isActive: false,
+    },
+    {
+      title: "Proveedores",
+      url: "/providers",
       icon: SquareTerminal,
       isActive: false,
     },
@@ -92,6 +99,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <SearchForm />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
