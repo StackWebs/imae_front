@@ -11,7 +11,7 @@ import {editColumnsFormat} from "./editColumns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
 import {Input} from "../../ui/input"
-import {ArrowDown, ArrowUp, ArrowUpDown, X} from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown, X, SquarePlus } from "lucide-react";
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
@@ -26,47 +26,65 @@ import {
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
+import {useNavigate} from "react-router-dom";
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 
 
 
 function apiCalls(dataType : string, call: string, id: string ) {
+    console.log('apiCalls',dataType,call,id)
     if(!id) {
         const data: any = {
             orders: {
-                get: '/orders'
+                get: '/orders',
             },
             projects: {
-                get: '/projects'
+                get: '/projects',
+                post: '/projects'
             },
             hauliers: {
-                get: '/hauliers'
+                get: '/hauliers',
+                post: '/hauliers',
             },
             customers: {
                 get: '/customers',
-                delete: '/customers'
+                delete: '/customers',
+                post: '/customers'
             },
             providers: {
                 get: '/providers',
-                delete: '/providers'
+                delete: '/providers',
+                post: '/providers'
             }
         }
         return data[dataType][call] || null;
     }
     const data: any = {
         orders: {
-            get: '/projects/' + id + '/orders'
+            get: '/projects/' + id + '/orders',
+            post: '/projects/' + id + '/orders',
+            navigate: '/order/' + id
+        },
+        projects: {
+            patch: '/customers/' + id,
+            navigate: '/project/' + id
+        },
+        hauliers: {
+            navigate: '/haulier/' + id
+        },
+        customers: {
+            navigate: '/customer/' + id
         },
         customers_addresses: {
             get: '/customers/' + id + '/addresses'
         },
-        projects: {
-            patch: '/customers/' + id
-        },
         addresses: {
             patch: '/addresses/' + id
         },
+        providers: {
+            navigate: '/provider/' + id
+        }
     }
     return data[dataType][call] || null;
 
@@ -157,6 +175,7 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
 
 export function DataTable<TData, TValue>(props: any) {
 
+    const navigate = useNavigate();
     const type = props.type
     const id = props.id
     const content = props.content
@@ -268,89 +287,114 @@ export function DataTable<TData, TValue>(props: any) {
         })
     }
 
+    const addNew = function() {
+        const path = apiCalls(type, 'post', id || null )
+        if(!path) return
+        api.post(path,{}).then((res) => {
+            if(!res.id) return;
+            if(!edit) {
+                navigate(apiCalls(type,'navigate', res.id ))
+            }
+            else {
+                setData([...data,res])
+            }
+        }).catch((err) => {
+            console.error('Error: ', err)
+        })
+    }
+
     return (
         <div className="py-4">
-            {!content && (
-                <div className="flex items-center py-4">
-                    {filters && filters[type] && (
-                        Object.keys(filters[type]).map((key) => {
-                            var filter = filters[type][key]
+            <div className="flex flex-row justify-between">
+                {/*!content && (
+                    <div className="flex items-center py-4">
+                        {filters && filters[type] && (
+                            Object.keys(filters[type]).map((key) => {
+                                var filter = filters[type][key]
 
-                            switch (filter.type) {
-                                case 'string':
-                                    return (
-                                        <Input
-                                            placeholder={filter.label}
-                                            value={filter.value}
-                                            onChange={(event) =>
-                                                setFilterValue(filter, event.target.value)
-                                            }
-                                            className="max-w-sm"
-                                        />
-                                    )
-                                case 'integer':
-                                    return (
-                                        <Input
-                                            type={'number'}
-                                            placeholder={filter.label}
-                                            value={filter.value}
-                                            onChange={(event) =>
-                                                setFilterValue(filter, event.target.value)
-                                            }
-                                            className="max-w-sm"
-                                        />
-                                    )
-                                case 'select':
-                                    const [selectedValues, setSelectedValues] = React.useState(new Set<string>())
+                                switch (filter.type) {
+                                    case 'string':
+                                        return (
+                                            <Input
+                                                placeholder={filter.label}
+                                                value={filter.value}
+                                                onChange={(event) =>
+                                                    setFilterValue(filter, event.target.value)
+                                                }
+                                                className="max-w-sm"
+                                            />
+                                        )
+                                    case 'integer':
+                                        return (
+                                            <Input
+                                                type={'number'}
+                                                placeholder={filter.label}
+                                                value={filter.value}
+                                                onChange={(event) =>
+                                                    setFilterValue(filter, event.target.value)
+                                                }
+                                                className="max-w-sm"
+                                            />
+                                        )
+                                    case 'select':
+                                        const [selectedValues, setSelectedValues] = React.useState(new Set<string>())
 
-                                    return (
-                                        <>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline">{filter.label}</Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent className="w-56">
-                                                    <DropdownMenuLabel>{filter.label}</DropdownMenuLabel>
-                                                    <DropdownMenuSeparator/>
-                                                    {filter.options.map((option: any) => (
-                                                        <DropdownMenuCheckboxItem
-                                                            checked={selectedValues.has(option.label)}
-                                                            onCheckedChange={(checked) => {
-                                                                if (checked) selectedValues.add(option.label)
-                                                                else selectedValues.delete(option.label)
+                                        return (
+                                            <>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="outline">{filter.label}</Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent className="w-56">
+                                                        <DropdownMenuLabel>{filter.label}</DropdownMenuLabel>
+                                                        <DropdownMenuSeparator/>
+                                                        {filter.options.map((option: any) => (
+                                                            <DropdownMenuCheckboxItem
+                                                                checked={selectedValues.has(option.label)}
+                                                                onCheckedChange={(checked) => {
+                                                                    if (checked) selectedValues.add(option.label)
+                                                                    else selectedValues.delete(option.label)
 
-                                                                setSelectedValues(new Set(selectedValues))
-                                                                console.log('selectedValues', selectedValues, option)
-                                                                setFilterValue(filter, selectedValues)
-                                                            }}
-                                                        >
-                                                            {option.label}
-                                                        </DropdownMenuCheckboxItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                            {Array.from(selectedValues).map((value) => (
-                                                <span>{value}</span>
-                                            ))}
-                                        </>
-                                    )
-                            }
-                        })
-                    )}
+                                                                    setSelectedValues(new Set(selectedValues))
+                                                                    console.log('selectedValues', selectedValues, option)
+                                                                    setFilterValue(filter, selectedValues)
+                                                                }}
+                                                            >
+                                                                {option.label}
+                                                            </DropdownMenuCheckboxItem>
+                                                        ))}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                                {Array.from(selectedValues).map((value) => (
+                                                    <span>{value}</span>
+                                                ))}
+                                            </>
+                                        )
+                                }
+                            })
+                        )}
 
-                    {filters && filters[type] && (
-                        <Button
-                            variant="ghost"
-                            onClick={() => {
-                                setActiveFilters(filters[type])
-                            }}
-                        >
-                            Reset
-                            <X className="ml-2 h-4 w-4"/>
+                        {filters && filters[type] && (
+                            <Button
+                                variant="ghost"
+                                onClick={() => {
+                                    setActiveFilters(filters[type])
+                                }}
+                            >
+                                Reset
+                                <X className="ml-2 h-4 w-4"/>
+                            </Button>
+                        )}
+                    </div>
+                )*/}
+                {!edit && (
+                    <div className="flex items-center py-4">
+                        <Button onClick={addNew}>
+                            <SquarePlus  /> Añadir
                         </Button>
-                    )}
-                </div>
-            )}
+                    </div>
+                )}
+            </div>
             {table.getRowModel().rows?.length !== 0 && (
                 <div className="forms">
                     {table.getRowModel().rows?.length && (
@@ -437,6 +481,14 @@ export function DataTable<TData, TValue>(props: any) {
                         disabled={page === totalPages}
                     >
                         &gt;
+                    </Button>
+                </div>
+            )}
+
+            {edit && (
+                <div className="flex flex-row-reverse items-center py-4">
+                    <Button onClick={addNew}>
+                        <SquarePlus  /> Añadir
                     </Button>
                 </div>
             )}

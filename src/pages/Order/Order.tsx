@@ -33,25 +33,10 @@ export default function Order() {
     /******** Lateral 1 ********/
     //Customer
     const [customers, setCustomers] = React.useState<any | undefined>(undefined)
-    const [customerAddresses, setCustomerAddresses] = React.useState<any | undefined>(undefined)
-    const [customerId, setCustomerId] = React.useState<string | undefined>(undefined)
-    const [customerNumber, setCustomerNumber] = React.useState<string | undefined>(undefined)
-    const [customerName, setCustomerName] = React.useState<string | undefined>(undefined)
-    const [customerNif, setCustomerNif] = React.useState<string | undefined>(undefined)
-    const [customerEmail, setCustomerEmail] = React.useState<string | undefined>(undefined)
-    const [customerIban, setCustomerIban] = React.useState<string | undefined>(undefined)
-    const [customerCreationDate, setCustomeCreationDate] = React.useState<Date>(undefined)
+    const [customer, setCustomer] = React.useState<any | undefined>(undefined)
     //Haulier
     const [hauliers, setHauliers] = React.useState<any | undefined>(undefined)
-    const [haulierAddresses, setHaulierAddresses] = React.useState<any | undefined>(undefined)
-    const [haulierId, setHaulierId] = React.useState<string | undefined>(undefined)
-    const [haulierNumber, setHaulierNumber] = React.useState<string | undefined>(undefined)
-    const [haulierCompanyName, setHaulierCompanyName] = React.useState<string | undefined>(undefined)
-    const [haulierNif, setHaulierNif] = React.useState<string | undefined>(undefined)
-    const [haulierIban, setHaulierIban] = React.useState<string | undefined>(undefined)
-    const [haulierEmail, setHaulierEmail] = React.useState<string | undefined>(undefined)
-    const [haulierAddress, setHaulierAddress] = React.useState<any | undefined>(undefined)
-    const [haulierCreationDate, setHaulierCreationDate] = React.useState<Date>(undefined)
+    const [haulier, setHaulier] = React.useState<any | undefined>(undefined)
 
     /******** Lateral 2 ********/
     // Fechas
@@ -59,6 +44,9 @@ export default function Order() {
     const [deliveryDate, setDeliveryDate] = React.useState<Date>(undefined)
 
     /******** Central 1 ********/
+    // Direcciones
+    const [directions, setDirections] = React.useState<any | undefined>(undefined)
+
     // Direccion de recogida
     const [senderCity, setSenderCity] = React.useState<string | undefined>(undefined)
     const [senderContactName, setSenderContactName] = React.useState<string | undefined>(undefined)
@@ -100,22 +88,9 @@ export default function Order() {
 
             /******** Lateral 1 ********/
             //Customer
-            setCustomerId(res.customer.id)
-            setCustomerNumber(res.customer.customerNumber)
-            setCustomerName(res.customer.name)
-            setCustomerNif(res.customer.nif)
-            setCustomerEmail(res.customer.email)
-            setCustomerIban(res.customer.iban)
-            setCustomeCreationDate(new Date(res.customer.creationDate))
+            setCustomer(res.customer)
             //Haulier
-            setHaulierId(res.haulier.id)
-            setHaulierNumber(res.haulier.haulierNumber)
-            setHaulierCompanyName(res.haulier.companyName)
-            setHaulierNif(res.haulier.nif)
-            setHaulierIban(res.haulier.iban)
-            setHaulierEmail(res.haulier.email)
-            setHaulierAddress(res.haulier.address)
-            setHaulierCreationDate(new Date(res.haulier.creationDate))
+            setHaulier(res.haulier)
 
             /******** Lateral 2 ********/
             // Fechas
@@ -124,23 +99,23 @@ export default function Order() {
 
             /******** Central 1 ********/
             // Direccion de recogida
-            setSenderCity(res.sender.address.city)
-            setSenderContactName(res.sender.address.contactName)
-            setSenderPhone(res.sender.address.phone)
-            setSenderProvince(res.sender.address.province)
-            setSenderStreet(res.sender.address.street)
-            setSenderPostalCode(res.sender.address.postalCode)
-            setSenderCountry(res.sender.address.country)
+            setSenderCity(res.sender.city)
+            setSenderContactName(res.sender.contactName)
+            setSenderPhone(res.sender.phone)
+            setSenderProvince(res.sender.province)
+            setSenderStreet(res.sender.street)
+            setSenderPostalCode(res.sender.postalCode)
+            setSenderCountry(res.sender.country)
 
             /******** Central 2 ********/
             // Direccion de entrega
-            setReceiverCity(res.receiver.address.city)
-            setReceiverContactName(res.receiver.address.contactName)
-            setReceiverPhone(res.receiver.address.phone)
-            setReceiverProvince(res.receiver.address.province)
-            setReceiverStreet(res.receiver.address.street)
-            setReceiverPostalCode(res.receiver.address.postalCode)
-            setReceiverCountry(res.receiver.address.country)
+            setReceiverCity(res.receiver.city)
+            setReceiverContactName(res.receiver.contactName)
+            setReceiverPhone(res.receiver.phone)
+            setReceiverProvince(res.receiver.province)
+            setReceiverStreet(res.receiver.street)
+            setReceiverPostalCode(res.receiver.postalCode)
+            setReceiverCountry(res.receiver.country)
 
             /******** Central 3 ********/
             // Paquetes
@@ -154,104 +129,10 @@ export default function Order() {
             setConditions(res.conditions)
 
             console.log(res)
-        }).catch((err) => {
-            /******** TOP ********/
-            setStatus("CREATED")
-            setOrderNumber("string")
-            setSentDate(new Date("2025-01-28T18:29:58.886Z"))
-
-            /******** Lateral 1 ********/
-            //Customer
-            setCustomerId("string")
-            setCustomerNumber("string")
-            setCustomerName("string")
-            setCustomerNif("string")
-            setCustomerEmail("string")
-            setCustomerIban("string")
-            setCustomeCreationDate(new Date("2025-01-28T18:29:58.886Z"))
-            //Haulier
-            setHaulierId("string")
-            setHaulierNumber("string")
-            setHaulierCompanyName("string")
-            setHaulierNif("string")
-            setHaulierIban("string")
-            setHaulierEmail("string")
-            setHaulierAddress( {
-                city: "string",
-                contactName: "string",
-                phone: "string",
-                province: "string",
-                street: "string",
-                postalCode: "string",
-                country: "string"
-            })
-            setHaulierCreationDate(new Date("2025-01-28T18:29:58.886Z"))
-
-            /******** Lateral 2 ********/
-            // Fechas
-            setEstimatedDeliveryDate(new Date("2025-01-28T18:29:58.886Z"))
-            setDeliveryDate(new Date("2025-01-28T18:29:58.886Z"))
-
-            /******** Central 1 ********/
-            // Direccion de recogida
-            setSenderCity("string")
-            setSenderContactName("string")
-            setSenderPhone("string")
-            setSenderProvince("string")
-            setSenderStreet("string")
-            setSenderPostalCode("string")
-            setSenderCountry("string")
-
-            /******** Central 2 ********/
-            // Direccion de entrega
-            setReceiverCity("string")
-            setReceiverContactName("string")
-            setReceiverPhone("string")
-            setReceiverProvince("string")
-            setReceiverStreet("string")
-            setReceiverPostalCode("string")
-            setReceiverCountry("string")
-
-            /******** Central 3 ********/
-            // Paquetes
-            setPackages( [
-                {
-                    "id": 0,
-                    "description": "string",
-                    "height": 0,
-                    "width": 0,
-                    "length": 0,
-                    "weight": 0
-                },
-                {
-                    "id": 1,
-                    "description": "string",
-                    "height": 0,
-                    "width": 0,
-                    "length": 0,
-                    "weight": 0
-                },
-                {
-                    "id": 2,
-                    "description": "string",
-                    "height": 0,
-                    "width": 0,
-                    "length": 0,
-                    "weight": 0
-                }
-            ])
-
-            /******** Central 4 ********/
-            // Notas ( deliveryNotes, pickupNotes, internalNotes, conditions )
-            setDeliveryNotes("string")
-            setPickupNotes("string")
-            setInternalNotes("string")
-            setConditions("string")
-
-        })
+        }).catch((err) => {})
     }, []);
 
-    // Fetch customers
+    // Fetch customers && hauliers
     useEffect(() => {
         api.get('/customers').then((res) => {
             setCustomers(res.content)
@@ -295,10 +176,6 @@ export default function Order() {
                 }
             ])
         })
-    }, []);
-
-    // Fetch customers
-    useEffect(() => {
         api.get('/hauliers').then((res) => {
             setHauliers(res.content)
         }).catch((err) => {
@@ -343,73 +220,68 @@ export default function Order() {
         })
     }, []);
 
-    // Fetch customer addresses
     useEffect(() => {
-        api.get('/customers/' + customerId).then((res) => {
-            setCustomerAddresses(res.addresses)
+        if(!customer) return
+        api.get('/customers/' + customer.id ).then((res) => {
+            if(!res || !res.addresses) return
+            setDirections(res.addresses)
         }).catch((err) => {
-            setCustomerAddresses([
-                {
-                    "id": 0,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                },
-                {
-                    "id": 1,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                },
-                {
-                    "id": 2,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                }
-            ])
         })
-    }, [customerId]);
+    }, [customer]);
 
-    // Fetch haulier addresses
-    useEffect(() => {
-        api.get('/hauliers/' + customerId).then((res) => {
-            setHaulierAddresses(res.addresses)
-        }).catch((err) => {
-            setHaulierAddresses( {
-                "city": "string",
-                "contactName": "string",
-                "phone": "string",
-                "province": "string",
-                "street": "string",
-                "postalCode": "string",
-                "country": "string"
-            })
-        })
-    }, [haulierId]);
+    function setDates(direction:any, type:string) {
+        switch(type) {
+            case 'sender':
+                setSenderCity(direction.city)
+                setSenderContactName(direction.name)
+                setSenderPhone(direction.phone)
+                setSenderProvince(direction.province)
+                setSenderStreet(direction.street)
+                setSenderPostalCode(direction.postalCode)
+                setSenderCountry(direction.country)
+                break;
+            case 'receiver':
+                setReceiverCity(direction.city)
+                setReceiverContactName(direction.name)
+                setReceiverPhone(direction.phone)
+                setReceiverProvince(direction.province)
+                setReceiverStreet(direction.street)
+                setReceiverPostalCode(direction.postalCode)
+                setReceiverCountry(direction.country)
+                break;
+        }
+    }
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
     }
 
+    function downloadAlbaran(event: React.SyntheticEvent) {
+        event.preventDefault()
+
+        api.post('/orders/' + orderId + '/delivery_note',{}).then((res) => {
+            if(!res.id) return;
+            api.get('/delivery_notes/' + res.id + '/generate_pdf').then((res) => {
+                console.log(res)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
-                <div className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
+                <div
+                    className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <h2 className="text-3xl font-bold tracking-tight w-full ">{orderNumber}</h2>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
+                        <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadAlbaran}>
+                            Albaran
+                            <DownloadIcon className="ml-2 h-4 w-4"/>
+                        </Button>
                         <Select
                             value={status}
                             onValueChange={(value) => {
@@ -446,9 +318,9 @@ export default function Order() {
                                             <h3 className="text-sm font-normal text-muted-foreground">Cliente</h3>
                                             <div className={"flex items-center gap-3 "}>
                                                 <Select
-                                                    value={customers.find((customer:any) => customer.id === customerId).id}
+                                                    value={customers.find((item:any) => item === customer)}
                                                     onValueChange={(value) => {
-                                                        setStatus(value)
+                                                        setCustomer(value)
                                                     }}
                                                 >
                                                     <SelectTrigger className="w-[300px] text-foreground">
@@ -456,9 +328,9 @@ export default function Order() {
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-                                                            {customers.map((customer:any) => (
-                                                                <SelectItem key={customer.id} value={customer.id}>
-                                                                    {customer.name}
+                                                            {customers.map((item:any) => (
+                                                                <SelectItem key={item.id} value={item}>
+                                                                    {item.name}
                                                                 </SelectItem>
                                                             ))}
                                                         </SelectGroup>
@@ -467,28 +339,32 @@ export default function Order() {
                                             </div>
                                         </>
                                     )}
-                                    <h3 className="text-sm font-normal text-muted-foreground pt-3">Transportista</h3>
-                                    <div className={"flex items-center gap-3"}>
-                                        <Select
-                                            value={status}
-                                            onValueChange={(value) => {
-                                                setStatus(value)
-                                            }}
-                                        >
-                                            <SelectTrigger className="w-[300px] text-foreground">
-                                                <SelectValue/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    {Object.keys(statusess).map((key) => (
-                                                        <SelectItem key={key} value={key}>
-                                                            {statusess[key]}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                    {hauliers && (
+                                        <>
+                                            <h3 className="text-sm font-normal text-muted-foreground pt-3">Transportista</h3>
+                                            <div className={"flex items-center gap-3"}>
+                                                <Select
+                                                    value={hauliers.find((item:any) => item === haulier)}
+                                                    onValueChange={(value) => {
+                                                        setHaulier(value)
+                                                    }}
+                                                >
+                                                    <SelectTrigger className="w-[300px] text-foreground">
+                                                        <SelectValue/>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            {hauliers.map((item:any) => (
+                                                                <SelectItem key={item.id} value={item}>
+                                                                    {item.companyName}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </>
+                                    )}
                                 </CardContent>
                             </Card>
                             <Card>
@@ -576,25 +452,6 @@ export default function Order() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card>
-                                <CardHeader>
-                                <CardTitle>Documentos</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                <div className={"w-full flex items-center gap-3 pt-3"}>
-                                        <Button variant="outline" className={"w-full justify-between"}>
-                                            Factura
-                                            <DownloadIcon className="ml-2 h-4 w-4"/>
-                                        </Button>
-                                    </div>
-                                    <div className={"w-full flex items-center gap-3 pt-3"}>
-                                        <Button variant="outline" className={"w-full justify-between"}>
-                                            Albaran
-                                            <DownloadIcon className="ml-2 h-4 w-4"/>
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
                         </div>
                         <div className="md:order-1">
                             <div className={"w-full flex items-start gap-3"}>
@@ -603,27 +460,39 @@ export default function Order() {
                                         <CardTitle>Dirección de recogida</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className={"flex items-center gap-3"}>
-                                            <Select
-                                                value={status}
-                                                onValueChange={(value) => {
-                                                    setStatus(value)
-                                                }}
-                                            >
-                                                <SelectTrigger className="w-full text-foreground">
-                                                    <SelectValue/>
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        {Object.keys(statusess).map((key) => (
-                                                            <SelectItem key={key} value={key}>
-                                                                {statusess[key]}
+                                        {directions && (
+                                            <div className={"flex items-center gap-3"}>
+                                                <Select
+                                                    value={directions.find((item:any) =>
+                                                        (item.street === senderStreet &&
+                                                        item.postalCode === senderPostalCode &&
+                                                        item.city === senderCity &&
+                                                        item.province === senderProvince &&
+                                                        item.country === senderCountry &&
+                                                        item.name === senderContactName)
+                                                    )}
+                                                    onValueChange={(value) => {
+                                                        setDates(value,'sender')
+                                                    }}
+                                                >
+                                                    <SelectTrigger className="w-full text-foreground">
+                                                        <SelectValue/>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectItem value={undefined} disabled>
+                                                                Direcciónes del cliente
                                                             </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                                            {directions.map((item:any) => (
+                                                                <SelectItem key={item.id} value={item}>
+                                                                    {item.street}, {item.postalCode}, {item.city}, {item.province}, {item.country} | {item.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        )}
                                         <div className={"flex items-center gap-3 pt-3"}>
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de
@@ -730,54 +599,64 @@ export default function Order() {
                                         <CardTitle>Dirección de entrega</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className={"flex items-center gap-3"}>
-                                            <Select
-                                                value={status}
-                                                onValueChange={(value) => {
-                                                    setStatus(value)
-                                                }}
-                                            >
-                                                <SelectTrigger className="w-full text-foreground">
-                                                    <SelectValue/>
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        {Object.keys(statusess).map((key) => (
-                                                            <SelectItem key={key} value={key}>
-                                                                {statusess[key]}
+                                        {directions && (
+                                            <div className={"flex items-center gap-3"}>
+                                                <Select
+                                                    value={directions.find((item:any) =>
+                                                        (item.street === receiverCity &&
+                                                        item.postalCode === receiverContactName &&
+                                                        item.city === receiverPhone &&
+                                                        item.province === receiverProvince &&
+                                                        item.country === receiverStreet &&
+                                                        item.name === receiverPostalCode)
+                                                    )}
+                                                    onValueChange={(value) => {
+                                                        setDates(value,'receiver')
+                                                    }}
+                                                >
+                                                    <SelectTrigger className="w-full text-foreground">
+                                                        <SelectValue/>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectItem value={undefined} disabled>
+                                                                Direcciónes del cliente
                                                             </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                                            {directions.map((item:any) => (
+                                                                <SelectItem key={item.id} value={item}>
+                                                                    {item.street}, {item.postalCode}, {item.city}, {item.province}, {item.country} | {item.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        )}
                                         <div className={"flex items-center gap-3 pt-3"}>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de
-                                                    contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de contacto</h3>
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverContactName}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverContactName(e.target.value)}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono
-                                                    de contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono de contacto</h3>
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverPhone}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverPhone(e.target.value)}
                                                 />
                                             </div>
                                         </div>
@@ -787,26 +666,25 @@ export default function Order() {
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverStreet}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverStreet(e.target.value)}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Código
-                                                    Postal</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Código Postal</h3>
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverPostalCode}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverPostalCode(e.target.value)}
                                                 />
                                             </div>
                                         </div>
@@ -816,12 +694,12 @@ export default function Order() {
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverCity}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverCity(e.target.value)}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -829,12 +707,12 @@ export default function Order() {
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverProvince}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverProvince(e.target.value)}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -842,12 +720,12 @@ export default function Order() {
                                                 <Input
                                                     id="name"
                                                     placeholder="nombre"
-                                                    value={orderNumber}
+                                                    value={receiverCountry}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setOrderNumber(e.target.value)}
+                                                    onChange={(e) => setReceiverCountry(e.target.value)}
                                                 />
                                             </div>
                                         </div>
@@ -875,21 +753,41 @@ export default function Order() {
                                         <div className={"flex items-start gap-3"}>
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas de entrega</h3>
-                                                <Textarea placeholder="Type your message here." rows="4" cols="50" maxlength="200"/>
+                                                <Textarea
+                                                    value={deliveryNotes}
+                                                    placeholder="Type your message here."
+                                                    onChange={(e) => setDeliveryNotes(e.target.value)}
+                                                    rows="4" cols="50" maxlength="200"
+                                                />
                                             </div>
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas de recogida</h3>
-                                                <Textarea placeholder="Type your message here." rows="4" cols="50" maxlength="200"/>
+                                                <Textarea
+                                                    value={pickupNotes}
+                                                    placeholder="Type your message here."
+                                                    onChange={(e) => setPickupNotes(e.target.value)}
+                                                    rows="4" cols="50" maxlength="200"
+                                                />
                                             </div>
                                         </div>
                                         <div className={"flex items-start gap-3"}>
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas internas</h3>
-                                                <Textarea placeholder="Type your message here." rows="4" cols="50" maxlength="200"/>
+                                                <Textarea
+                                                    value={internalNotes}
+                                                    placeholder="Type your message here."
+                                                    onChange={(e) => setInternalNotes(e.target.value)}
+                                                    rows="4" cols="50" maxlength="200"
+                                                />
                                             </div>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground">Condiciónes</h3>
-                                                <Textarea placeholder="Type your message here." rows="4" cols="50" maxlength="200"/>
+                                                <h3 className="text-sm font-normal text-muted-foreground">Condiciones</h3>
+                                                <Textarea
+                                                    value={conditions}
+                                                    placeholder="Type your message here."
+                                                    onChange={(e) => setConditions(e.target.value)}
+                                                    rows="4" cols="50" maxlength="200"
+                                                />
                                             </div>
                                         </div>
                                     </CardContent>

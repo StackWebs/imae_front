@@ -66,7 +66,8 @@ const data = {
       isActive: false,
     },
   ],
-  navSecondary: [
+  /*navSecondary: [
+    {},
     {
       title: "Settings",
       url: "/appearance",
@@ -77,7 +78,7 @@ const data = {
       url: "#",
       icon: Send,
     },
-  ],
+  ],*/
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -93,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">IMAE</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  {/*<span className="truncate text-xs">Enterprise</span>*/}
                 </div>
               </a>
             </SidebarMenuButton>
@@ -103,11 +104,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/*<NavSecondary items={data.navSecondary} className="mt-auto" />*/}
       </SidebarContent>
-      <SidebarFooter>
+      {/*<SidebarFooter>
         <NavUser user={data.user} />
-      </SidebarFooter>
+      </SidebarFooter>*/
+      }
     </Sidebar>
   )
 }
