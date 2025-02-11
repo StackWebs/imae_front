@@ -185,5 +185,95 @@ export const editColumnsFormat: any[] = [
             </div>
         },
     },
+    {
+        accessorKey: "description",
+        header: "Descripcion",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("description"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="description"
+                    placeholder="description"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
+    {
+        accessorKey: "height",
+        header: "Altura",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("height"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="height"
+                    placeholder="height"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
+    {
+        accessorKey: "width",
+        header: "Ancho",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("width"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="width"
+                    placeholder="width"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
+    {
+        accessorKey: "length",
+        header: "Longitud",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("length"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="package_length"
+                    placeholder="length"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
+    {
+        accessorKey: "weight",
+        header: "Peso",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("weight"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="weight"
+                    placeholder="weight"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
 ]
 

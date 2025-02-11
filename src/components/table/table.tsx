@@ -66,6 +66,10 @@ function apiCalls(dataType : string, call: string, id: string ) {
             post: '/projects/' + id + '/orders',
             navigate: '/order/' + id
         },
+        packages: {
+            post: '/orders/' + id + '/packages',
+            patch: '/packages/' + id
+        },
         projects: {
             patch: '/customers/' + id,
             navigate: '/project/' + id
@@ -271,6 +275,7 @@ export function DataTable<TData, TValue>(props: any) {
 
     const rowUpdate = function(event : any) {
         event.preventDefault()
+
         var data : any = {}
         for (var i = 0; i < event.target.length; i++) {
             if(event.target[i].type === 'submit') continue
@@ -306,6 +311,7 @@ export function DataTable<TData, TValue>(props: any) {
     return (
         <div className="py-4">
             <div className="flex flex-row justify-between">
+                <div className="flex items-center py-4"></div>
                 {/*!content && (
                     <div className="flex items-center py-4">
                         {filters && filters[type] && (

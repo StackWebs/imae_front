@@ -236,7 +236,11 @@ export const columnsFormat: any[] = [
         accessorKey: "email",
         header: "Email",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("email")}</div>
+            return (
+                <div className="text-left font-medium">
+                    <a href="mailto:{row.getValue('email')}">{row.getValue("email")}</a>
+                </div>
+            )
         },
     },
     {

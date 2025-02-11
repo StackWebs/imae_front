@@ -1,18 +1,56 @@
 
-export const activeColumns : any = {
+export const activeColumns: any = {
     orders : [
-        "id",
         "orderNumber",
         "status",
+        "sender", //(Adreça completa concatenada)
+        "receiver", //(Adreça completa concatenada)
+        "creationDate",
+        "sentDate",
+        "estimatedDeliveryDate",
+        "deliveryDate",
+        "customerReference",
+        "customer" //(num client concatenat el nom)
+    ],
+    packages : [
+        "description",
+        "height",
+        "width",
+        "length",
+        "weight"
+    ],
+    projects : [
+        "projectNumber",
+        "status",
+        "creationDate",
+        "endDate"
+    ],
+    invoices : [
+        "invoiceNumber",
+        "invoiceType",
+        "status",
+        "emissionDate",
+        "dueDate"
     ],
     hauliers : [
-        "id",
-        "companyName"
+        "haulierNumber",
+        "companyName",
+        "nif",
+        "iban",
+        "creationDate",
     ],
     customers : [
+        "customerNumber",
         "name",
         "nif",
-        "email",
-        "iban"
+        "iban",
+        "creationDate"
     ],
+    providers : [
+        "providerNumber",
+        "name",
+        "nif",
+        "iban",
+        "creationDate"
+    ]
 }

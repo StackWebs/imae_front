@@ -29,6 +29,7 @@ export default function Order() {
     const [status, setStatus] = React.useState<string | undefined>(undefined)
     const [orderNumber, setOrderNumber] = React.useState<string | undefined>(undefined)
     const [sentDate, setSentDate] = React.useState<Date>(undefined)
+    const [customerReference , setCustomerReference] = React.useState<string | undefined>(undefined)
 
     /******** Lateral 1 ********/
     //Customer
@@ -85,10 +86,11 @@ export default function Order() {
             setStatus(res.status)
             setOrderNumber(res.orderNumber)
             setSentDate(new Date(res.sentDate))
+            setCustomerReference(res.customerReference)
 
             /******** Lateral 1 ********/
             //Customer
-            setCustomer(res.customer)
+            setCustomer(res.customer )
             //Haulier
             setHaulier(res.haulier)
 
@@ -254,6 +256,47 @@ export default function Order() {
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
+
+        var body = {
+            "status": status,
+            "sentDate": sentDate,
+            "estimatedDeliveryDate": estimatedDeliveryDate,
+            "deliveryDate": deliveryDate,
+            "sender": {
+                "contactName": senderContactName,
+                "city": senderCity,
+                "phone": senderPhone,
+                "street": senderStreet,
+                "province": senderProvince,
+                "postalCode": senderPostalCode,
+                "country": senderCountry
+            },
+            "receiver": {
+                "contactName": receiverContactName,
+                "city": receiverCity,
+                "phone": receiverPhone,
+                "street": receiverStreet,
+                "province": receiverProvince,
+                "postalCode": receiverPostalCode,
+                "country": receiverCountry
+            },
+            "haulierId": haulier?.id,
+            "customerId": customer?.id,
+            //"deliveryNoteId": 0,
+            "customerReference": customerReference,
+            "deliveryNotes": deliveryNotes,
+            "pickupNotes": pickupNotes,
+            "internalNotes": internalNotes,
+            "conditions": conditions,
+        }
+
+        console.log('send:', body)
+
+        api.put('/orders/' + orderId, body).then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     function downloadAlbaran(event: React.SyntheticEvent) {
@@ -278,6 +321,16 @@ export default function Order() {
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <h2 className="text-3xl font-bold tracking-tight w-full ">{orderNumber}</h2>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
+                        <Input
+                            id="customerReference"
+                            placeholder="customerReference"
+                            value={customerReference}
+                            type="text"
+                            autoCapitalize="none"
+                            autoComplete="name"
+                            autoCorrect="off"
+                            onChange={(e) => setCustomerReference(e.target.value)}
+                        />
                         <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadAlbaran}>
                             Albaran
                             <DownloadIcon className="ml-2 h-4 w-4"/>
@@ -318,7 +371,7 @@ export default function Order() {
                                             <h3 className="text-sm font-normal text-muted-foreground">Cliente</h3>
                                             <div className={"flex items-center gap-3 "}>
                                                 <Select
-                                                    value={customers.find((item:any) => item === customer)}
+                                                    value={customers.find((item:any) => item.id === customer?.id)}
                                                     onValueChange={(value) => {
                                                         setCustomer(value)
                                                     }}
@@ -344,7 +397,7 @@ export default function Order() {
                                             <h3 className="text-sm font-normal text-muted-foreground pt-3">Transportista</h3>
                                             <div className={"flex items-center gap-3"}>
                                                 <Select
-                                                    value={hauliers.find((item:any) => item === haulier)}
+                                                    value={hauliers.find((item:any) => item.id === haulier?.id )}
                                                     onValueChange={(value) => {
                                                         setHaulier(value)
                                                     }}
@@ -739,7 +792,7 @@ export default function Order() {
                                     </CardHeader>
                                     <CardContent>
                                         {packages &&
-                                            <DataTable type={"packages"} content={packages}/>
+                                            <DataTable type={"packages"} content={packages} edit={true} id={orderId}/>
                                         }
                                     </CardContent>
                                 </Card>
