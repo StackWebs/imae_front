@@ -66,6 +66,9 @@ async function send(method: any, relativePath: string, requestBody: any) {
         //options.mode = 'no-cors'
     }
     const response : Response = await fetch(apiBaseUrl + relativePath, options)
+    if(method === 'DELETE' && response.status === 200) {
+        return
+    }
     return getData(response,relativePath)
 }
 

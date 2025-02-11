@@ -1,15 +1,9 @@
 import React from "react"
 import {Button} from "../../ui/button";
 import {Pencil, Save, Trash} from "lucide-react";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Api from "../../utils/Api";
 
-function deleteCustomer(id:number) {
-    Api.delete('/customers/' + id )
-}
-function deleteOrder(id:number) {
-    //Api.delete('/orders/' + id )
-}
 
 export const actions: any[] = [
     {
@@ -17,9 +11,7 @@ export const actions: any[] = [
         cell: ({ row } : any) => {
             return (
                 <div className={"flex items-end justify-end"}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                        <Trash/>
-                    </Button>
+
                 </div>
             )
         },
@@ -36,9 +28,6 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                        <Trash/>
-                    </Button>
                 </div>
             )
         },
@@ -47,6 +36,7 @@ export const actions: any[] = [
         type: "orders",
         cell: ({ row } : any) => {
             const editLink = `/order/${row.original.id}`
+            const navigate = useNavigate();
 
             return (
                 <div className={"flex items-end justify-end"}>
@@ -54,9 +44,6 @@ export const actions: any[] = [
                         <Link to={editLink}>
                             <Pencil />
                         </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteOrder(row.original.id)} >
-                        <Trash />
                     </Button>
                 </div>
             )
@@ -74,9 +61,6 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
-                        <Trash />
-                    </Button>
                 </div>
             )
         },
@@ -93,9 +77,6 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
-                        <Trash />
-                    </Button>
                 </div>
             )
         },
@@ -104,6 +85,7 @@ export const actions: any[] = [
         type: "hauliers",
         cell: ({ row } : any) => {
             const editLink = `/haulier/${row.original.id}`
+            const navigate = useNavigate();
 
             return (
                 <div className={"flex items-end justify-end"}>
@@ -111,9 +93,6 @@ export const actions: any[] = [
                         <Link to={editLink}>
                             <Pencil />
                         </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Trash />
                     </Button>
                 </div>
             )
@@ -125,14 +104,11 @@ export const actions: any[] = [
             const editLink = `/project/${row.original.id}`
 
             return (
-                <div className={"flex items-end justify-end"}>
+                <>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Link to={editLink}>
                             <Pencil />
                         </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Trash />
                     </Button>
                     {/*
                     <DropdownMenu>
@@ -155,7 +131,7 @@ export const actions: any[] = [
                         </DropdownMenuContent>
                     </DropdownMenu>
                     */}
-                </div>
+                </>
             )
         },
     },

@@ -37,7 +37,7 @@ export const activeColumns: any = {
         "companyName",
         "nif",
         "iban",
-        "creationDate",
+        "creationDate"
     ],
     customers : [
         "customerNumber",

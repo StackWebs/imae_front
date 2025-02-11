@@ -11,7 +11,7 @@ import {editColumnsFormat} from "./editColumns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
 import {Input} from "../../ui/input"
-import {ArrowDown, ArrowUp, ArrowUpDown, X, SquarePlus } from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown, X, SquarePlus, Pencil, Trash} from "lucide-react";
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
@@ -26,7 +26,7 @@ import {
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 
@@ -72,7 +72,8 @@ function apiCalls(dataType : string, call: string, id: string ) {
         },
         projects: {
             patch: '/customers/' + id,
-            navigate: '/project/' + id
+            navigate: '/project/' + id,
+            delete: '/projects/' + id
         },
         hauliers: {
             navigate: '/haulier/' + id
@@ -168,7 +169,7 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
     const action = edit ? editActions.find((action) => action.type === type) : actions.find((action) => action.type === type)
     columns.push({
         id: "actions",
-        cell: action.cell
+        cell: action.cell,
     })
 
     return {
@@ -187,7 +188,12 @@ export function DataTable<TData, TValue>(props: any) {
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
     const [columns, setColumns] = React.useState<ColumnDef<TData, TValue>[]>([])
-    const [sortedColumns, setSortedColumns] = React.useState<any[]>([])
+    const [sortedColumns, setSortedColumns] = React.useState<any[]>([
+        /*{
+            accessorKey: "projectNumber",
+            sortDirection: "",
+        }*/
+    ])
     const [page, setPage] = React.useState(1)
     const [pageSize, setPageSize] = React.useState(10)
     const [totalPages, setTotalPages] = React.useState(1)
@@ -303,6 +309,17 @@ export function DataTable<TData, TValue>(props: any) {
             else {
                 setData([...data,res])
             }
+        }).catch((err) => {
+            console.error('Error: ', err)
+        })
+    }
+
+    const removeRow = function(row : any) {
+        const path = apiCalls(type, 'delete', row.original.id)
+        if(!path) return
+        api.delete(path).then((res) => {
+            // @ts-ignore
+            setData(data.filter((item) => item?.id !== row.original.id))
         }).catch((err) => {
             console.error('Error: ', err)
         })
@@ -438,11 +455,29 @@ export function DataTable<TData, TValue>(props: any) {
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
                                     >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
+                                        {row.getVisibleCells().map((cell) => {
+                                            const isAction = cell.id.includes('actions')
+
+                                            return (
+                                                <TableCell key={cell.id}>
+                                                    <>
+
+                                                        {isAction ? (
+                                                            <div className={"flex items-end justify-end"}>
+                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => removeRow(row)}>
+                                                                    <Trash/>
+                                                                </Button>
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                </TableCell>
+                                            )
+                                        })}
                                     </TableRow>
                                 </>
                             ))
@@ -451,7 +486,7 @@ export function DataTable<TData, TValue>(props: any) {
                                 {hasResults ? (
                                     <TableRow>
                                         <TableCell colSpan={columns.length} className="h-24 text-center">
-                                            No results.
+                                        No results.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
