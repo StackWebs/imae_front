@@ -1,14 +1,14 @@
 {
   "name": "imae",
   "productName": "imae",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "set GITHUB_TOKEN=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 && electron-forge publish",
+    "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "devDependencies": {
@@ -20,7 +20,6 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
     "@electron-forge/plugin-fuses": "^7.5.0",
     "@electron-forge/plugin-webpack": "^7.5.0",
-    "@electron-forge/publisher-github": "^7.6.1",
     "@electron/fuses": "^1.8.0",
     "@types/lodash": "^4.17.13",
     "@types/react": "^18.3.12",
