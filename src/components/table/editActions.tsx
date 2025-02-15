@@ -20,9 +20,6 @@ export const editActions: any[] = [
                     <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
                         <Save />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                        <Trash/>
-                    </Button>
                 </div>
             )
         },
@@ -37,9 +34,6 @@ export const editActions: any[] = [
                     <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
                         <Save />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                        <Trash/>
-                    </Button>
                 </div>
             )
         },
@@ -53,9 +47,6 @@ export const editActions: any[] = [
                 <div className={"flex items-end justify-end"}>
                     <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
                         <Save />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                        <Trash/>
                     </Button>
                 </div>
             )
@@ -73,9 +64,6 @@ export const editActions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteOrder(row.original.id)} >
-                        <Trash />
-                    </Button>
                 </div>
             )
         },
@@ -89,9 +77,6 @@ export const editActions: any[] = [
                 <div className={"flex items-end justify-end"}>
                     <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
                         <Save />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => deleteCustomer(row.original.id)} >
-                        <Trash />
                     </Button>
                 </div>
             )
@@ -109,9 +94,6 @@ export const editActions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Trash />
-                    </Button>
                 </div>
             )
         },
@@ -124,9 +106,6 @@ export const editActions: any[] = [
                 <div className={"flex items-end justify-end"}>
                     <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
                         <Save />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
-                        <Trash />
                     </Button>
                 </div>
             )

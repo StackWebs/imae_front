@@ -135,5 +135,21 @@ export const actions: any[] = [
             )
         },
     },
+    {
+        type: "invoices",
+        cell: ({ row } : any) => {
+            const editLink = `/invoice/${row.original.id}`
+
+            return (
+                <>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
+                        <Link to={editLink}>
+                            <Pencil />
+                        </Link>
+                    </Button>
+                </>
+            )
+        },
+    },
 ]
 

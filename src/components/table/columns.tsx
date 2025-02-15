@@ -1,5 +1,6 @@
 import React from "react"
 import {Input} from "../../ui/input";
+import {Status} from "./status";
 
 
 const liveChange = function(type: any, id: any, key: any, value: any) {
@@ -124,7 +125,10 @@ export const columnsFormat: any[] = [
         accessorKey: "status",
         header: "Estado",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("status")}</div>
+            //return <div className="text-left font-medium">{row.getValue("status")}</div>
+            return (
+                <Status status={row.getValue("status")} />
+            )
         },
     },
     {
@@ -255,6 +259,41 @@ export const columnsFormat: any[] = [
 
             return <div className="text-right font-medium">{formatted}</div>
         },
-    }
+    },
+    {
+        accessorKey: "invoiceNumber",
+        header: "Número de Factura",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("invoiceNumber")}</div>
+        },
+    },
+    {
+        accessorKey: "invoiceType",
+        header: "Tipo de Factura",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("invoiceType")}</div>
+        },
+    },
+    {
+        accessorKey: "emissionDate",
+        header: "Fecha de Emisión",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("emissionDate")}</div>
+        },
+    },
+    {
+        accessorKey: "dueDate",
+        header: "Fecha de Vencimiento",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("dueDate")}</div>
+        },
+    },
+    {
+        accessorKey: "taxes",
+        header: "Impuestos",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("taxes")}</div>
+        },
+    },
 ]
 

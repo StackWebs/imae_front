@@ -26,6 +26,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "./ui/toaster"
 import Providers from "./pages/Providers/Providers";
 import Provider from "./pages/Provider/Provider";
+import Invoices from "./pages/Invoices/Invoices";
 
 export default function App() {
 
@@ -44,6 +45,8 @@ export default function App() {
                                 <Route path="/project/:projectId" element={<AuthGuard component={<Project/>}/>}/>
                                 <Route path="/hauliers" element={<AuthGuard component={<Hauliers/>}/>}/>
                                 <Route path="/haulier/:haulierId" element={<AuthGuard component={<Haulier/>}/>}/>
+                                <Route path="/invoices" element={<AuthGuard component={<Invoices/>}/>}/>
+                                <Route path="/invoice/:invoiceId" element={<AuthGuard component={<Invoices/>}/>}/>
                                 <Route path="/customers" element={<AuthGuard component={<Customers/>}/>}/>
                                 <Route path="/customer/:customerId" element={<AuthGuard component={<Customer/>}/>}/>
                                 <Route path="/providers" element={<AuthGuard component={<Providers/>}/>}/>

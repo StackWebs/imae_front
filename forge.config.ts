@@ -48,6 +48,20 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'StackWebs',
+          name: 'imae_front'
+        },
+        authToken: process.env.GITHUB_TOKEN,
+        prerelease: true,
+        draft: false,
+      }
+    }
+  ]
 };
 
 export default config;

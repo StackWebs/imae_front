@@ -36,17 +36,17 @@ const data = {
   },
   navMain: [
     {
-      title: "Projects",
+      title: "Proyectos",
       url: "/projects",
       icon: SquareTerminal,
       isActive: true,
     },
-    {
+    /*{
       title: "Orders",
       url: "/orders",
       icon: SquareTerminal,
       isActive: true,
-    },
+    },*/
     {
       title: "Transportistas",
       url: "/hauliers",
@@ -62,6 +62,12 @@ const data = {
     {
       title: "Proveedores",
       url: "/providers",
+      icon: SquareTerminal,
+      isActive: false,
+    },
+    {
+      title: "Facturas",
+      url: "/invoices",
       icon: SquareTerminal,
       isActive: false,
     },

@@ -13,7 +13,6 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = (): void => {
   // Create the browser window.
-  console.log('Icon Path:', path.join(__dirname, 'assets/logo.ico'));
   const mainWindow = new BrowserWindow({
     height: 800,
     width: 1200,

@@ -810,7 +810,7 @@ export default function Order() {
                                                     value={deliveryNotes}
                                                     placeholder="Type your message here."
                                                     onChange={(e) => setDeliveryNotes(e.target.value)}
-                                                    rows="4" cols="50" maxlength="200"
+                                                    rows={4} cols={50} maxLength={200}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -819,7 +819,7 @@ export default function Order() {
                                                     value={pickupNotes}
                                                     placeholder="Type your message here."
                                                     onChange={(e) => setPickupNotes(e.target.value)}
-                                                    rows="4" cols="50" maxlength="200"
+                                                    rows={4} cols={50} maxLength={200}
                                                 />
                                             </div>
                                         </div>
@@ -830,7 +830,7 @@ export default function Order() {
                                                     value={internalNotes}
                                                     placeholder="Type your message here."
                                                     onChange={(e) => setInternalNotes(e.target.value)}
-                                                    rows="4" cols="50" maxlength="200"
+                                                    rows={4} cols={50} maxLength={200}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -839,7 +839,7 @@ export default function Order() {
                                                     value={conditions}
                                                     placeholder="Type your message here."
                                                     onChange={(e) => setConditions(e.target.value)}
-                                                    rows="4" cols="50" maxlength="200"
+                                                    rows={4} cols={50} maxLength={200}
                                                 />
                                             </div>
                                         </div>

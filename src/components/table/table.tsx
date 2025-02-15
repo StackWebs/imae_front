@@ -15,24 +15,27 @@ import {ArrowDown, ArrowUp, ArrowUpDown, X, SquarePlus, Pencil, Trash} from "luc
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "../../ui/dropdown-menu";
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
 import {Link, useNavigate} from "react-router-dom";
 type Checked = DropdownMenuCheckboxItemProps["checked"]
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "../../ui/alert-dialog"
 
 
 
 
-function apiCalls(dataType : string, call: string, id: string ) {
+function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
     console.log('apiCalls',dataType,call,id)
     if(!id) {
         const data: any = {
@@ -56,6 +59,11 @@ function apiCalls(dataType : string, call: string, id: string ) {
                 get: '/providers',
                 delete: '/providers',
                 post: '/providers'
+            },
+            invoices: {
+                get: '/invoices',
+                delete: '/invoices',
+                post: '/invoices'
             }
         }
         return data[dataType][call] || null;
@@ -64,11 +72,13 @@ function apiCalls(dataType : string, call: string, id: string ) {
         orders: {
             get: '/projects/' + id + '/orders',
             post: '/projects/' + id + '/orders',
-            navigate: '/order/' + id
+            navigate: '/order/' + id,
+            delete: '/orders/' + id
         },
         packages: {
             post: '/orders/' + id + '/packages',
-            patch: '/packages/' + id
+            patch: '/packages/' + id,
+            delete: '/orders/' + parentId + '/packages/' + id
         },
         projects: {
             patch: '/customers/' + id,
@@ -76,19 +86,23 @@ function apiCalls(dataType : string, call: string, id: string ) {
             delete: '/projects/' + id
         },
         hauliers: {
-            navigate: '/haulier/' + id
+            navigate: '/haulier/' + id,
+            delete: '/hauliers/' + id
         },
         customers: {
-            navigate: '/customer/' + id
+            navigate: '/customer/' + id,
+            delete: '/customers/' + id
         },
         customers_addresses: {
-            get: '/customers/' + id + '/addresses'
+            get: '/customers/' + id + '/addresses',
         },
         addresses: {
-            patch: '/addresses/' + id
+            patch: '/addresses/' + id,
+            delete: '/addresses/' + id
         },
         providers: {
-            navigate: '/provider/' + id
+            navigate: '/provider/' + id,
+            delete: '/providers/' + id
         }
     }
     return data[dataType][call] || null;
@@ -315,7 +329,7 @@ export function DataTable<TData, TValue>(props: any) {
     }
 
     const removeRow = function(row : any) {
-        const path = apiCalls(type, 'delete', row.original.id)
+        const path = apiCalls(type, 'delete', row.original.id, id)
         if(!path) return
         api.delete(path).then((res) => {
             // @ts-ignore
@@ -465,9 +479,28 @@ export function DataTable<TData, TValue>(props: any) {
                                                         {isAction ? (
                                                             <div className={"flex items-end justify-end"}>
                                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => removeRow(row)}>
-                                                                    <Trash/>
-                                                                </Button>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger>
+                                                                        <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                                                            <Trash/>
+                                                                        </Button>
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                Esta accion no se puede deshacer. Esto lo eliminara permanentemente y removera los
+                                                                                datos de nuestros servidores.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                            <AlertDialogAction onClick={() => removeRow(row)}>
+                                                                                Eliminar
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
                                                             </div>
                                                         ) : (
                                                             <>
