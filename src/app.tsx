@@ -27,6 +27,10 @@ import { Toaster } from "./ui/toaster"
 import Providers from "./pages/Providers/Providers";
 import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
+import { Amplify } from 'aws-amplify';
+import { awsConfig } from "../aws-exports";
+
+Amplify.configure(awsConfig)
 
 export default function App() {
 

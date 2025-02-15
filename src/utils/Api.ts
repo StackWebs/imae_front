@@ -1,9 +1,20 @@
 import {toast} from "react-toastify";
+// import { Auth } from 'aws-amplify'
 
 const apiBaseUrl = 'http://localhost:8080/api'
 const requiresCors = false
 
-
+/*async function signIn(username : string, password : string ,email : string) {
+    try {
+        const user = await Auth.signIn({
+            username,
+            password,
+            attributes: {
+                email
+            }
+        })
+    }
+}*/
 
 const  Api = {
     get: async function(relativePath: any) {
@@ -65,11 +76,77 @@ async function send(method: any, relativePath: string, requestBody: any) {
         options.body = JSON.stringify(requestBody)
         //options.mode = 'no-cors'
     }
-    const response : Response = await fetch(apiBaseUrl + relativePath, options)
-    if(method === 'DELETE' && response.status === 200) {
-        return
+
+    options.headers = {
+        ...options.headers,
+        'Authorization': 'Bearer ' + localStorage.getItem('AccessToken')
     }
-    return getData(response,relativePath)
+
+    //await setTokens()
+    //const response : Response =
+    await fetch(apiBaseUrl + relativePath, options).then((response) => {
+        if(method === 'DELETE' && response.status === 200) {
+            return
+        }
+        return getData(response,relativePath)
+    }).catch((error) => {
+        setTokens().then(() => {
+            options.headers = {
+                ...options.headers,
+                'Authorization': 'Bearer ' + localStorage.getItem('AccessToken')
+            }
+            fetch(apiBaseUrl + relativePath, options).then((response) => {
+                if (method === 'DELETE' && response.status === 200) {
+                    return
+                }
+                return getData(response, relativePath)
+            }).catch((error) => {
+                console.error(error)
+            })
+        })
+    })
+
+}
+
+async function setTokens(): Promise<void> {
+    const myHeaders: Headers = new Headers();
+    myHeaders.append("Content-Type", "application/x-amz-json-1.1");
+    myHeaders.append("X-Amz-Target", "AWSCognitoIdentityProviderService.InitiateAuth");
+
+    const raw: string = JSON.stringify({
+        AuthParameters: {
+            USERNAME: "gerard.rovellat",
+            PASSWORD: "IMAELogistics1!",
+            SECRET_HASH: "7ZoyXWHscknIEmKTG9Q6tOtuc5TmqQOlNt31RQxKQls="
+        },
+        AuthFlow: "USER_PASSWORD_AUTH",
+        ClientId: "vusv154k0pbqrdfefsfc0opd2"
+    });
+
+    const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow" as RequestRedirect
+    };
+
+    try {
+        const response: Response = await fetch("https://cognito-idp.eu-west-3.amazonaws.com/", requestOptions);
+        const result: string = await response.text();
+        const json = JSON.parse(result)
+        if(json.AuthenticationResult && json.AuthenticationResult.AccessToken) {
+            localStorage.setItem('AccessToken', json.AuthenticationResult.AccessToken)
+        }
+        if(json.AuthenticationResult && json.AuthenticationResult.IdToken) {
+            localStorage.setItem('IdToken', json.AuthenticationResult.IdToken)
+        }
+        if(json.AuthenticationResult && json.AuthenticationResult.RefreshToken) {
+            localStorage.setItem('RefreshToken', json.AuthenticationResult.RefreshToken)
+        }
+        console.log(localStorage);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export default Api
