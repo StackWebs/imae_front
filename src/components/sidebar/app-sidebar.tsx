@@ -41,12 +41,12 @@ const data = {
       icon: SquareTerminal,
       isActive: true,
     },
-    /*{
-      title: "Orders",
+    {
+      title: "Orden",
       url: "/orders",
       icon: SquareTerminal,
       isActive: true,
-    },*/
+    },
     {
       title: "Transportistas",
       url: "/hauliers",

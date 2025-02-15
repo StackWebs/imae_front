@@ -4,22 +4,19 @@ import React, {useEffect} from "react"
 import _ from 'lodash';
 
 import {ColumnDef, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table"
-import ReactLoading from 'react-loading';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "../../ui/table"
 import {columnsFormat} from "./columns";
 import {editColumnsFormat} from "./editColumns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
-import {Input} from "../../ui/input"
-import {ArrowDown, ArrowUp, ArrowUpDown, X, SquarePlus, Pencil, Trash} from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash} from "lucide-react";
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import {DropdownMenuCheckboxItemProps} from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
-import {Link, useNavigate} from "react-router-dom";
-type Checked = DropdownMenuCheckboxItemProps["checked"]
+import {useNavigate} from "react-router-dom";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -31,8 +28,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../../ui/alert-dialog"
-
-
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
@@ -247,33 +242,49 @@ export function DataTable<TData, TValue>(props: any) {
         setSortedColumns([...sortedColumns])
     }
 
+    function formatParams(params : any) {
+        let stringParams = ''
+        Object.keys(params).forEach((key, index) => {
+            stringParams += `${index === 0 ? '' : '&'}${key}=${params[key]}`
+        })
+        return stringParams
+    }
+
     useEffect(() => {
-        // console.log('Get Data Variables: Sorting => ', sortedColumns)
-        // console.log('Get Data Variables: Page => ', page)
-        // console.log('Get Data Variables: Page Size => ', pageSize)
-        // console.log('type => ', type)
-        // console.log('activeFilters',activeFilters)
-        // console.log('content => ', content)
+        console.log('Get Data Variables: Sorting => ', sortedColumns)
+        console.log('Get Data Variables: Page => ', page)
+        console.log('Get Data Variables: Page Size => ', pageSize)
+        console.log('type => ', type)
+        console.log('activeFilters',activeFilters)
+        console.log('content => ', content)
+
+
         if(content) {
             setData(content)
             setPageSize(content.length)
             return
         }
 
-        const call = apiCalls(type, 'get', id)
+        let call = apiCalls(type, 'get', id)
         if(!call) return
 
-        //setTimeout(() => {
-            api.get(call).then((res) => {
-                setData(res.content)
-                setTotalPages(res.data.totalPages)
-                setHasResults(true)
-            }).catch((err) => {
-                console.error('Error: ', err)
-                setHasResults(true)
-            })
-        //}, 2000)
-    }, [sortedColumns])
+        const params = {
+            page: page,
+            size: pageSize,
+        }
+
+        const stringParams = formatParams(params)
+        if(stringParams) call += '?' + stringParams
+
+        api.get(call).then((res : any) => {
+            setData(res.content)
+            setTotalPages(res.data.totalPages)
+            setHasResults(true)
+        }).catch((err) => {
+            console.error('Error: ', err)
+            setHasResults(true)
+        })
+    }, [sortedColumns,page])
 
     useEffect(() => {
         if(!data || data.length === 0) return
@@ -315,7 +326,7 @@ export function DataTable<TData, TValue>(props: any) {
     const addNew = function() {
         const path = apiCalls(type, 'post', id || null )
         if(!path) return
-        api.post(path,{}).then((res) => {
+        api.post(path,{}).then((res : any) => {
             if(!res.id) return;
             if(!edit) {
                 navigate(apiCalls(type,'navigate', res.id ))
@@ -534,6 +545,7 @@ export function DataTable<TData, TValue>(props: any) {
                     </TableBody>
                 </Table>
             </div>
+
             {!content && (
                 <div className="flex items-center justify-end space-x-2 py-4">
                     <Button
