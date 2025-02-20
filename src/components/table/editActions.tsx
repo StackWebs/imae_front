@@ -111,5 +111,18 @@ export const editActions: any[] = [
             )
         },
     },
+    {
+        type: "items",
+        cell: ({ row } : any) => {
+
+            return (
+                <div className={"flex items-end justify-end"}>
+                    <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 p-0" form={'form-' + row.id}>
+                        <Save />
+                    </Button>
+                </div>
+            )
+        },
+    },
 ]
 

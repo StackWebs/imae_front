@@ -83,6 +83,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@tanstack/react-table": "^8.20.5",
     "aws-amplify": "^6.13.0",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "cmdk": "^0.1.7",
     "date-fns": "^4.1.0",

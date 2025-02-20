@@ -29,6 +29,7 @@ import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
 import { Amplify } from 'aws-amplify';
 import { awsConfig } from "../aws-exports";
+import Invoice from "./pages/Invoice/Invoice";
 
 Amplify.configure(awsConfig)
 
@@ -50,7 +51,7 @@ export default function App() {
                                 <Route path="/hauliers" element={<AuthGuard component={<Hauliers/>}/>}/>
                                 <Route path="/haulier/:haulierId" element={<AuthGuard component={<Haulier/>}/>}/>
                                 <Route path="/invoices" element={<AuthGuard component={<Invoices/>}/>}/>
-                                <Route path="/invoice/:invoiceId" element={<AuthGuard component={<Invoices/>}/>}/>
+                                <Route path="/invoice/:invoiceId" element={<AuthGuard component={<Invoice/>}/>}/>
                                 <Route path="/customers" element={<AuthGuard component={<Customers/>}/>}/>
                                 <Route path="/customer/:customerId" element={<AuthGuard component={<Customer/>}/>}/>
                                 <Route path="/providers" element={<AuthGuard component={<Providers/>}/>}/>

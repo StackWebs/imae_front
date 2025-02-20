@@ -98,6 +98,14 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
         providers: {
             navigate: '/provider/' + id,
             delete: '/providers/' + id
+        },
+        invoices: {
+            navigate: '/invoice/' + id,
+        },
+        items: {
+            post: '/invoices/' + id + '/items',
+            patch: '/invoices/' + id,
+            delete: '/invoices/' + parentId + '/items/' + id
         }
     }
     return data[dataType][call] || null;
@@ -242,7 +250,19 @@ export function DataTable<TData, TValue>(props: any) {
         setSortedColumns([...sortedColumns])
     }
 
-    function formatParams(params : any) {
+    function formatParams() {
+        // console.log('Get Data Variables: Sorting => ', sortedColumns)
+        // console.log('Get Data Variables: Page => ', page)
+        // console.log('Get Data Variables: Page Size => ', pageSize)
+        // console.log('type => ', type)
+        // console.log('activeFilters',activeFilters)
+        // console.log('content => ', content)
+
+        const params : any = {
+            page: page,
+            size: pageSize,
+        }
+
         let stringParams = ''
         Object.keys(params).forEach((key, index) => {
             stringParams += `${index === 0 ? '' : '&'}${key}=${params[key]}`
@@ -251,14 +271,6 @@ export function DataTable<TData, TValue>(props: any) {
     }
 
     useEffect(() => {
-        console.log('Get Data Variables: Sorting => ', sortedColumns)
-        console.log('Get Data Variables: Page => ', page)
-        console.log('Get Data Variables: Page Size => ', pageSize)
-        console.log('type => ', type)
-        console.log('activeFilters',activeFilters)
-        console.log('content => ', content)
-
-
         if(content) {
             setData(content)
             setPageSize(content.length)
@@ -268,15 +280,11 @@ export function DataTable<TData, TValue>(props: any) {
         let call = apiCalls(type, 'get', id)
         if(!call) return
 
-        const params = {
-            page: page,
-            size: pageSize,
-        }
-
-        const stringParams = formatParams(params)
+        const stringParams = formatParams()
         if(stringParams) call += '?' + stringParams
 
         api.get(call).then((res : any) => {
+            console.log('res',res)
             setData(res.content)
             setTotalPages(res.data.totalPages)
             setHasResults(true)
@@ -293,6 +301,10 @@ export function DataTable<TData, TValue>(props: any) {
         setColumns(columns)
         setSortedColumns(newSortedColumns)
     }, [data])
+
+    function generateCsv() {
+
+    }
 
     const table = useReactTable({
         data,
@@ -325,6 +337,7 @@ export function DataTable<TData, TValue>(props: any) {
 
     const addNew = function() {
         const path = apiCalls(type, 'post', id || null )
+        console.log('path',path)
         if(!path) return
         api.post(path,{}).then((res : any) => {
             if(!res.id) return;
@@ -337,6 +350,21 @@ export function DataTable<TData, TValue>(props: any) {
         }).catch((err) => {
             console.error('Error: ', err)
         })
+    }
+
+    const addNewInvoice = function(invoiceType : string) {
+        return function() {
+            const path = apiCalls('invoices', 'post', id )
+            if(!path) return
+            api.post(path + '?type=' + invoiceType,{}).then((res : any) => {
+                if(!res.id) return;
+                if(!edit) {
+                    navigate(apiCalls('invoices','navigate', res.id ))
+                }
+            }).catch((err) => {
+                console.error('Error: ', err)
+            })
+        }
     }
 
     const removeRow = function(row : any) {
@@ -435,13 +463,30 @@ export function DataTable<TData, TValue>(props: any) {
                         )}
                     </div>
                 )*/}
-                {!edit && (
-                    <div className="flex items-center py-4">
-                        <Button onClick={addNew}>
-                            <SquarePlus  /> Añadir
-                        </Button>
-                    </div>
+
+                {type == "invoices" ? (
+                    <>
+                        <div className="flex items-center py-4 space-x-2">
+                            <Button onClick={addNewInvoice('INCOME')} variant="constructive">
+                                <SquarePlus  /> Ingreso
+                            </Button>
+                            <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
+                                <SquarePlus  /> Gasto
+                            </Button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        {!edit && (
+                            <div className="flex items-center py-4">
+                                <Button onClick={addNew}>
+                                    <SquarePlus  /> Añadir
+                                </Button>
+                            </div>
+                        )}
+                    </>
                 )}
+
             </div>
             {table.getRowModel().rows?.length !== 0 && (
                 <div className="forms">

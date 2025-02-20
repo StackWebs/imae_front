@@ -1,9 +1,28 @@
 import React from "react"
 import {Button} from "../../ui/button";
-import {Pencil, Save, Trash} from "lucide-react";
+import {Pencil, DownloadIcon, Eye } from "lucide-react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import Api from "../../utils/Api";
+import api from "../../utils/Api";
 
+
+function downloadInvoice(id: any, action = 'download') {
+    api.get('/invoices/' + id + '/generate_pdf', 'arraybuffer').then((res) => {
+        const blob = new Blob([res], { type: "application/pdf" });
+        const pdfUrl = URL.createObjectURL(blob);
+        if(action === 'download') {
+            const a = document.createElement('a');
+            a.href = pdfUrl;
+            a.download = 'invoice.pdf';
+            a.click();
+        }
+        else {
+            window.open(pdfUrl, "_blank");
+        }
+    }).catch((err) => {
+        console.log(err)
+    })
+}
 
 export const actions: any[] = [
     {
@@ -146,6 +165,12 @@ export const actions: any[] = [
                         <Link to={editLink}>
                             <Pencil />
                         </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row.original.id,'download')}>
+                        <DownloadIcon />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row.original.id,'preview')}>
+                        <Eye />
                     </Button>
                 </>
             )

@@ -275,5 +275,48 @@ export const editColumnsFormat: any[] = [
             </div>
         },
     },
+    {
+        accessorKey: "units",
+        header: "Unidades",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("units"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="units"
+                    placeholder="units"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },
+    {
+        accessorKey: "unitPrice",
+        header: "Precio unitario",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("unitPrice"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="unitPrice"
+                    placeholder="unitPrice"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
+        },
+    },,
+    {
+        accessorKey: "totalAmount",
+        header: "Importe total",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("totalAmount")}</div>
+        },
+    },
 ]
 

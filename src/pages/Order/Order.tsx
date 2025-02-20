@@ -20,6 +20,7 @@ import {CalendarIcon, DownloadIcon} from "lucide-react";
 import { format } from "date-fns"
 import {es} from "date-fns/locale/es";
 import {Textarea} from "../../ui/textarea";
+import axios from "axios";
 import { Label } from "recharts";
 
 export default function Order() {
@@ -304,8 +305,10 @@ export default function Order() {
 
         api.post('/orders/' + orderId + '/delivery_note',{}).then((res) => {
             if(!res.id) return;
-            api.get('/delivery_notes/' + res.id + '/generate_pdf').then((res) => {
-                console.log(res)
+            api.get('/delivery_notes/' + res.id + '/generate_pdf', 'arraybuffer').then((res) => {
+                const blob = new Blob([res], { type: "application/pdf" });
+                const pdfUrl = URL.createObjectURL(blob);
+                window.open(pdfUrl, "_blank");
             }).catch((err) => {
                 console.log(err)
             })

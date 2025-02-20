@@ -5,3 +5,12 @@ export const statusess : any = {
     CANCELLED: 'Cancelada',
 }
 
+export const invoiceStatusess : any = {
+    PENDING: 'Pendiente',
+    PARTIALLY_PAID: 'Parcialmente pagado',
+    PAID: 'Pagado',
+    DUE: 'Vencido',
+    REFUNDED: 'Reembolsado',
+    CANCELLED: 'Cancelado',
+}
+

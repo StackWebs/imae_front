@@ -17,28 +17,32 @@ const requiresCors = false
 }*/
 
 const  Api = {
-    get: async function(relativePath: any) {
-        return send('GET', relativePath, null)
+    get: async function(relativePath: any, responseType: any = 'json') {
+        return send('GET', relativePath, null, responseType)
     },
-    post: async function post(relativePath: string, requestBody: any) {
-        return send('POST', relativePath, requestBody)
+    post: async function post(relativePath: string, requestBody: any, responseType: any = 'json') {
+        return send('POST', relativePath, requestBody, responseType)
     },
-    put (relativePath: string, requestBody: any) {
-        return send('PUT', relativePath, requestBody)
+    put (relativePath: string, requestBody: any, responseType: any = 'json') {
+        return send('PUT', relativePath, requestBody, responseType)
     },
-    delete(relativePath: string) {
-        return send('DELETE', relativePath,null)
+    delete(relativePath: string, responseType: any = 'json') {
+        return send('DELETE', relativePath,null, responseType)
     },
-    patch(relativePath: string, requestBody: any) {
-        return send('PATCH', relativePath, requestBody)
-    }
+    patch(relativePath: string, requestBody: any, responseType: any = 'json') {
+        return send('PATCH', relativePath, requestBody, responseType)
+    },
 }
 
-async function getData(response: Response, relativePath: string) {
+async function getData(response: Response, relativePath: string, responseType: any = 'json') {
 
     let data = null
-    if (response.status !== 204) {
+    if (response.status !== 204 && responseType === 'json') {
         data = await response.json()
+    }
+
+    if(responseType === 'arraybuffer') {
+        data = await response.arrayBuffer()
     }
 
     if (!response.ok) {
@@ -63,7 +67,7 @@ async function getData(response: Response, relativePath: string) {
     return data
 }
 
-async function send(method: any, relativePath: string, requestBody: any) {
+async function send(method: any, relativePath: string, requestBody: any, responseType: any) {
     let options : RequestInit = {}
     if(requiresCors) {
         options.credentials = 'include'
@@ -79,16 +83,16 @@ async function send(method: any, relativePath: string, requestBody: any) {
 
     options.headers = {
         ...options.headers,
-        'Authorization': 'Bearer ' + localStorage.getItem('AccessToken')
+        'Authorization': 'Bearer ' + localStorage.getItem('AccessToken'),
+        'responseType': responseType,
+        'Content-Type': responseType === 'arraybuffer' ? 'application/pdf' : 'application/json'
     }
 
-    //await setTokens()
-    //const response : Response =
-    await fetch(apiBaseUrl + relativePath, options).then((response) => {
+    return await fetch(apiBaseUrl + relativePath, options).then((response) => {
         if(method === 'DELETE' && response.status === 200) {
             return
         }
-        return getData(response,relativePath)
+        return getData(response,relativePath,responseType)
     }).catch((error) => {
         setTokens().then(() => {
             options.headers = {
@@ -99,7 +103,7 @@ async function send(method: any, relativePath: string, requestBody: any) {
                 if (method === 'DELETE' && response.status === 200) {
                     return
                 }
-                return getData(response, relativePath)
+                return getData(response, relativePath,responseType)
             }).catch((error) => {
                 console.error(error)
             })
