@@ -7,16 +7,31 @@ import {
 } from "../../ui/tooltip"
 import {Button} from "../../ui/button";
 
-export function Status ( status: any ) {
-    status = status.status
-    const statuses = [
-        { label: 'CREATED', color: 'bg-bar_backlog', width: '0' },
-        { label: 'PENDING', color: 'bg-bar_todo', width: 'calc(25% + 4px)' },
-        { label: 'IN_PROGRESS', color: 'bg-bar_inprogress', width: 'calc(50% + 4px)' },
-        { label: 'VERIFY', color: 'bg-bar_verify', width: 'calc(75% + 4px)' },
-        { label: 'DELIVERED', color: 'bg-bar_done', width: '100%' },
-        { label: 'CANCELLED', color: 'bg-bar_todo', width: '100%' },
-    ]
+
+
+
+export function Status ( props: any ) {
+    const status = props.status
+    const type = props.type
+    let statuses:any[] = []
+    if(type === 'order') {
+        statuses = [
+            {label: 'CREATED', color: 'bg-bar_created', width: '0', text: 'Creado'},
+            {label: 'CONFIRMED', color: 'bg-bar_confirmed', width: 'calc(25% + 4px)', text: 'Confirmado'},
+            {label: 'IN_PROGRESS', color: 'bg-bar_inprogress', width: 'calc(50% + 4px)', text: 'En Progreso'},
+            {label: 'SENT', color: 'bg-bar_sent', width: 'calc(75% + 4px)', text: 'Enviado'},
+            {label: 'DELIVERED', color: 'bg-bar_delivered', width: '100%', text: 'Entregado'},
+            {label: 'CANCELLED', color: 'bg-bar_cancelled', width: '100%', text: 'Cancelado'},
+            {label: 'RETURNED', color: 'bg-bar_returned', width: '100%', text: 'Devuelto'},
+        ]
+    }
+    if(type === 'project') {
+        statuses = [
+            {label: 'CREATED', color: 'bg-bar_created', width: '0', text: 'Creado'},
+            {label: 'IN_PROGRESS', color: 'bg-bar_inprogress', width: 'calc(50% + 4px)', text: 'En Progreso'},
+            {label: 'COMPLETED', color: 'bg-bar_completed', width: '100%', text: 'Completado'},
+        ]
+    }
 
     const statusObj = statuses.find((s) => s.label === status)
 
@@ -46,7 +61,7 @@ export function Status ( status: any ) {
                     </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>{status}</p>
+                    <p>{statusObj.text}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

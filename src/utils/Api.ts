@@ -112,7 +112,7 @@ async function send(method: any, relativePath: string, requestBody: any, respons
 
 }
 
-async function setTokens(): Promise<void> {
+export async function setTokens(first = false): Promise<void> {
     const myHeaders: Headers = new Headers();
     myHeaders.append("Content-Type", "application/x-amz-json-1.1");
     myHeaders.append("X-Amz-Target", "AWSCognitoIdentityProviderService.InitiateAuth");
@@ -126,6 +126,7 @@ async function setTokens(): Promise<void> {
         AuthFlow: "USER_PASSWORD_AUTH",
         ClientId: "vusv154k0pbqrdfefsfc0opd2"
     });
+
 
     const requestOptions: RequestInit = {
         method: "POST",

@@ -8,7 +8,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../u
 import {Input} from "../../ui/input";
 import {DataTable} from "../../components/table/table";
 import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
-import {statusess} from "../../components/table/data";
+import {orderStatusess, statusess} from "../../components/table/data";
 import { Calendar } from "../../ui/calendar"
 import {
     Popover,
@@ -16,7 +16,7 @@ import {
     PopoverTrigger,
 } from "../../ui/popover"
 import {cn} from "../../lib/utils";
-import {CalendarIcon, DownloadIcon} from "lucide-react";
+import {CalendarIcon, DownloadIcon, Loader2} from "lucide-react";
 import { format } from "date-fns"
 import {es} from "date-fns/locale/es";
 import {Textarea} from "../../ui/textarea";
@@ -80,11 +80,13 @@ export default function Order() {
     const [internalNotes, setInternalNotes] = React.useState<string | undefined>(undefined)
     const [conditions, setConditions] = React.useState<string | undefined>(undefined)
 
+    const [getingAlbran, setGetingAlbran] = React.useState<boolean>(false)
+
     // Fetch data
     useEffect(() => {
         api.get('/orders/' + orderId).then((res) => {
             /******** TOP ********/
-            setStatus(res.status)
+            setStatus(res.orderStatus)
             setOrderNumber(res.orderNumber)
             setSentDate(new Date(res.sentDate))
             setCustomerReference(res.customerReference)
@@ -259,7 +261,7 @@ export default function Order() {
         event.preventDefault()
 
         var body = {
-            "status": status,
+            "orderStatus": status,
             "sentDate": sentDate,
             "estimatedDeliveryDate": estimatedDeliveryDate,
             "deliveryDate": deliveryDate,
@@ -303,17 +305,22 @@ export default function Order() {
     function downloadAlbaran(event: React.SyntheticEvent) {
         event.preventDefault()
 
+        setGetingAlbran(true)
+
         api.post('/orders/' + orderId + '/delivery_note',{}).then((res) => {
             if(!res.id) return;
             api.get('/delivery_notes/' + res.id + '/generate_pdf', 'arraybuffer').then((res) => {
                 const blob = new Blob([res], { type: "application/pdf" });
                 const pdfUrl = URL.createObjectURL(blob);
                 window.open(pdfUrl, "_blank");
+                setGetingAlbran(false)
             }).catch((err) => {
                 console.log(err)
+                setGetingAlbran(false)
             })
         }).catch((err) => {
             console.log(err)
+            setGetingAlbran(false)
         })
     }
 
@@ -324,20 +331,17 @@ export default function Order() {
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <h2 className="text-3xl font-bold tracking-tight w-full ">{orderNumber}</h2>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
-                        <Input
-                            id="customerReference"
-                            placeholder="customerReference"
-                            value={customerReference}
-                            type="text"
-                            autoCapitalize="none"
-                            autoComplete="name"
-                            autoCorrect="off"
-                            onChange={(e) => setCustomerReference(e.target.value)}
-                        />
-                        <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadAlbaran}>
-                            Albaran
-                            <DownloadIcon className="ml-2 h-4 w-4"/>
-                        </Button>
+                        {!getingAlbran ? (
+                            <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadAlbaran}>
+                                Albaran
+                                <DownloadIcon className="ml-2 h-4 w-4"/>
+                            </Button>
+                        ) : (
+                            <Button disabled>
+                                <Loader2 className="animate-spin" />
+                                Please wait
+                            </Button>
+                        )}
                         <Select
                             value={status}
                             onValueChange={(value) => {
@@ -349,9 +353,9 @@ export default function Order() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {Object.keys(statusess).map((key) => (
+                                    {Object.keys(orderStatusess).map((key) => (
                                         <SelectItem key={key} value={key}>
-                                            {statusess[key]}
+                                            {orderStatusess[key]}
                                         </SelectItem>
                                     ))}
                                 </SelectGroup>
@@ -366,7 +370,7 @@ export default function Order() {
                         <div className="hidden flex-col space-y-4 sm:flex md:order-2">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Lorem Ipsum</CardTitle>
+                                    <CardTitle>Detalles</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     {customers && (
@@ -421,6 +425,21 @@ export default function Order() {
                                             </div>
                                         </>
                                     )}
+                                    <>
+                                        <h3 className="text-sm font-normal text-muted-foreground pt-3">Referencia Cliente</h3>
+                                        <div className={"flex items-center gap-3"}>
+                                            <Input
+                                                id="customerReference"
+                                                placeholder="customerReference"
+                                                value={customerReference}
+                                                type="text"
+                                                autoCapitalize="none"
+                                                autoComplete="name"
+                                                autoCorrect="off"
+                                                onChange={(e) => setCustomerReference(e.target.value)}
+                                            />
+                                        </div>
+                                    </>
                                 </CardContent>
                             </Card>
                             <Card>
@@ -446,6 +465,7 @@ export default function Order() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
+                                                    locale={es}
                                                     mode="single"
                                                     selected={sentDate}
                                                     onSelect={(date) => setSentDate(date)}
@@ -472,6 +492,7 @@ export default function Order() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
+                                                    locale={es}
                                                     mode="single"
                                                     selected={estimatedDeliveryDate}
                                                     onSelect={(date) => setEstimatedDeliveryDate(date)}
@@ -498,6 +519,7 @@ export default function Order() {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
+                                                    locale={es}
                                                     mode="single"
                                                     selected={deliveryDate}
                                                     onSelect={(date) => setDeliveryDate(date)}

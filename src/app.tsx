@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { createRoot } from 'react-dom/client';
 import {
     MemoryRouter,
@@ -30,10 +30,21 @@ import Invoices from "./pages/Invoices/Invoices";
 import { Amplify } from 'aws-amplify';
 import { awsConfig } from "../aws-exports";
 import Invoice from "./pages/Invoice/Invoice";
+import { setTokens } from "./utils/Api"
 
 Amplify.configure(awsConfig)
 
+
+export async function setUser(): Promise<void> {
+    return setTokens(true)
+}
+
+
 export default function App() {
+
+    useEffect(() => {
+        setUser().then(() => { console.log('cognito set') })
+    }, [])
 
     return (
         <>

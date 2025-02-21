@@ -2,7 +2,7 @@
 export const activeColumns: any = {
     orders : [
         "orderNumber",
-        "status",
+        "orderStatus",
         "sender", //(Adreça completa concatenada)
         "receiver", //(Adreça completa concatenada)
         "creationDate",
@@ -21,7 +21,7 @@ export const activeColumns: any = {
     ],
     projects : [
         "projectNumber",
-        "status",
+        "projectStatus",
         "creationDate",
         "endDate"
     ],

@@ -104,7 +104,7 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
         },
         items: {
             post: '/invoices/' + id + '/items',
-            patch: '/invoices/' + id,
+            patch: '/invoices/' + parentId + '/items/' + id,
             delete: '/invoices/' + parentId + '/items/' + id
         }
     }
@@ -319,17 +319,23 @@ export function DataTable<TData, TValue>(props: any) {
     const rowUpdate = function(event : any) {
         event.preventDefault()
 
-        var data : any = {}
+        var formData : any = {}
         for (var i = 0; i < event.target.length; i++) {
             if(event.target[i].type === 'submit') continue
-            data[event.target[i].id] = event.target[i].value
+            formData[event.target[i].id === 'package_length' ? 'length' : event.target[i].id] = event.target[i].value
         }
-        const id = event.target.getAttribute('element-id')
-        const call = apiCalls(type, 'patch', id)
+        const formId = event.target.getAttribute('element-id')
+        const call = apiCalls(type, 'patch', formId, id)
         if(!call) return
 
-        api.patch(call,data).then((res) => {
-            console.log('res',res)
+        api.patch(call,formData).then((res) => {
+            const updatedData = data.map((item) => {
+                if(item.id === res.id) {
+                    return res
+                }
+                return item
+            })
+            setData(updatedData)
         }).catch((err) => {
             console.error('Error: ', err)
         })
@@ -492,7 +498,7 @@ export function DataTable<TData, TValue>(props: any) {
                 <div className="forms">
                     {table.getRowModel().rows?.length && (
                         table.getRowModel().rows.map((row) => (
-                            <form key={row.id} id={'form-' + row.id} element-id={row.id} onSubmit={rowUpdate}></form>
+                            <form key={row.id} id={'form-' + row.id} element-id={row.original.id} onSubmit={rowUpdate}></form>
                         ))
                     )}
                 </div>

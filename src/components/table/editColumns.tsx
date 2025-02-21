@@ -214,7 +214,7 @@ export const editColumnsFormat: any[] = [
                     id="height"
                     placeholder="height"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
                     onChange={(e) => setTest(e.target.value)}/>
@@ -232,7 +232,7 @@ export const editColumnsFormat: any[] = [
                     id="width"
                     placeholder="width"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
                     onChange={(e) => setTest(e.target.value)}/>
@@ -250,7 +250,7 @@ export const editColumnsFormat: any[] = [
                     id="package_length"
                     placeholder="length"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
                     onChange={(e) => setTest(e.target.value)}/>
@@ -310,7 +310,7 @@ export const editColumnsFormat: any[] = [
                     onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
-    },,
+    },
     {
         accessorKey: "totalAmount",
         header: "Importe total",

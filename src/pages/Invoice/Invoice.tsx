@@ -27,7 +27,7 @@ export default function Invoice() {
     const [order, setOrder] = React.useState<any | undefined>(undefined)
     const [emissionDate, setEmissionDate] = React.useState<Date>(undefined)
     const [dueDate, setDueDate] = React.useState<Date>(undefined)
-    const [taxes, setTaxes] = React.useState<string | undefined>(undefined)
+    const [taxes, setTaxes] = React.useState<number | undefined>(undefined)
 
     const [customers, setCustomers] = React.useState<any | undefined>(undefined)
     const [customer, setCustomer] = React.useState<any | undefined>(undefined)
@@ -49,12 +49,27 @@ export default function Invoice() {
         api.get('/invoices/' + invoiceId).then((res) => {
             setInvoiceType(res.invoiceType)
             setInvoiceNumber(res.invoiceNumber)
-            setStatus(res.status)
+            setStatus(res.invoiceStatus)
             setOrder(res.order)
             setEmissionDate(res.emissionDate)
             setDueDate(res.dueDate)
             setTaxes((res.taxes * 100).toString())
             setItems(res.items)
+
+            setAddressCity(res.address.city)
+            setAddressContactName(res.address.contactName)
+            setAddressPhone(res.address.phone)
+            setAddressProvince(res.address.province)
+            setAddressStreet(res.address.street)
+            setAddressPostalCode(res.address.postalCode)
+            setAddressCountry(res.address.country)
+
+            if(res.invoiceType === 'INCOME') {
+                setCustomer(res.customer)
+            }
+            if(res.invoiceType === 'EXPENSE') {
+                setProvider(res.provider)
+            }
 
         }).catch((err) => {
             console.log(err)
@@ -65,7 +80,6 @@ export default function Invoice() {
     useEffect(() => {
         api.get('/orders').then((res) => {
             setOrders(res.content)
-            console.log('orders',res)
         }).catch((err) => {
             console.log(err)
         })
@@ -76,7 +90,6 @@ export default function Invoice() {
         console.log('invoiceType',invoiceType)
         if(invoiceType === 'INCOME') {
             api.get('/customers').then((res) => {
-                console.log('customers',res.content)
                 setCustomers(res.content)
             }).catch((err) => {
                 console.log(err)
@@ -114,9 +127,49 @@ export default function Invoice() {
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
 
-        api.put('/invoices/' + invoiceId, {
+        /*
+            {
+              "status": "PENDING",
+              "invoiceType": "INCOME",
+              "emissionDate": "2025-02-21",
+              "dueDate": "2025-02-21",
+              "customerId": 0,
+              "providerId": 0,
+              "address": {
+                "contactName": "string",
+                "city": "string",
+                "phone": "string",
+                "street": "string",
+                "province": "string",
+                "postalCode": "string",
+                "country": "string"
+              },
+              "taxes": 0,
+              "orderId": 0
+            }
+         */
 
-        }).then((res) => {
+        const body = {
+            invoiceStatus: status,
+            invoiceType: invoiceType,
+            emissionDate: emissionDate,
+            dueDate: dueDate,
+            customerId: customer?.id,
+            providerId: provider?.id,
+            address: {
+                contactName: addressContactName,
+                city: addressCity,
+                phone: addressPhone,
+                street: addressStreet,
+                province: addressProvince,
+                postalCode: addressPostalCode,
+                country: addressCountry
+            },
+            taxes: taxes / 100,
+            orderId: order?.id
+        }
+
+        api.put('/invoices/' + invoiceId, body).then((res) => {
             console.log(res)
         }).catch((err) => {
             console.log(err)
@@ -145,7 +198,7 @@ export default function Invoice() {
                     </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
                         <Select
-                            value={order}
+                            value={status}
                             onValueChange={(status) => {
                                 setStatus(status)
                             }}
@@ -276,6 +329,7 @@ export default function Invoice() {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0">
                                                     <Calendar
+                                                        locale={es}
                                                         mode="single"
                                                         selected={emissionDate}
                                                         onSelect={(date) => setEmissionDate(date)}
@@ -303,6 +357,7 @@ export default function Invoice() {
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0">
                                                     <Calendar
+                                                        locale={es}
                                                         mode="single"
                                                         selected={dueDate}
                                                         onSelect={(date) => setDueDate(date)}

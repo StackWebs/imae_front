@@ -21,6 +21,17 @@ module.exports = {
         bar_inprogress: "#20b8f7",
         bar_verify: "#fbc52d",
         bar_done: "#27c06d",
+
+        bar_created: "#e2e5ec",
+        bar_confirmed: "#b3b3b3",
+        bar_inprogress: "#fbc52d",
+        bar_sent: "#20b8f7",
+        bar_delivered: "#27c06d",
+        bar_cancelled: "#fa065e",
+        bar_returned: "#6806fa",
+        bar_completed: "#27c06d",
+
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

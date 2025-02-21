@@ -1,6 +1,8 @@
 import React from "react"
 import {Input} from "../../ui/input";
 import {Status} from "./status";
+import {format} from "date-fns";
+import {es} from "date-fns/locale/es";
 
 
 const liveChange = function(type: any, id: any, key: any, value: any) {
@@ -104,14 +106,18 @@ export const columnsFormat: any[] = [
         accessorKey: "estimatedDeliveryDate",
         header: "Data Estimada Entrega",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("estimatedDeliveryDate")}</div>
+            const date = new Date(row.getValue("estimatedDeliveryDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
         accessorKey: "sentDate",
         header: "Data Enviament",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("sentDate")}</div>
+            const date = new Date(row.getValue("sentDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
@@ -132,10 +138,31 @@ export const columnsFormat: any[] = [
         },
     },
     {
+        accessorKey: "projectStatus",
+        header: "Estado",
+        cell: ({ row } : any) => {
+            return (
+                <Status status={row.getValue("projectStatus")} type="project" />
+            )
+        },
+    },
+    {
+        accessorKey: "orderStatus",
+        header: "Estado",
+        cell: ({ row } : any) => {
+            console.log('orderStatus',row.getValue("orderStatus"))
+            return (
+                <Status status={row.getValue("orderStatus")} type="order" />
+            )
+        },
+    },
+    {
         accessorKey: "deliveryDate",
         header: "Data Entrega",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("deliveryDate")}</div>
+            const date = new Date(row.getValue("deliveryDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
@@ -226,14 +253,18 @@ export const columnsFormat: any[] = [
         accessorKey: "endDate",
         header: "Data Finalització",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("endDate")}</div>
+            const date = new Date(row.getValue("endDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
         accessorKey: "creationDate",
         header: "Data Creación",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("creationDate")}</div>
+            const date = new Date(row.getValue("creationDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
@@ -285,7 +316,9 @@ export const columnsFormat: any[] = [
         accessorKey: "dueDate",
         header: "Fecha de Vencimiento",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("dueDate")}</div>
+            const date = new Date(row.getValue("dueDate"))
+            const formatted = format(date, "PPP", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
