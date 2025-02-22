@@ -1,12 +1,12 @@
 import React from "react"
 import {Button} from "../../ui/button";
-import {Pencil, DownloadIcon, Eye } from "lucide-react";
+import {Pencil, DownloadIcon, Eye, ListTree, Loader2} from "lucide-react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import Api from "../../utils/Api";
 import api from "../../utils/Api";
 
 
-function downloadInvoice(id: any, action = 'download') {
+async function downloadInvoice(id: any, action = 'download') {
     api.get('/invoices/' + id + '/generate_pdf', 'arraybuffer').then((res) => {
         const blob = new Blob([res], { type: "application/pdf" });
         const pdfUrl = URL.createObjectURL(blob);
@@ -126,7 +126,7 @@ export const actions: any[] = [
                 <>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Link to={editLink}>
-                            <Pencil />
+                            <ListTree  />
                         </Link>
                     </Button>
                     {/*
@@ -157,6 +157,8 @@ export const actions: any[] = [
     {
         type: "invoices",
         cell: ({ row } : any) => {
+
+            const [downloading, setDownloading] = React.useState<boolean>(false)
             const editLink = `/invoice/${row.original.id}`
 
             return (
@@ -166,8 +168,17 @@ export const actions: any[] = [
                             <Pencil />
                         </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row.original.id,'download')}>
-                        <DownloadIcon />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => {
+                        setDownloading(true)
+                        downloadInvoice(row.original.id,'download').then(() => {
+                            setDownloading(false)
+                        })
+                    }}>
+                        {!downloading ? (
+                            <DownloadIcon />
+                        ) : (
+                            <Loader2 className="animate-spin" />
+                        )}
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row.original.id,'preview')}>
                         <Eye />

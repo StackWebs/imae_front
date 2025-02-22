@@ -166,9 +166,8 @@ export default function Provider() {
                             <CardDescription>Lista de direcciones del cliente</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {/*<DataTable type={"customers_addresses"} id={customerId}/>*/}
                             {addresses &&
-                                <DataTable type={"addresses"} content={addresses} edit={true}/>
+                                <DataTable type={"providers_addresses"} content={addresses} edit={true} id={providerId}/>
                             }
                         </CardContent>
                     </Card>

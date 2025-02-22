@@ -18,7 +18,7 @@ module.exports = {
       colors: {
         bar_backlog: "#e2e5ec",
         bar_todo: "#fa065e",
-        bar_inprogress: "#20b8f7",
+        bar_project_inprogress: "#20b8f7",
         bar_verify: "#fbc52d",
         bar_done: "#27c06d",
 
@@ -30,6 +30,12 @@ module.exports = {
         bar_cancelled: "#fa065e",
         bar_returned: "#6806fa",
         bar_completed: "#27c06d",
+
+        bar_pending: "#e2e5ec",
+        bar_partially_paid: "#fbc52d",
+        bar_paid: "#27c06d",
+        bar_due: "#20b8f7",
+        bar_refunded: "#6806fa",
 
 
         border: "hsl(var(--border))",

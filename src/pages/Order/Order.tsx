@@ -1,14 +1,14 @@
 import React, {useEffect} from "react";
 
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import api from "../../utils/Api";
 import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
+import {Card, CardContent, CardHeader, CardTitle} from "../../ui/card";
 import {Input} from "../../ui/input";
 import {DataTable} from "../../components/table/table";
-import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
-import {orderStatusess, statusess} from "../../components/table/data";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
+import {orderStatusess} from "../../components/table/data";
 import { Calendar } from "../../ui/calendar"
 import {
     Popover,
@@ -16,15 +16,16 @@ import {
     PopoverTrigger,
 } from "../../ui/popover"
 import {cn} from "../../lib/utils";
-import {CalendarIcon, DownloadIcon, Loader2} from "lucide-react";
+import {CalendarIcon, DownloadIcon, Loader2, Link2 } from "lucide-react";
 import { format } from "date-fns"
 import {es} from "date-fns/locale/es";
 import {Textarea} from "../../ui/textarea";
-import axios from "axios";
-import { Label } from "recharts";
 
 export default function Order() {
     const { orderId } = useParams();
+    const navigate = useNavigate();
+
+    const [creationDate, setCreationDate] = React.useState<string | undefined>(undefined)
 
     // TOP
     const [status, setStatus] = React.useState<string | undefined>(undefined)
@@ -39,6 +40,8 @@ export default function Order() {
     //Haulier
     const [hauliers, setHauliers] = React.useState<any | undefined>(undefined)
     const [haulier, setHaulier] = React.useState<any | undefined>(undefined)
+
+    const [invoice, setInvoice] = React.useState<any | undefined>(undefined)
 
     /******** Lateral 2 ********/
     // Fechas
@@ -85,6 +88,9 @@ export default function Order() {
     // Fetch data
     useEffect(() => {
         api.get('/orders/' + orderId).then((res) => {
+            setCreationDate(res.creationDate)
+
+
             /******** TOP ********/
             setStatus(res.orderStatus)
             setOrderNumber(res.orderNumber)
@@ -96,6 +102,7 @@ export default function Order() {
             setCustomer(res.customer )
             //Haulier
             setHaulier(res.haulier)
+            setInvoice(res.invoice)
 
             /******** Lateral 2 ********/
             // Fechas
@@ -142,86 +149,12 @@ export default function Order() {
         api.get('/customers').then((res) => {
             setCustomers(res.content)
         }).catch((err) => {
-            setCustomers([
-                {
-                    "id": 0,
-                    "customerNumber": "string",
-                    "name": "string",
-                    "nif": "string",
-                    "email": "string",
-                    "iban": "string",
-                    "creationDate": "2025-01-28T19:13:39.361Z"
-                },
-                {
-                    "id": 1,
-                    "customerNumber": "string",
-                    "name": "string",
-                    "nif": "string",
-                    "email": "string",
-                    "iban": "string",
-                    "creationDate": "2025-01-28T19:13:39.361Z"
-                },
-                {
-                    "id": 2,
-                    "customerNumber": "string",
-                    "name": "string",
-                    "nif": "string",
-                    "email": "string",
-                    "iban": "string",
-                    "creationDate": "2025-01-28T19:13:39.361Z"
-                },
-                {
-                    "id": 3,
-                    "customerNumber": "string",
-                    "name": "string",
-                    "nif": "string",
-                    "email": "string",
-                    "iban": "string",
-                    "creationDate": "2025-01-28T19:13:39.361Z"
-                }
-            ])
+
         })
         api.get('/hauliers').then((res) => {
             setHauliers(res.content)
         }).catch((err) => {
-            setHauliers([
-                {
-                    "id": 0,
-                    "haulierNumber": "string",
-                    "companyName": "string",
-                    "nif": "string",
-                    "iban": "string",
-                    "email": "string",
-                    "creationDate": "2025-01-28T19:15:12.861Z"
-                },
-                {
-                    "id": 1,
-                    "haulierNumber": "string",
-                    "companyName": "string",
-                    "nif": "string",
-                    "iban": "string",
-                    "email": "string",
-                    "creationDate": "2025-01-28T19:15:12.861Z"
-                },
-                {
-                    "id": 2,
-                    "haulierNumber": "string",
-                    "companyName": "string",
-                    "nif": "string",
-                    "iban": "string",
-                    "email": "string",
-                    "creationDate": "2025-01-28T19:15:12.861Z"
-                },
-                {
-                    "id": 3,
-                    "haulierNumber": "string",
-                    "companyName": "string",
-                    "nif": "string",
-                    "iban": "string",
-                    "email": "string",
-                    "creationDate": "2025-01-28T19:15:12.861Z"
-                }
-            ])
+
         })
     }, []);
 
@@ -261,6 +194,7 @@ export default function Order() {
         event.preventDefault()
 
         var body = {
+            "creationDate": creationDate,
             "orderStatus": status,
             "sentDate": sentDate,
             "estimatedDeliveryDate": estimatedDeliveryDate,
@@ -430,7 +364,7 @@ export default function Order() {
                                         <div className={"flex items-center gap-3"}>
                                             <Input
                                                 id="customerReference"
-                                                placeholder="customerReference"
+                                                placeholder="Referencia Cliente"
                                                 value={customerReference}
                                                 type="text"
                                                 autoCapitalize="none"
@@ -440,6 +374,17 @@ export default function Order() {
                                             />
                                         </div>
                                     </>
+
+
+                                    <h3 className="text-sm font-normal text-muted-foreground pt-3">Factura</h3>
+                                    <div className={"flex items-center gap-3"}>
+                                        {invoice && (
+                                            <Button variant="outline" className={"w-[300px] justify-between"} onClick={() => { navigate('/invoice/' + invoice.id)}}>
+                                                {invoice.invoiceNumber}
+                                                <Link2  className="ml-2 h-4 w-4"/>
+                                            </Button>
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                             <Card>
@@ -577,7 +522,7 @@ export default function Order() {
                                                     contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Nombre de contacto"
                                                     value={senderContactName}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -591,7 +536,7 @@ export default function Order() {
                                                     de contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Teléfono de contacto"
                                                     value={senderPhone}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -606,7 +551,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Dirección</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Dirección"
                                                     value={senderStreet}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -619,7 +564,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Código Postal</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Código Postal"
                                                     value={senderPostalCode}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -634,7 +579,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Ciudad</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Ciudad"
                                                     value={senderCity}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -647,7 +592,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Provincia</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Provincia"
                                                     value={senderProvince}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -660,7 +605,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">País</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="País"
                                                     value={senderCountry}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -715,7 +660,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Nombre de contacto"
                                                     value={receiverContactName}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -728,7 +673,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono de contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Teléfono de contacto"
                                                     value={receiverPhone}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -743,7 +688,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Dirección</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Dirección"
                                                     value={receiverStreet}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -756,7 +701,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Código Postal</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Código Postal"
                                                     value={receiverPostalCode}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -771,7 +716,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Ciudad</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Ciudad"
                                                     value={receiverCity}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -784,7 +729,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Provincia</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Provincia"
                                                     value={receiverProvince}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -797,7 +742,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">País</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="País"
                                                     value={receiverCountry}
                                                     type="text"
                                                     autoCapitalize="none"

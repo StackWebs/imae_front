@@ -14,6 +14,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../u
 export default function Customer() {
     const { customerId } = useParams();
 
+    const [customerNumber, setCustomerNumber] = React.useState<string | undefined>(undefined)
     const [name, setName] = React.useState<string | undefined>(undefined)
     const [nif, setNif] = React.useState<string | undefined>(undefined)
     const [email, setEmail] = React.useState<string | undefined>(undefined)
@@ -22,6 +23,7 @@ export default function Customer() {
 
     useEffect(() => {
         api.get('/customers/' + customerId).then((res) => {
+            setCustomerNumber(res.customerNumber)
             setName(res.name)
             setNif(res.nif)
             setEmail(res.email)
@@ -29,52 +31,6 @@ export default function Customer() {
             setAddresses(res.addresses)
             console.log(res)
         }).catch((err) => {
-            setName("Name")
-            setNif("4158541Z")
-            setEmail("gotcritgmarc@gmail.com")
-            setIban("ES05 4589 4587 4589 5325")
-            setAddresses([
-                {
-                    "id": 0,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                },
-                {
-                    "id": 1,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                },
-                {
-                    "id": 2,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                },
-                {
-                    "id": 3,
-                    "name": "string",
-                    "city": "string",
-                    "phone": "string",
-                    "province": "string",
-                    "street": "string",
-                    "postalCode": "string",
-                    "country": "string"
-                }
-            ])
             console.log(err)
         })
     }, []);
@@ -97,10 +53,14 @@ export default function Customer() {
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
-                <div className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
-                    <h2 className="text-3xl font-bold tracking-tight w-full ">{name}</h2>
+                <div
+                    className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
+                    <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
+                        <h2 className="text-3xl font-bold tracking-tight w-full ">{name}</h2>
+                        <p className="text-muted-foreground">{customerNumber}</p>
+                    </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
-                        <Button onClick={submitForm} >Guardar</Button>
+                        <Button onClick={submitForm}>Guardar</Button>
                     </div>
                 </div>
                 <Separator/>
@@ -112,7 +72,7 @@ export default function Customer() {
                         </CardHeader>
                         <CardContent>
                             <div className={"flex items-center gap-3"}>
-                                <Input
+                            <Input
                                     id="name"
                                     placeholder="nombre"
                                     value={name}
@@ -162,7 +122,7 @@ export default function Customer() {
                         <CardContent>
                             {/*<DataTable type={"customers_addresses"} id={customerId}/>*/}
                             {addresses &&
-                                <DataTable type={"addresses"} content={addresses} edit={true}/>
+                                <DataTable type={"customer_addresses"} content={addresses} edit={true} id={customerId}/>
                             }
                         </CardContent>
                     </Card>

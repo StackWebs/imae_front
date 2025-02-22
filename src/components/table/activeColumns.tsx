@@ -7,10 +7,11 @@ export const activeColumns: any = {
         "receiver", //(Adreça completa concatenada)
         "creationDate",
         "sentDate",
-        "estimatedDeliveryDate",
+        //"estimatedDeliveryDate",
         "deliveryDate",
         "customerReference",
-        "customer" //(num client concatenat el nom)
+        "customer", //(num client concatenat el nom)
+        "customerReference"
     ],
     packages : [
         "description",
@@ -28,9 +29,12 @@ export const activeColumns: any = {
     invoices : [
         "invoiceNumber",
         "invoiceType",
-        "status",
+        "invoiceStatus",
         "emissionDate",
-        "dueDate"
+        "dueDate",
+        "subtotalAmount",
+        "taxesAmount",
+        "totalAmount",
     ],
     hauliers : [
         "haulierNumber",
@@ -52,5 +56,23 @@ export const activeColumns: any = {
         "nif",
         "iban",
         "creationDate"
+    ],
+    customer_addresses : [
+        "contactName",
+        "city",
+        "phone",
+        "province",
+        "street",
+        "postalCode",
+        "country"
+    ],
+    providers_addresses : [
+        "contactName",
+        "city",
+        "phone",
+        "province",
+        "street",
+        "postalCode",
+        "country"
     ]
 }

@@ -9,7 +9,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "set GITHUB_TOKEN=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 && electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "reinstall": "rm -rf node_modules && npm install",
+    "stable": "rm -rf node_modules && npm ci"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.5.0",

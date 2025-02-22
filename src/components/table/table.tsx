@@ -28,10 +28,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../../ui/alert-dialog"
+import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
-    console.log('apiCalls',dataType,call,id)
+    console.log('apiCalls',dataType,call,id,parentId)
     if(!id) {
         const data: any = {
             orders: {
@@ -88,12 +89,19 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
             navigate: '/customer/' + id,
             delete: '/customers/' + id
         },
-        customers_addresses: {
-            get: '/customers/' + id + '/addresses',
+        customer_addresses: {
+            post: '/customers/' + id + '/addresses',
+            patch: '/customers/' + parentId + '/addresses/' + id,
+            delete: '/customers/' + parentId + '/addresses/' + id
+        },
+        providers_addresses: {
+            post: '/providers/' + id + '/addresses',
+            patch: '/providers/' + parentId + '/addresses/' + id,
+            delete: '/providers/' + parentId + '/addresses/' + id
         },
         addresses: {
             patch: '/addresses/' + id,
-            delete: '/addresses/' + id
+            delete: '/addresses/' + id,
         },
         providers: {
             navigate: '/provider/' + id,
@@ -214,6 +222,8 @@ export function DataTable<TData, TValue>(props: any) {
     const [page, setPage] = React.useState(1)
     const [pageSize, setPageSize] = React.useState(10)
     const [totalPages, setTotalPages] = React.useState(1)
+    const [totalItems, setTotalItems] = React.useState(1)
+    const [elements, setElements] = React.useState(1)
     const [activeFilters, setActiveFilters] = React.useState<any[]>(filters[type])
 
     function setFilterValue(filter : any, value : any) {
@@ -274,6 +284,7 @@ export function DataTable<TData, TValue>(props: any) {
         if(content) {
             setData(content)
             setPageSize(content.length)
+            setHasResults(true)
             return
         }
 
@@ -287,12 +298,14 @@ export function DataTable<TData, TValue>(props: any) {
             console.log('res',res)
             setData(res.content)
             setTotalPages(res.data.totalPages)
+            setTotalItems(res.data.totalElements)
+            setElements(res.data.elements)
             setHasResults(true)
         }).catch((err) => {
             console.error('Error: ', err)
             setHasResults(true)
         })
-    }, [sortedColumns,page])
+    }, [sortedColumns,page,pageSize])
 
     useEffect(() => {
         if(!data || data.length === 0) return
@@ -329,7 +342,7 @@ export function DataTable<TData, TValue>(props: any) {
         if(!call) return
 
         api.patch(call,formData).then((res) => {
-            const updatedData = data.map((item) => {
+            const updatedData = data.map((item:any) => {
                 if(item.id === res.id) {
                     return res
                 }
@@ -474,10 +487,10 @@ export function DataTable<TData, TValue>(props: any) {
                     <>
                         <div className="flex items-center py-4 space-x-2">
                             <Button onClick={addNewInvoice('INCOME')} variant="constructive">
-                                <SquarePlus  /> Ingreso
+                                <SquarePlus/> Ingreso
                             </Button>
                             <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
-                                <SquarePlus  /> Gasto
+                                <SquarePlus/> Gasto
                             </Button>
                         </div>
                     </>
@@ -486,7 +499,7 @@ export function DataTable<TData, TValue>(props: any) {
                         {!edit && (
                             <div className="flex items-center py-4">
                                 <Button onClick={addNew}>
-                                    <SquarePlus  /> Añadir
+                                    <SquarePlus/> Añadir
                                 </Button>
                             </div>
                         )}
@@ -497,8 +510,9 @@ export function DataTable<TData, TValue>(props: any) {
             {table.getRowModel().rows?.length !== 0 && (
                 <div className="forms">
                     {table.getRowModel().rows?.length && (
-                        table.getRowModel().rows.map((row) => (
-                            <form key={row.id} id={'form-' + row.id} element-id={row.original.id} onSubmit={rowUpdate}></form>
+                        table.getRowModel().rows.map((row: any) => (
+                            <form key={row.id} id={'form-' + row.id} element-id={row.original.id}
+                                  onSubmit={rowUpdate}></form>
                         ))
                     )}
                 </div>
@@ -543,21 +557,26 @@ export function DataTable<TData, TValue>(props: any) {
                                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger>
-                                                                        <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                                                        <Button variant="ghost" size="icon"
+                                                                                className="h-8 w-8 p-0">
                                                                             <Trash/>
                                                                         </Button>
                                                                     </AlertDialogTrigger>
                                                                     <AlertDialogContent>
                                                                         <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+                                                                            <AlertDialogTitle>Estas
+                                                                                seguro?</AlertDialogTitle>
                                                                             <AlertDialogDescription>
-                                                                                Esta accion no se puede deshacer. Esto lo eliminara permanentemente y removera los
+                                                                                Esta accion no se puede deshacer. Esto
+                                                                                lo eliminara permanentemente y removera
+                                                                                los
                                                                                 datos de nuestros servidores.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
                                                                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                                            <AlertDialogAction onClick={() => removeRow(row)}>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => removeRow(row)}>
                                                                                 Eliminar
                                                                             </AlertDialogAction>
                                                                         </AlertDialogFooter>
@@ -581,7 +600,7 @@ export function DataTable<TData, TValue>(props: any) {
                                 {hasResults ? (
                                     <TableRow>
                                         <TableCell colSpan={columns.length} className="h-24 text-center">
-                                        No results.
+                                            No hay resultados
                                         </TableCell>
                                     </TableRow>
                                 ) : (
@@ -599,33 +618,60 @@ export function DataTable<TData, TValue>(props: any) {
 
             {!content && (
                 <div className="flex items-center justify-end space-x-2 py-4">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                            setPage(page - 1)
-                        }}
-                        disabled={page === 1}
-                    >
-                        &lt;
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                            setPage(page + 1)
-                        }}
-                        disabled={page === totalPages}
-                    >
-                        &gt;
-                    </Button>
+                    <div className="flex-1 text-sm text-muted-foreground">
+                        {elements} resultados de {totalItems}
+                    </div>
+                    <div className="space-x-2 flex items-center justify-end py-4">
+                        <div className="flex-1 text-sm text-muted-foreground">
+                            Página {page} de{" "} {totalPages}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Select
+                                value={`${pageSize}`}
+                                onValueChange={(value) => {
+                                    setPageSize(Number(value))
+                                }}
+                            >
+                                <SelectTrigger className="h-8 w-[70px]">
+                                    <SelectValue placeholder={pageSize}/>
+                                </SelectTrigger>
+                                <SelectContent side="top">
+                                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                                        <SelectItem key={pageSize} value={`${pageSize}`}>
+                                            {pageSize}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                                setPage(page - 1)
+                            }}
+                            disabled={page === 1}
+                        >
+                            &lt;
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                                setPage(page + 1)
+                            }}
+                            disabled={page === totalPages}
+                        >
+                            &gt;
+                        </Button>
+                    </div>
                 </div>
             )}
 
             {edit && (
                 <div className="flex flex-row-reverse items-center py-4">
                     <Button onClick={addNew}>
-                        <SquarePlus  /> Añadir
+                        <SquarePlus/> Añadir
                     </Button>
                 </div>
             )}

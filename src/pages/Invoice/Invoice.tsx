@@ -53,7 +53,7 @@ export default function Invoice() {
             setOrder(res.order)
             setEmissionDate(res.emissionDate)
             setDueDate(res.dueDate)
-            setTaxes((res.taxes * 100).toString())
+            setTaxes(res.taxes * 100)
             setItems(res.items)
 
             setAddressCity(res.address.city)
@@ -373,7 +373,7 @@ export default function Invoice() {
                                                 placeholder="taxes"
                                                 value={taxes}
                                                 type="number"
-                                                onChange={(e) => setTaxes(e.target.value)}
+                                                onChange={(e) => setTaxes(parseFloat(e.target.value))}
                                             />
                                         </div>
                                     </div>

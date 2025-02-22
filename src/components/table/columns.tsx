@@ -104,19 +104,19 @@ export const columnsFormat: any[] = [
     },
     {
         accessorKey: "estimatedDeliveryDate",
-        header: "Data Estimada Entrega",
+        header: "Fecha Estimada de Entrega",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("estimatedDeliveryDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
         accessorKey: "sentDate",
-        header: "Data Enviament",
+        header: "Fecha de Envío",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("sentDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -157,11 +157,21 @@ export const columnsFormat: any[] = [
         },
     },
     {
+        accessorKey: "invoiceStatus",
+        header: "Estado",
+        cell: ({ row } : any) => {
+            console.log('orderStatus',row.getValue("orderStatusinvoiceStatus"))
+            return (
+                <Status status={row.getValue("invoiceStatus")} type="invoice" />
+            )
+        },
+    },
+    {
         accessorKey: "deliveryDate",
-        header: "Data Entrega",
+        header: "Fecha de Entrega",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("deliveryDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -237,7 +247,7 @@ export const columnsFormat: any[] = [
     },
     {
         accessorKey: "projectNumber",
-        header: "Project Number",
+        header: "Número de Proyecto",
         cell: ({ row } : any) => {
             return <div className="text-left font-medium">{row.getValue("projectNumber")}</div>
         },
@@ -251,19 +261,19 @@ export const columnsFormat: any[] = [
     },
     {
         accessorKey: "endDate",
-        header: "Data Finalització",
+        header: "Fecha de Finalización",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("endDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {
         accessorKey: "creationDate",
-        header: "Data Creación",
+        header: "Fecha de Creación",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("creationDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -302,7 +312,8 @@ export const columnsFormat: any[] = [
         accessorKey: "invoiceType",
         header: "Tipo de Factura",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("invoiceType")}</div>
+            return <div className={`text-left font-medium ${row.getValue("invoiceType") === "INCOME" ? "text-green-500" : "text-red-500"}
+            `}>{row.getValue("invoiceType") === "INCOME" ? "Ingreso" : "Gasto"}</div>
         },
     },
     {
@@ -317,7 +328,7 @@ export const columnsFormat: any[] = [
         header: "Fecha de Vencimiento",
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("dueDate"))
-            const formatted = format(date, "PPP", {locale: es})
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -326,6 +337,48 @@ export const columnsFormat: any[] = [
         header: "Impuestos",
         cell: ({ row } : any) => {
             return <div className="text-left font-medium">{row.getValue("taxes")}</div>
+        },
+    },
+    {
+        accessorKey: "providerNumber",
+        header: "Número de Proveedor",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("providerNumber")}</div>
+        },
+    },
+    {
+        accessorKey: "customerNumber",
+        header: "Número de Cliente",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("customerNumber")}</div>
+        },
+    },
+    {
+        accessorKey: "totalAmount",
+        header: () => <div className="text-right">Total</div>,
+        cell: ({ row } : any) => {
+            return <div className="text-right font-medium">{row.getValue("totalAmount").toFixed(2)}€</div>
+        },
+    },
+    {
+        accessorKey: "subtotalAmount",
+        header: () => <div className="text-right">Subtotal</div>,
+        cell: ({ row } : any) => {
+            return <div className="text-right font-medium">{row.getValue("subtotalAmount").toFixed(2)}€</div>
+        },
+    },
+    {
+        accessorKey: "taxesAmount",
+        header: () => <div className="text-right">Impuestos</div>,
+        cell: ({ row } : any) => {
+            return <div className="text-right font-medium">{row.getValue("taxesAmount").toFixed(2)}€</div>
+        },
+    },
+    {
+        accessorKey: "customerReference",
+        header: "Referencia de Cliente",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("customerReference")}</div>
         },
     },
 ]
