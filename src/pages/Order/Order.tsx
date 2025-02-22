@@ -271,7 +271,7 @@ export default function Order() {
                         ) : (
                             <Button disabled>
                                 <Loader2 className="animate-spin" />
-                                Please wait
+                                Descargando...
                             </Button>
                         )}
                         <Select
