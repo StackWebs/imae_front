@@ -6,7 +6,7 @@ import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
 import {Input} from "../../ui/input";
-import {CalendarIcon, DownloadIcon} from "lucide-react";
+import {Calculator, CalendarIcon, CreditCard, DownloadIcon, Settings, Smile, User,ChevronsUpDown, Check} from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {invoiceStatusess} from "../../components/table/data";
 import {Popover, PopoverContent, PopoverTrigger} from "../../ui/popover";
@@ -15,6 +15,15 @@ import {format} from "date-fns";
 import {es} from "date-fns/locale/es";
 import {Calendar} from "../../ui/calendar";
 import {DataTable} from "../../components/table/table";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator, CommandShortcut
+} from "../../ui/command";
 
 
 export default function Invoice() {
@@ -44,6 +53,10 @@ export default function Invoice() {
     const [addressCountry, setAddressCountry] = React.useState<string | undefined>(undefined)
 
     const [items, setItems] = React.useState<any | undefined>(undefined)
+
+
+    const [ordersOpen, setOrdersopen] = React.useState(false)
+    const [orderSearch, setOrderSearch] = React.useState<string | undefined>(undefined)
 
     useEffect(() => {
         api.get('/invoices/' + invoiceId).then((res) => {
@@ -78,12 +91,22 @@ export default function Invoice() {
 
 
     useEffect(() => {
-        api.get('/orders').then((res) => {
+        api.get('/orders?hasInvoice=false').then((res) => {
             setOrders(res.content)
         }).catch((err) => {
             console.log(err)
         })
     }, []);
+
+    // useEffect(() => {
+    //     if(!orders) return
+    //     // Local filter
+    //     if(!orderSearch) {
+    //         setOrders(orders.slice(0, 10))
+    //         return
+    //     }
+    //     setOrders(orders.filter((item: any) => item.orderNumber.includes(orderSearch)))
+    // }, [orderSearch]);
 
 
     useEffect(() => {
@@ -125,28 +148,6 @@ export default function Invoice() {
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
-
-        /*
-            {
-              "status": "PENDING",
-              "invoiceType": "INCOME",
-              "emissionDate": "2025-02-21",
-              "dueDate": "2025-02-21",
-              "customerId": 0,
-              "providerId": 0,
-              "address": {
-                "contactName": "string",
-                "city": "string",
-                "phone": "string",
-                "street": "string",
-                "province": "string",
-                "postalCode": "string",
-                "country": "string"
-              },
-              "taxes": 0,
-              "orderId": 0
-            }
-         */
 
         const body = {
             invoiceStatus: status,
@@ -228,28 +229,57 @@ export default function Invoice() {
                                     <CardTitle>Información</CardTitle>
                                 </CardHeader>
                                 <CardContent>
+
+
                                     {orders && (
                                         <>
                                             <h3 className="text-sm font-normal text-muted-foreground">Orden</h3>
-                                            <Select
-                                                value={orders.find((item: any) => item.id === order?.id)}
-                                                onValueChange={(value) => {
-                                                    setOrder(value)
-                                                }}
-                                            >
-                                                <SelectTrigger className="w-full text-foreground">
-                                                    <SelectValue/>
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        {orders.map((item: any) => (
-                                                            <SelectItem key={item.id} value={item}>
-                                                                {item.orderNumber}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Popover open={ordersOpen} onOpenChange={setOrdersopen}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-label="Load a preset..."
+                                                        aria-expanded={ordersOpen}
+                                                        className="flex-1 justify-between w-full"
+                                                    >
+                                                        {order ? order.orderNumber : "Ordenes..."}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-[350px] p-0">
+                                                    <Command>
+                                                        <CommandInput placeholder="Buscar orden..."
+                                                          onValueChange={(value) => {
+                                                              setOrderSearch(value)
+                                                          }}
+                                                        />
+                                                        <CommandEmpty>No presets found.</CommandEmpty>
+                                                        <CommandGroup heading="Ordenes" className={"h-[200px] overflow-y-scroll"}>
+                                                            {orders.map((item: any, index: any) => (
+                                                                <>
+                                                                    <CommandItem key={item.id}
+                                                                                 onSelect={() => {
+                                                                                     setOrder(item)
+                                                                                     setOrdersopen(false)
+                                                                                 }}
+                                                                    >
+                                                                        {item.orderNumber}
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "ml-auto h-4 w-4",
+                                                                                order?.id === item.id
+                                                                                    ? "opacity-100"
+                                                                                    : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                    </CommandItem>
+                                                                </>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
                                         </>
                                     )}
 

@@ -3,7 +3,7 @@ import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import {DataTable} from "../../components/table/table";
 import {Button} from "../../ui/button";
-import {CalendarIcon, DownloadIcon, Loader2} from "lucide-react";
+import {CalendarIcon, DownloadIcon, Loader2, Calculator, CreditCard, Settings, Smile, User,} from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {projectStatusses} from "../../components/table/data";
 import {Separator} from "../../ui/separator";
@@ -13,7 +13,6 @@ import {format} from "date-fns";
 import {es} from "date-fns/locale/es";
 import {Calendar} from "../../ui/calendar";
 import api from "../../utils/Api";
-
 
 
 export default function Project() {
@@ -55,6 +54,8 @@ export default function Project() {
 
     return (
         <>
+
+
             <div className="hidden h-full flex-col md:flex">
                 <div
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">

@@ -209,6 +209,8 @@ export function DataTable<TData, TValue>(props: any) {
     const id = props.id
     const content = props.content
     const edit = props.edit || false
+    const create = props.create !== false
+
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
     const [columns, setColumns] = React.useState<ColumnDef<TData, TValue>[]>([])
@@ -482,25 +484,29 @@ export function DataTable<TData, TValue>(props: any) {
                     </div>
                 )*/}
 
-                {type == "invoices" ? (
+                {create && (
                     <>
-                        <div className="flex items-center py-4 space-x-2">
-                            <Button onClick={addNewInvoice('INCOME')} variant="constructive">
-                                <SquarePlus/> Ingreso
-                            </Button>
-                            <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
-                                <SquarePlus/> Gasto
-                            </Button>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        {!edit && (
-                            <div className="flex items-center py-4">
-                                <Button onClick={addNew}>
-                                    <SquarePlus/> Añadir
-                                </Button>
-                            </div>
+                        {type == "invoices" ? (
+                            <>
+                                <div className="flex items-center py-4 space-x-2">
+                                    <Button onClick={addNewInvoice('INCOME')} variant="constructive">
+                                        <SquarePlus/> Ingreso
+                                    </Button>
+                                    <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
+                                        <SquarePlus/> Gasto
+                                    </Button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {!edit && (
+                                    <div className="flex items-center py-4">
+                                        <Button onClick={addNew}>
+                                            <SquarePlus/> Añadir
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </>
                 )}
@@ -667,7 +673,7 @@ export function DataTable<TData, TValue>(props: any) {
                 </div>
             )}
 
-            {edit && (
+            {edit && create && (
                 <div className="flex flex-row-reverse items-center py-4">
                     <Button onClick={addNew}>
                         <SquarePlus/> Añadir
