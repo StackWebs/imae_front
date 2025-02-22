@@ -87,7 +87,6 @@ export default function Invoice() {
 
 
     useEffect(() => {
-        console.log('invoiceType',invoiceType)
         if(invoiceType === 'INCOME') {
             api.get('/customers').then((res) => {
                 setCustomers(res.content)

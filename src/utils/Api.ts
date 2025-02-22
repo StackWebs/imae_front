@@ -148,7 +148,6 @@ export async function setTokens(first = false): Promise<void> {
         if(json.AuthenticationResult && json.AuthenticationResult.RefreshToken) {
             localStorage.setItem('RefreshToken', json.AuthenticationResult.RefreshToken)
         }
-        console.log(localStorage);
     } catch (error) {
         console.error(error);
     }

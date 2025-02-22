@@ -43,7 +43,7 @@ export async function setUser(): Promise<void> {
 export default function App() {
 
     useEffect(() => {
-        setUser().then(() => { console.log('cognito set') })
+        setUser().then(() => {  })
     }, [])
 
     return (

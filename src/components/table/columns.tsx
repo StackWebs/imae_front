@@ -6,7 +6,6 @@ import {es} from "date-fns/locale/es";
 
 
 const liveChange = function(type: any, id: any, key: any, value: any) {
-    console.log('liveChange',type,id,key,value)
 }
 
 
@@ -71,7 +70,6 @@ export const columnsFormat: any[] = [
         accessorKey: "receiver",
         header: "Destinatario",
         cell: ({ row } : any) => {
-            console.log('row',row)
             if(row.original.receiver) {
                 return <div className="text-left font-medium">{row.original.receiver.contactName || ''}</div>
             }
@@ -150,7 +148,6 @@ export const columnsFormat: any[] = [
         accessorKey: "orderStatus",
         header: "Estado",
         cell: ({ row } : any) => {
-            console.log('orderStatus',row.getValue("orderStatus"))
             return (
                 <Status status={row.getValue("orderStatus")} type="order" />
             )
@@ -160,7 +157,6 @@ export const columnsFormat: any[] = [
         accessorKey: "invoiceStatus",
         header: "Estado",
         cell: ({ row } : any) => {
-            console.log('orderStatus',row.getValue("orderStatusinvoiceStatus"))
             return (
                 <Status status={row.getValue("invoiceStatus")} type="invoice" />
             )

@@ -32,7 +32,6 @@ import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectVal
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
-    console.log('apiCalls',dataType,call,id,parentId)
     if(!id) {
         const data: any = {
             orders: {

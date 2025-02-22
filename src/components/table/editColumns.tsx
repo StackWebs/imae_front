@@ -4,11 +4,6 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {statusess} from "./data";
 
 
-const liveChange = function(type: any, id: any, key: any, value: any) {
-    console.log('liveChange',type,id,key,value)
-}
-
-
 export const editColumnsFormat: any[] = [
 
     {

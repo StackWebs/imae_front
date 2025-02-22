@@ -227,8 +227,6 @@ export default function Order() {
             "conditions": conditions,
         }
 
-        console.log('send:', body)
-
         api.put('/orders/' + orderId, body).then((res) => {
             console.log(res)
         }).catch((err) => {
