@@ -316,7 +316,9 @@ export const columnsFormat: any[] = [
         accessorKey: "emissionDate",
         header: "Fecha de Emisión",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("emissionDate")}</div>
+            const date = new Date(row.getValue("emissionDate"))
+            const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            return <div className="text-left font-medium">{formatted}</div>
         },
     },
     {

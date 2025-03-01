@@ -17,7 +17,8 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
     const navigate = useNavigate();
 
     // on enter key press
-    function searchOrder() {
+    function searchOrder(event: any) {
+        event.preventDefault()
         api.get('/orders?orderNumber=' + search).then((res) => {
             if(res.content.length > 0 && res.content[0].id) {
                 //useNavigate('/order/' + res.content[0].id)
@@ -40,7 +41,8 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
                     </Label>
                     <Search
                         className="cursor-pointer absolute right-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50"
-                        onClick={searchOrder} />
+                        onClick={searchOrder}
+                    />
                     <Input
                         id="search"
                         placeholder="Search the docs..."
@@ -51,6 +53,7 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
                         autoCorrect="off"
                         className={"pr-8 h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"}
                         onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={(e) => {if(e.key === 'Enter') { searchOrder(e)}}}
                     />
                 </SidebarGroupContent>
             </SidebarGroup>

@@ -361,7 +361,7 @@ export default function Invoice() {
                                                         locale={es}
                                                         mode="single"
                                                         selected={emissionDate}
-                                                        onSelect={(date) => setEmissionDate(date)}
+                                                        onSelect={(date) => setEmissionDate(new Date(format(date, "yyyy-MM-dd")))}
                                                         initialFocus
                                                     />
                                                 </PopoverContent>
@@ -389,7 +389,7 @@ export default function Invoice() {
                                                         locale={es}
                                                         mode="single"
                                                         selected={dueDate}
-                                                        onSelect={(date) => setDueDate(date)}
+                                                        onSelect={(date) => setDueDate(new Date(format(date, "yyyy-MM-dd")))}
                                                         initialFocus
                                                     />
                                                 </PopoverContent>

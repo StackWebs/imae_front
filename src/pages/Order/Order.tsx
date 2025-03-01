@@ -32,6 +32,7 @@ export default function Order() {
     const [orderNumber, setOrderNumber] = React.useState<string | undefined>(undefined)
     const [sentDate, setSentDate] = React.useState<Date>(undefined)
     const [customerReference , setCustomerReference] = React.useState<string | undefined>(undefined)
+    const [projectNumber, setProjectNumber] = React.useState<any | undefined>(undefined)
 
     /******** Lateral 1 ********/
     //Customer
@@ -96,6 +97,7 @@ export default function Order() {
             setOrderNumber(res.orderNumber)
             setSentDate(new Date(res.sentDate))
             setCustomerReference(res.customerReference)
+            setProjectNumber(res.project?.projectNumber)
 
             /******** Lateral 1 ********/
             //Customer
@@ -111,23 +113,23 @@ export default function Order() {
 
             /******** Central 1 ********/
             // Direccion de recogida
-            setSenderCity(res.sender.city)
-            setSenderContactName(res.sender.contactName)
-            setSenderPhone(res.sender.phone)
-            setSenderProvince(res.sender.province)
-            setSenderStreet(res.sender.street)
-            setSenderPostalCode(res.sender.postalCode)
-            setSenderCountry(res.sender.country)
+            setSenderCity(res.sender?.city)
+            setSenderContactName(res.sender?.contactName)
+            setSenderPhone(res.sender?.phone)
+            setSenderProvince(res.sender?.province)
+            setSenderStreet(res.sender?.street)
+            setSenderPostalCode(res.sender?.postalCode)
+            setSenderCountry(res.sender?.country)
 
             /******** Central 2 ********/
             // Direccion de entrega
-            setReceiverCity(res.receiver.city)
-            setReceiverContactName(res.receiver.contactName)
-            setReceiverPhone(res.receiver.phone)
-            setReceiverProvince(res.receiver.province)
-            setReceiverStreet(res.receiver.street)
-            setReceiverPostalCode(res.receiver.postalCode)
-            setReceiverCountry(res.receiver.country)
+            setReceiverCity(res.receiver?.city)
+            setReceiverContactName(res.receiver?.contactName)
+            setReceiverPhone(res.receiver?.phone)
+            setReceiverProvince(res.receiver?.province)
+            setReceiverStreet(res.receiver?.street)
+            setReceiverPostalCode(res.receiver?.postalCode)
+            setReceiverCountry(res.receiver?.country)
 
             /******** Central 3 ********/
             // Paquetes
@@ -168,24 +170,25 @@ export default function Order() {
     }, [customer]);
 
     function setDates(direction:any, type:string) {
+        console.log(direction)
         switch(type) {
             case 'sender':
-                setSenderCity(direction.city)
-                setSenderContactName(direction.name)
-                setSenderPhone(direction.phone)
-                setSenderProvince(direction.province)
-                setSenderStreet(direction.street)
-                setSenderPostalCode(direction.postalCode)
-                setSenderCountry(direction.country)
+                setSenderCity(direction.city || '')
+                setSenderContactName(direction.contactName || '')
+                setSenderPhone(direction.phone || '')
+                setSenderProvince(direction.province || '')
+                setSenderStreet(direction.street || '')
+                setSenderPostalCode(direction.postalCode || '')
+                setSenderCountry(direction.country || '')
                 break;
             case 'receiver':
-                setReceiverCity(direction.city)
-                setReceiverContactName(direction.name)
-                setReceiverPhone(direction.phone)
-                setReceiverProvince(direction.province)
-                setReceiverStreet(direction.street)
-                setReceiverPostalCode(direction.postalCode)
-                setReceiverCountry(direction.country)
+                setReceiverCity(direction.city || '')
+                setReceiverContactName(direction.contactName || '')
+                setReceiverPhone(direction.phone || '')
+                setReceiverProvince(direction.province || '')
+                setReceiverStreet(direction.street || '')
+                setReceiverPostalCode(direction.postalCode || '')
+                setReceiverCountry(direction.country || '')
                 break;
         }
     }
@@ -261,7 +264,10 @@ export default function Order() {
             <div className="hidden h-full flex-col md:flex">
                 <div
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
-                    <h2 className="text-3xl font-bold tracking-tight w-full ">{orderNumber}</h2>
+                    <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
+                        <h2 className="text-3xl font-bold tracking-tight w-full ">{orderNumber}</h2>
+                        <p className="text-muted-foreground">{projectNumber}</p>
+                    </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
                         {!getingAlbran ? (
                             <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadAlbaran}>
@@ -270,7 +276,7 @@ export default function Order() {
                             </Button>
                         ) : (
                             <Button disabled>
-                                <Loader2 className="animate-spin" />
+                                <Loader2 className="animate-spin"/>
                                 Descargando...
                             </Button>
                         )}
@@ -301,7 +307,7 @@ export default function Order() {
                     <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_350px]">
                         <div className="hidden flex-col space-y-4 sm:flex md:order-2">
                             <Card>
-                                <CardHeader>
+                            <CardHeader>
                                     <CardTitle>Detalles</CardTitle>
                                 </CardHeader>
                                 <CardContent>
@@ -376,10 +382,14 @@ export default function Order() {
 
                                     <h3 className="text-sm font-normal text-muted-foreground pt-3">Factura</h3>
                                     <div className={"flex items-center gap-3"}>
-                                        {invoice && (
+                                        {invoice ? (
                                             <Button variant="outline" className={"w-[300px] justify-between"} onClick={() => { navigate('/invoice/' + invoice.id)}}>
                                                 {invoice.invoiceNumber}
                                                 <Link2  className="ml-2 h-4 w-4"/>
+                                            </Button>
+                                        ) : (
+                                            <Button variant="outline" className={"w-[300px] justify-between"} disabled>
+                                                Sin factura
                                             </Button>
                                         )}
                                     </div>
@@ -411,7 +421,7 @@ export default function Order() {
                                                     locale={es}
                                                     mode="single"
                                                     selected={sentDate}
-                                                    onSelect={(date) => setSentDate(date)}
+                                                    onSelect={(date) => setSentDate(new Date(format(date, "yyyy-MM-dd")))}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -438,7 +448,7 @@ export default function Order() {
                                                     locale={es}
                                                     mode="single"
                                                     selected={estimatedDeliveryDate}
-                                                    onSelect={(date) => setEstimatedDeliveryDate(date)}
+                                                    onSelect={(date) => setEstimatedDeliveryDate(new Date(format(date, "yyyy-MM-dd")))}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -465,7 +475,7 @@ export default function Order() {
                                                     locale={es}
                                                     mode="single"
                                                     selected={deliveryDate}
-                                                    onSelect={(date) => setDeliveryDate(date)}
+                                                    onSelect={(date) => setDeliveryDate(new Date(format(date, "yyyy-MM-dd")))}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
@@ -490,7 +500,7 @@ export default function Order() {
                                                         item.city === senderCity &&
                                                         item.province === senderProvince &&
                                                         item.country === senderCountry &&
-                                                        item.name === senderContactName)
+                                                        item.contactName === senderContactName)
                                                     )}
                                                     onValueChange={(value) => {
                                                         setDates(value,'sender')
@@ -506,7 +516,7 @@ export default function Order() {
                                                             </SelectItem>
                                                             {directions.map((item:any) => (
                                                                 <SelectItem key={item.id} value={item}>
-                                                                    {item.street}, {item.postalCode}, {item.city}, {item.province}, {item.country} | {item.name}
+                                                                    {item.street}, {item.postalCode}, {item.city}, {item.province}, {item.country} | {item.contactName}
                                                                 </SelectItem>
                                                             ))}
                                                         </SelectGroup>
@@ -516,8 +526,7 @@ export default function Order() {
                                         )}
                                         <div className={"flex items-center gap-3 pt-3"}>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de
-                                                    contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Remitente</h3>
                                                 <Input
                                                     id="name"
                                                     placeholder="Nombre de contacto"
@@ -530,11 +539,10 @@ export default function Order() {
                                                 />
                                             </div>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono
-                                                    de contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="Teléfono de contacto"
+                                                    placeholder="Teléfono"
                                                     value={senderPhone}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -655,7 +663,7 @@ export default function Order() {
                                         )}
                                         <div className={"flex items-center gap-3 pt-3"}>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Destinatario</h3>
                                                 <Input
                                                     id="name"
                                                     placeholder="Nombre de contacto"
@@ -668,10 +676,10 @@ export default function Order() {
                                                 />
                                             </div>
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono de contacto</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Teléfono</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="Teléfono de contacto"
+                                                    placeholder="Teléfono"
                                                     value={receiverPhone}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -759,9 +767,7 @@ export default function Order() {
                                         <CardTitle>Paquetes</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        {packages &&
-                                            <DataTable type={"packages"} content={packages} edit={true} id={orderId}/>
-                                        }
+                                        <DataTable type={"packages"} content={packages} edit={true} id={orderId}/>
                                     </CardContent>
                                 </Card>
                             </div>

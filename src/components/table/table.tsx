@@ -204,6 +204,8 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
 
 export function DataTable<TData, TValue>(props: any) {
 
+    console.log('props',props)
+
     const navigate = useNavigate();
     const type = props.type
     const id = props.id
@@ -306,7 +308,7 @@ export function DataTable<TData, TValue>(props: any) {
             console.error('Error: ', err)
             setHasResults(true)
         })
-    }, [sortedColumns,page,pageSize])
+    }, [props,sortedColumns,page,pageSize])
 
     useEffect(() => {
         if(!data || data.length === 0) return

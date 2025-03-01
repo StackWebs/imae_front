@@ -21,7 +21,7 @@ export function Status ( status: any ) {
     const statusObj = statuses.find((s) => s.label === status)
 
     return (
-        <TooltipProvider>
+        <TooltipProvider delayDuration={0}>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <span className={`block background w-44 min-w-max h-4`}>

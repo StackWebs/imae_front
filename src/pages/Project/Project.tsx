@@ -83,7 +83,7 @@ export default function Project() {
                                             locale={es}
                                             mode="single"
                                             selected={endDate}
-                                            onSelect={(date) => setEndDate(date)}
+                                            onSelect={(date) => setEndDate(new Date(format(date, "yyyy-MM-dd")))}
                                             initialFocus
                                         />
                                     </PopoverContent>

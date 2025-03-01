@@ -263,7 +263,7 @@ export const editColumnsFormat: any[] = [
                     id="weight"
                     placeholder="weight"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
                     onChange={(e) => setTest(e.target.value)}/>
@@ -311,6 +311,24 @@ export const editColumnsFormat: any[] = [
         header: "Importe total",
         cell: ({ row } : any) => {
             return <div className="text-left font-medium">{row.getValue("totalAmount")}</div>
+        },
+    },
+    {
+        accessorKey: "contactName",
+        header: "Entidad",
+        cell: ({ row } : any) => {
+            const [test, setTest] = React.useState(row.getValue("contactName"))
+
+            return <div className="text-left font-medium">
+                <Input
+                    id="contactName"
+                    placeholder="contactName"
+                    value={test}
+                    type="text"
+                    autoCapitalize="none"
+                    form={'form-' + row.id}
+                    onChange={(e) => setTest(e.target.value)}/>
+            </div>
         },
     },
 ]
