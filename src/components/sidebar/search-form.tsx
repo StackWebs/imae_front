@@ -45,7 +45,7 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
                     />
                     <Input
                         id="search"
-                        placeholder="Search the docs..."
+                        placeholder="Buscar orden"
                         value={search}
                         type="text"
                         autoCapitalize="none"

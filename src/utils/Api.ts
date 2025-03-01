@@ -34,7 +34,7 @@ const  Api = {
     },
 }
 
-async function getData(response: Response, relativePath: string, responseType: any = 'json') {
+async function getData(response: Response, relativePath: string, responseType: any = 'json', notShowErrors = false) {
 
     let data = null
     if (response.status !== 204 && responseType === 'json') {
@@ -49,7 +49,7 @@ async function getData(response: Response, relativePath: string, responseType: a
         if (data.message && data.message !== "" && data.message !== " " && data.message !== "null") {
             let expludedRelativePath = ['/tasks/new/history','/tasks/new/comments']
 
-            if(!expludedRelativePath.includes(relativePath)) {
+            if(!expludedRelativePath.includes(relativePath) && !notShowErrors) {
                 toast.error(data.message, {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -92,7 +92,7 @@ async function send(method: any, relativePath: string, requestBody: any, respons
         if(method === 'DELETE' && response.status === 200) {
             return
         }
-        return getData(response,relativePath,responseType)
+        return getData(response,relativePath,responseType,true)
     }).catch((error) => {
         setTokens().then(() => {
             options.headers = {

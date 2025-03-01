@@ -6,14 +6,15 @@ import Api from "../../utils/Api";
 import api from "../../utils/Api";
 
 
-async function downloadInvoice(id: any, action = 'download') {
-    api.get('/invoices/' + id + '/generate_pdf', 'arraybuffer').then((res) => {
+async function downloadInvoice(row: any, action = 'download') {
+    console.log('downloading invoice',row)
+    api.get('/invoices/' + row.original?.id + '/generate_pdf', 'arraybuffer').then((res) => {
         const blob = new Blob([res], { type: "application/pdf" });
         const pdfUrl = URL.createObjectURL(blob);
         if(action === 'download') {
             const a = document.createElement('a');
             a.href = pdfUrl;
-            a.download = 'invoice.pdf';
+            a.download = 'Factura_' + row.original?.invoiceNumber + '.pdf';
             a.click();
         }
         else {
@@ -169,7 +170,7 @@ export const actions: any[] = [
                     </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => {
                         setDownloading(true)
-                        downloadInvoice(row.original.id,'download').then(() => {
+                        downloadInvoice(row,'download').then(() => {
                             setDownloading(false)
                         })
                     }}>
@@ -179,7 +180,7 @@ export const actions: any[] = [
                             <Loader2 className="animate-spin" />
                         )}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row.original.id,'preview')}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row,'preview')}>
                         <Eye />
                     </Button>
                 </>

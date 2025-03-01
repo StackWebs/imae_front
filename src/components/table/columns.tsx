@@ -106,6 +106,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("estimatedDeliveryDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("estimatedDeliveryDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -115,6 +116,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("sentDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("sentDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -168,6 +170,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("deliveryDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("deliveryDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -261,6 +264,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("endDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("endDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -270,6 +274,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("creationDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("creationDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -318,6 +323,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("emissionDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("emissionDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },
@@ -327,6 +333,7 @@ export const columnsFormat: any[] = [
         cell: ({ row } : any) => {
             const date = new Date(row.getValue("dueDate"))
             const formatted = format(date, "dd/MM/yyyy", {locale: es})
+            if(row.getValue("dueDate") === null) return <div className="text-left font-medium"></div>
             return <div className="text-left font-medium">{formatted}</div>
         },
     },

@@ -322,7 +322,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="contactName"
-                    placeholder="contactName"
+                    placeholder="Entidad"
                     value={test}
                     type="text"
                     autoCapitalize="none"

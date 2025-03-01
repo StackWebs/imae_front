@@ -244,10 +244,18 @@ export default function Order() {
 
         api.post('/orders/' + orderId + '/delivery_note',{}).then((res) => {
             if(!res.id) return;
-            api.get('/delivery_notes/' + res.id + '/generate_pdf', 'arraybuffer').then((res) => {
-                const blob = new Blob([res], { type: "application/pdf" });
+            api.get('/delivery_notes/' + res.id + '/generate_pdf', 'arraybuffer').then((doc) => {
+                const blob = new Blob([doc], { type: "application/pdf" });
                 const pdfUrl = URL.createObjectURL(blob);
-                window.open(pdfUrl, "_blank");
+
+                const link = document.createElement("a");
+                link.href = pdfUrl;
+                link.download = "Albarán_" + res.deliveryNoteNumber + ".pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                //window.open(pdfUrl, "_blank");
                 setGetingAlbran(false)
             }).catch((err) => {
                 console.log(err)
@@ -322,9 +330,16 @@ export default function Order() {
                                                     }}
                                                 >
                                                     <SelectTrigger className="w-[300px] text-foreground">
-                                                        <SelectValue/>
+                                                        {customer ? (
+                                                            <SelectValue/>
+                                                        ) : (
+                                                            <span className=""></span>
+                                                        )}
                                                     </SelectTrigger>
                                                     <SelectContent>
+                                                        <SelectItem value={undefined}>
+                                                            Ninguno
+                                                        </SelectItem>
                                                         <SelectGroup>
                                                             {customers.map((item:any) => (
                                                                 <SelectItem key={item.id} value={item}>
@@ -507,13 +522,12 @@ export default function Order() {
                                                     }}
                                                 >
                                                     <SelectTrigger className="w-full text-foreground">
-                                                        <SelectValue/>
+                                                        <span className="">
+                                                            Direcciónes del cliente
+                                                        </span>
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-                                                            <SelectItem value={undefined} disabled>
-                                                                Direcciónes del cliente
-                                                            </SelectItem>
                                                             {directions.map((item:any) => (
                                                                 <SelectItem key={item.id} value={item}>
                                                                     {item.street}, {item.postalCode}, {item.city}, {item.province}, {item.country} | {item.contactName}
@@ -644,7 +658,9 @@ export default function Order() {
                                                     }}
                                                 >
                                                     <SelectTrigger className="w-full text-foreground">
-                                                        <SelectValue/>
+                                                        <span className="">
+                                                            Direcciónes del cliente
+                                                        </span>
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>

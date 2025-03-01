@@ -6,7 +6,18 @@ import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
 import {Input} from "../../ui/input";
-import {Calculator, CalendarIcon, CreditCard, DownloadIcon, Settings, Smile, User,ChevronsUpDown, Check} from "lucide-react";
+import {
+    Calculator,
+    CalendarIcon,
+    CreditCard,
+    DownloadIcon,
+    Settings,
+    Smile,
+    User,
+    ChevronsUpDown,
+    Check,
+    Loader2
+} from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {invoiceStatusess} from "../../components/table/data";
 import {Popover, PopoverContent, PopoverTrigger} from "../../ui/popover";
@@ -57,6 +68,8 @@ export default function Invoice() {
 
     const [ordersOpen, setOrdersopen] = React.useState(false)
     const [orderSearch, setOrderSearch] = React.useState<string | undefined>(undefined)
+
+    const [getingInvoice, setGetingInvoice] = React.useState<boolean>(false)
 
     useEffect(() => {
         api.get('/invoices/' + invoiceId).then((res) => {
@@ -187,6 +200,21 @@ export default function Invoice() {
         setAddressCountry(direction.country)
     }
 
+    async function downloadInvoice(event: React.SyntheticEvent) {
+        event.preventDefault()
+
+        api.get('/invoices/' + invoiceId + '/generate_pdf', 'arraybuffer').then((res) => {
+            const blob = new Blob([res], { type: "application/pdf" });
+            const pdfUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = pdfUrl;
+            a.download = 'Factura_' + invoiceNumber + '.pdf';
+            a.click();
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
@@ -197,6 +225,17 @@ export default function Invoice() {
                         <p className="text-muted-foreground">{invoiceType}</p>
                     </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
+                        {!getingInvoice ? (
+                            <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadInvoice}>
+                                Descargar
+                                <DownloadIcon className="ml-2 h-4 w-4"/>
+                            </Button>
+                        ) : (
+                            <Button disabled>
+                                <Loader2 className="animate-spin"/>
+                                Descargando...
+                            </Button>
+                        )}
                         <Select
                             value={status}
                             onValueChange={(status) => {
