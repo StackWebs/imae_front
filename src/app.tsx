@@ -42,11 +42,15 @@ export async function setUser(): Promise<void> {
 
 export default function App() {
 
+    const [userSet, setUserSet] = React.useState(null)
+
     useEffect(() => {
-        setUser().then(() => {  })
+        setUser().then(() => {
+            setUserSet(true)
+        })
     }, [])
 
-    return (
+    if(userSet) return (
         <>
             <html lang="en" className="light_blue" >
                 <head />
@@ -86,6 +90,8 @@ export default function App() {
             </html>
         </>
     );
+
+    return null
 }
 
 const root = createRoot(document.body);
