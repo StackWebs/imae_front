@@ -29,6 +29,7 @@ import {
     AlertDialogTrigger,
 } from "../../ui/alert-dialog"
 import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
+import {toast} from "react-toastify";
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
@@ -332,7 +333,12 @@ export function DataTable<TData, TValue>(props: any) {
         console.log(data)
     }
 
-    const rowUpdate = function(event : any) {
+    const rowChange = function(event : any,row : any) {
+        console.log('rowChange',row)
+        if(!row.getIsSelected()) row.toggleSelected()
+    }
+
+    const rowUpdate = function(event : any, row:any) {
         event.preventDefault()
 
         var formData : any = {}
@@ -352,6 +358,19 @@ export function DataTable<TData, TValue>(props: any) {
                 return item
             })
             setData(updatedData)
+
+            toast.success('Guardado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
+
+            row.toggleSelected()
         }).catch((err) => {
             console.error('Error: ', err)
         })
@@ -395,6 +414,16 @@ export function DataTable<TData, TValue>(props: any) {
         api.delete(path).then((res) => {
             // @ts-ignore
             setData(data.filter((item) => item?.id !== row.original.id))
+            toast.success('Eliminado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.error('Error: ', err)
         })
@@ -518,8 +547,7 @@ export function DataTable<TData, TValue>(props: any) {
                 <div className="forms">
                     {table.getRowModel().rows?.length && (
                         table.getRowModel().rows.map((row: any) => (
-                            <form key={row.id} id={'form-' + row.id} element-id={row.original.id}
-                                  onSubmit={rowUpdate}></form>
+                            <form key={row.id} id={'form-' + row.id} element-id={row.original.id} onSubmit={(e) => {rowUpdate(e,row)}}></form>
                         ))
                     )}
                 </div>
@@ -551,6 +579,7 @@ export function DataTable<TData, TValue>(props: any) {
                                     <TableRow
                                         key={row.id}
                                         data-state={row.getIsSelected() && "selected"}
+                                        onChange={(e) => rowChange(e,row)}
                                     >
                                         {row.getVisibleCells().map((cell) => {
                                             const isAction = cell.id.includes('actions')
@@ -558,7 +587,6 @@ export function DataTable<TData, TValue>(props: any) {
                                             return (
                                                 <TableCell key={cell.id}>
                                                     <>
-
                                                         {isAction ? (
                                                             <div className={"flex items-end justify-end"}>
                                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -13,6 +13,7 @@ import {format} from "date-fns";
 import {es} from "date-fns/locale/es";
 import {Calendar} from "../../ui/calendar";
 import api from "../../utils/Api";
+import {toast} from "react-toastify";
 
 
 export default function Project() {
@@ -46,6 +47,16 @@ export default function Project() {
 
         api.put('/projects/' + projectId, body).then((res) => {
             console.log(res)
+            toast.success('Guardado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.log(err)
         })

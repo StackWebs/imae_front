@@ -35,6 +35,7 @@ import {
     CommandList,
     CommandSeparator, CommandShortcut
 } from "../../ui/command";
+import {toast} from "react-toastify";
 
 
 export default function Invoice() {
@@ -184,6 +185,16 @@ export default function Invoice() {
 
         api.put('/invoices/' + invoiceId, body).then((res) => {
             console.log(res)
+            toast.success('Guardado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.log(err)
         })

@@ -20,6 +20,7 @@ import {CalendarIcon, DownloadIcon, Loader2, Link2 } from "lucide-react";
 import { format } from "date-fns"
 import {es} from "date-fns/locale/es";
 import {Textarea} from "../../ui/textarea";
+import {toast} from "react-toastify";
 
 export default function Order() {
     const { orderId } = useParams();
@@ -232,6 +233,16 @@ export default function Order() {
 
         api.put('/orders/' + orderId, body).then((res) => {
             console.log(res)
+            toast.success('Guardado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.log(err)
         })

@@ -9,6 +9,7 @@ import {DataTable} from "../../components/table/table";
 import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
+import {toast} from "react-toastify";
 
 
 export default function Haulier() {
@@ -56,6 +57,16 @@ export default function Haulier() {
             iban: iban
         }).then((res) => {
             console.log(res)
+            toast.success('Guardado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.log(err)
         })
