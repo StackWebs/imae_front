@@ -6,7 +6,7 @@ export default function Invoices() {
 
     return (
         <>
-            <DataTable type={"invoices"}/>
+            <DataTable type={"invoices"} csvExport={true}/>
         </>
     )
 }

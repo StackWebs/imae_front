@@ -9,7 +9,7 @@ import {columnsFormat} from "./columns";
 import {editColumnsFormat} from "./editColumns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
-import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash} from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash, X,Search,ChevronRight,ChevronLeft,MonitorDown } from "lucide-react";
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
@@ -30,6 +30,15 @@ import {
 } from "../../ui/alert-dialog"
 import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
 import {toast} from "react-toastify";
+import {Input} from "../../ui/input";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuCheckboxItem
+} from "../../ui/dropdown-menu";
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
@@ -37,10 +46,12 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
         const data: any = {
             orders: {
                 get: '/orders',
+                export: '/orders/export',
             },
             projects: {
                 get: '/projects',
-                post: '/projects'
+                post: '/projects',
+                export: '/projects/export',
             },
             hauliers: {
                 get: '/hauliers',
@@ -59,7 +70,8 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
             invoices: {
                 get: '/invoices',
                 delete: '/invoices',
-                post: '/invoices'
+                post: '/invoices',
+                export: '/invoices',
             }
         }
         return data[dataType][call] || null;
@@ -205,14 +217,13 @@ function getColumns(type: any, data : any[],sortedColumns : any[], sortByKey: an
 
 export function DataTable<TData, TValue>(props: any) {
 
-    console.log('props',props)
-
     const navigate = useNavigate();
     const type = props.type
     const id = props.id
     const content = props.content
     const edit = props.edit || false
     const create = props.create !== false
+    const csvExport = props.csvExport || false
 
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
@@ -230,23 +241,6 @@ export function DataTable<TData, TValue>(props: any) {
     const [elements, setElements] = React.useState(1)
     const [activeFilters, setActiveFilters] = React.useState<any[]>(filters[type])
 
-    function setFilterValue(filter : any, value : any) {
-        var activeFilter = activeFilters
-        if(activeFilter && activeFilter[filter.accessorKey]) {
-            switch (filter.type) {
-                case 'string':
-                    activeFilter[filter.accessorKey].value = value
-                    break
-                case 'integer':
-                    activeFilter[filter.accessorKey].value = parseInt(value)
-                    break
-                case 'select':
-                    activeFilter[filter.accessorKey].value = value
-                    break
-            }
-        }
-        setActiveFilters(activeFilter)
-    }
 
     function sortByKey(sortedColumns : any[],key : string) {
         let sorted = sortedColumns.find((sortedColumn) => sortedColumn.accessorKey === key)
@@ -264,7 +258,7 @@ export function DataTable<TData, TValue>(props: any) {
         setSortedColumns([...sortedColumns])
     }
 
-    function formatParams() {
+    function formatParams(excluePages :boolean = false) {
         // console.log('Get Data Variables: Sorting => ', sortedColumns)
         // console.log('Get Data Variables: Page => ', page)
         // console.log('Get Data Variables: Page Size => ', pageSize)
@@ -272,10 +266,16 @@ export function DataTable<TData, TValue>(props: any) {
         // console.log('activeFilters',activeFilters)
         // console.log('content => ', content)
 
-        const params : any = {
+        const params : any = excluePages ? {} : {
             page: page,
-            size: pageSize,
+            size: pageSize
         }
+
+        activeFilters && Object.keys(activeFilters).forEach((key:any) => {
+            if(!activeFilters[key].filter && !excluePages) return
+            if(!activeFilters[key].value) return
+            params[key] = activeFilters[key].value
+        })
 
         let stringParams = ''
         Object.keys(params).forEach((key, index) => {
@@ -284,7 +284,29 @@ export function DataTable<TData, TValue>(props: any) {
         return stringParams
     }
 
-    useEffect(() => {
+    function setFilterValue(filter : any, value : any) {
+        var activeFilter = {...activeFilters}
+        if (activeFilter && activeFilter[filter.accessorKey]) {
+            switch (filter.type) {
+                case 'string':
+                    activeFilter[filter.accessorKey].filter = activeFilter[filter.accessorKey].value !== value
+                    activeFilter[filter.accessorKey].value = value
+                    break
+                case 'integer':
+                    activeFilter[filter.accessorKey].filter = activeFilter[filter.accessorKey].value !== parseInt(value)
+                    activeFilter[filter.accessorKey].value = parseInt(value)
+                    break
+                case 'select':
+                    console.log('value',value)
+                    activeFilter[filter.accessorKey].filter = activeFilter[filter.accessorKey].value !== value
+                    activeFilter[filter.accessorKey].value = value
+                    break
+            }
+        }
+        setActiveFilters(activeFilter)
+    }
+
+    function getData() {
         if(content) {
             setData(content)
             setPageSize(content.length)
@@ -299,16 +321,22 @@ export function DataTable<TData, TValue>(props: any) {
         if(stringParams) call += '?' + stringParams
 
         api.get(call).then((res : any) => {
-            console.log('res',res)
             setData(res.content)
             setTotalPages(res.data.totalPages)
             setTotalItems(res.data.totalElements)
             setElements(res.data.elements)
             setHasResults(true)
+            Object.keys(activeFilters).forEach((key:any) => {
+                activeFilters[key].filter = false
+            })
         }).catch((err) => {
             console.error('Error: ', err)
             setHasResults(true)
         })
+    }
+
+    useEffect(() => {
+        getData()
     }, [props,sortedColumns,page,pageSize])
 
     useEffect(() => {
@@ -319,22 +347,39 @@ export function DataTable<TData, TValue>(props: any) {
         setSortedColumns(newSortedColumns)
     }, [data])
 
-    function generateCsv() {
-
-    }
-
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
     })
 
-    const addToTable = function() {
-        console.log(data)
+    const downloadCSV = function() {
+        let call = apiCalls(type, 'export',null)
+        if(!call) return
+
+        const stringParams = formatParams(true)
+        console.log(stringParams)
+        if(stringParams) call += '?' + stringParams
+
+        api.get(call, 'arraybuffer').then((doc) => {
+            const blob = new Blob([doc], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            const pdfUrl = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = pdfUrl;
+            link.download = type + ".xlsx";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            //window.open(pdfUrl, "_blank");
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
+
     const rowChange = function(event : any,row : any) {
-        console.log('rowChange',row)
         if(!row.getIsSelected()) row.toggleSelected()
     }
 
@@ -378,7 +423,6 @@ export function DataTable<TData, TValue>(props: any) {
 
     const addNew = function() {
         const path = apiCalls(type, 'post', id || null )
-        console.log('path',path)
         if(!path) return
         api.post(path,{}).then((res : any) => {
             if(!res.id) return;
@@ -432,109 +476,155 @@ export function DataTable<TData, TValue>(props: any) {
     return (
         <div className="py-4">
             <div className="flex flex-row justify-between">
-                <div className="flex items-center py-4"></div>
-                {/*!content && (
+                {!content && (
                     <div className="flex items-center py-4">
-                        {filters && filters[type] && (
-                            Object.keys(filters[type]).map((key) => {
-                                var filter = filters[type][key]
+                        <>
+                            {activeFilters && (
+                                Object.keys(activeFilters).map((key:any) => {
+                                    var filter = activeFilters[key]
 
-                                switch (filter.type) {
-                                    case 'string':
-                                        return (
-                                            <Input
-                                                placeholder={filter.label}
-                                                value={filter.value}
-                                                onChange={(event) =>
-                                                    setFilterValue(filter, event.target.value)
-                                                }
-                                                className="max-w-sm"
-                                            />
-                                        )
-                                    case 'integer':
-                                        return (
-                                            <Input
-                                                type={'number'}
-                                                placeholder={filter.label}
-                                                value={filter.value}
-                                                onChange={(event) =>
-                                                    setFilterValue(filter, event.target.value)
-                                                }
-                                                className="max-w-sm"
-                                            />
-                                        )
-                                    case 'select':
-                                        const [selectedValues, setSelectedValues] = React.useState(new Set<string>())
+                                    switch (filter.type) {
+                                        case 'string':
+                                            return (
+                                                <Input
+                                                    placeholder={filter.label}
+                                                    value={filter.value}
+                                                    onChange={(event) => {
+                                                        event.preventDefault()
+                                                        return setFilterValue(filter, event.target.value)
+                                                    }}
+                                                    onKeyDown={(event) => {
+                                                        if(event.key === 'Enter') {
+                                                            getData()
+                                                        }
+                                                    }}
+                                                    className="max-w-sm mr-3"
+                                                />
+                                            )
+                                        case 'integer':
+                                            return (
+                                                <Input
+                                                    type={'number'}
+                                                    placeholder={filter.label}
+                                                    value={filter.value}
+                                                    onChange={(event) =>
+                                                        setFilterValue(filter, event.target.value)
+                                                    }
+                                                    className="max-w-sm mr-3"
+                                                />
+                                            )
+                                        case 'select':
+                                            const [selectedValues, setSelectedValues] = React.useState(new Set<string>())
 
-                                        return (
-                                            <>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="outline">{filter.label}</Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent className="w-56">
-                                                        <DropdownMenuLabel>{filter.label}</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator/>
+                                            return (
+                                                <Select
+                                                    value={filter.value}
+                                                    onValueChange={(value) => {
+                                                        setFilterValue(filter, value)
+                                                    }}
+                                                >
+                                                    <SelectTrigger className="h-8 w-[300px] mr-3">
+                                                        <SelectValue placeholder={filter.label}/>
+                                                    </SelectTrigger>
+                                                    <SelectContent side="top">
                                                         {filter.options.map((option: any) => (
-                                                            <DropdownMenuCheckboxItem
-                                                                checked={selectedValues.has(option.label)}
-                                                                onCheckedChange={(checked) => {
-                                                                    if (checked) selectedValues.add(option.label)
-                                                                    else selectedValues.delete(option.label)
-
-                                                                    setSelectedValues(new Set(selectedValues))
-                                                                    console.log('selectedValues', selectedValues, option)
-                                                                    setFilterValue(filter, selectedValues)
-                                                                }}
-                                                            >
+                                                            <SelectItem key={option.label} value={option.value}>
                                                                 {option.label}
-                                                            </DropdownMenuCheckboxItem>
+                                                            </SelectItem>
                                                         ))}
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                                {Array.from(selectedValues).map((value) => (
-                                                    <span>{value}</span>
-                                                ))}
-                                            </>
-                                        )
-                                }
-                            })
-                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            )
 
-                        {filters && filters[type] && (
-                            <Button
-                                variant="ghost"
-                                onClick={() => {
-                                    setActiveFilters(filters[type])
-                                }}
-                            >
-                                Reset
-                                <X className="ml-2 h-4 w-4"/>
-                            </Button>
-                        )}
+                                            /*return (
+                                                <div className={"max-w-sm  mr-3"}>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="outline">{filter.label}</Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent className="w-56">
+                                                            <DropdownMenuLabel>{filter.label}</DropdownMenuLabel>
+                                                            <DropdownMenuSeparator/>
+                                                            {filter.options.map((option: any) => (
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={selectedValues.has(option.label)}
+                                                                    onCheckedChange={(checked) => {
+                                                                        if (checked) selectedValues.add(option.label)
+                                                                        else selectedValues.delete(option.label)
+
+                                                                        setSelectedValues(new Set(selectedValues))
+                                                                        setFilterValue(filter, selectedValues)
+                                                                    }}
+                                                                >
+                                                                    {option.label}
+                                                                </DropdownMenuCheckboxItem>
+                                                            ))}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                    {Array.from(selectedValues).map((value) => (
+                                                        <span>{value}</span>
+                                                    ))}
+                                                </div>
+                                            )*/
+                                    }
+                                })
+                            )}
+                            {activeFilters && (() => {
+                                const foundKey = Object.keys(activeFilters).find((key: any) => activeFilters[key].filter);
+                                return foundKey ? (
+                                    <Button variant="outline" size="sm" onClick={getData}>
+                                        <Search />
+                                    </Button>
+                                ) : null;
+                            })()}
+                        </>
                     </div>
-                )*/}
+                )}
 
-                {create && (
+                {(create || csvExport) && (
                     <>
                         {type == "invoices" ? (
                             <>
                                 <div className="flex items-center py-4 space-x-2">
-                                    <Button onClick={addNewInvoice('INCOME')} variant="constructive">
-                                        <SquarePlus/> Ingreso
-                                    </Button>
-                                    <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
-                                        <SquarePlus/> Gasto
-                                    </Button>
+                                    {csvExport && (
+                                        <>
+                                            <div className="flex items-center py-4 mr-3">
+                                                <Button variant="outline" size="sm" onClick={downloadCSV}>
+                                                    <MonitorDown/>
+                                                </Button>
+                                            </div>
+                                        </>
+                                    )}
+                                    {create && (
+                                        <>
+                                            <Button onClick={addNewInvoice('INCOME')} variant="constructive">
+                                                <SquarePlus/> Ingreso
+                                            </Button>
+                                            <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
+                                                <SquarePlus/> Gasto
+                                            </Button>
+                                        </>
+                                    )}
                                 </div>
                             </>
                         ) : (
                             <>
                                 {!edit && (
                                     <div className="flex items-center py-4">
-                                        <Button onClick={addNew}>
-                                            <SquarePlus/> Añadir
-                                        </Button>
+                                        {csvExport && (
+                                            <>
+                                                <div className="flex items-center py-4 mr-3">
+                                                    <Button variant="outline" size="sm" onClick={downloadCSV}>
+                                                        <MonitorDown/>
+                                                    </Button>
+                                                </div>
+                                            </>
+                                        )}
+                                        {create && (
+                                            <Button onClick={addNew}>
+                                                <SquarePlus/> Añadir
+                                            </Button>
+                                        )}
                                     </div>
                                 )}
                             </>
@@ -687,7 +777,7 @@ export function DataTable<TData, TValue>(props: any) {
                             }}
                             disabled={page === 1}
                         >
-                            &lt;
+                            <ChevronLeft/>
                         </Button>
                         <Button
                             variant="outline"
@@ -697,7 +787,7 @@ export function DataTable<TData, TValue>(props: any) {
                             }}
                             disabled={page === totalPages}
                         >
-                            &gt;
+                            <ChevronRight />
                         </Button>
                     </div>
                 </div>

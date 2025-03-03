@@ -16,7 +16,7 @@ import {
     User,
     ChevronsUpDown,
     Check,
-    Loader2
+    Loader2, CircleX
 } from "lucide-react";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {invoiceStatusess} from "../../components/table/data";
@@ -284,52 +284,59 @@ export default function Invoice() {
                                     {orders && (
                                         <>
                                             <h3 className="text-sm font-normal text-muted-foreground">Orden</h3>
-                                            <Popover open={ordersOpen} onOpenChange={setOrdersopen}>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        aria-label="Load a preset..."
-                                                        aria-expanded={ordersOpen}
-                                                        className="flex-1 justify-between w-full"
-                                                    >
-                                                        {order ? order.orderNumber : "Ordenes..."}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            <div className={"flex"}>
+                                                <Popover open={ordersOpen} onOpenChange={setOrdersopen}>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            role="combobox"
+                                                            aria-label="Load a preset..."
+                                                            aria-expanded={ordersOpen}
+                                                            className="flex-1 justify-between w-full"
+                                                        >
+                                                            {order ? order.orderNumber : "Ordenes..."}
+                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-[350px] p-0">
+                                                        <Command>
+                                                            <CommandInput placeholder="Buscar orden..."
+                                                              onValueChange={(value) => {
+                                                                  setOrderSearch(value)
+                                                              }}
+                                                            />
+                                                            <CommandEmpty>No presets found.</CommandEmpty>
+                                                            <CommandGroup heading="Ordenes" className={"h-[200px] overflow-y-scroll"}>
+                                                                {orders.map((item: any, index: any) => (
+                                                                    <>
+                                                                        <CommandItem key={item.id}
+                                                                                     onSelect={() => {
+                                                                                         setOrder(item)
+                                                                                         setOrdersopen(false)
+                                                                                     }}
+                                                                        >
+                                                                            {item.orderNumber}
+                                                                            <Check
+                                                                                className={cn(
+                                                                                    "ml-auto h-4 w-4",
+                                                                                    order?.id === item.id
+                                                                                        ? "opacity-100"
+                                                                                        : "opacity-0"
+                                                                                )}
+                                                                            />
+                                                                        </CommandItem>
+                                                                    </>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                                {order && (
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setOrder(undefined)} >
+                                                        <CircleX />
                                                     </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-[350px] p-0">
-                                                    <Command>
-                                                        <CommandInput placeholder="Buscar orden..."
-                                                          onValueChange={(value) => {
-                                                              setOrderSearch(value)
-                                                          }}
-                                                        />
-                                                        <CommandEmpty>No presets found.</CommandEmpty>
-                                                        <CommandGroup heading="Ordenes" className={"h-[200px] overflow-y-scroll"}>
-                                                            {orders.map((item: any, index: any) => (
-                                                                <>
-                                                                    <CommandItem key={item.id}
-                                                                                 onSelect={() => {
-                                                                                     setOrder(item)
-                                                                                     setOrdersopen(false)
-                                                                                 }}
-                                                                    >
-                                                                        {item.orderNumber}
-                                                                        <Check
-                                                                            className={cn(
-                                                                                "ml-auto h-4 w-4",
-                                                                                order?.id === item.id
-                                                                                    ? "opacity-100"
-                                                                                    : "opacity-0"
-                                                                            )}
-                                                                        />
-                                                                    </CommandItem>
-                                                                </>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
+                                                )}
+                                            </div>
                                         </>
                                     )}
 
@@ -348,6 +355,9 @@ export default function Invoice() {
                                                             <SelectValue/>
                                                         </SelectTrigger>
                                                         <SelectContent>
+                                                            <SelectItem value={undefined}>
+                                                                Ninguno
+                                                            </SelectItem>
                                                             <SelectGroup>
                                                                 {customers.map((item: any) => (
                                                                     <SelectItem key={item.id} value={item}>
@@ -420,30 +430,37 @@ export default function Invoice() {
                                         <div className={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
                                                 Vencimiento</h3>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal",
-                                                            !dueDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                        {dueDate ? format(dueDate, "PPP", {locale: es}) :
-                                                            <span>Pick a date</span>}
+                                            <div className={"flex items-center gap-3"}>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full justify-start text-left font-normal",
+                                                                !dueDate && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4"/>
+                                                            {dueDate ? format(dueDate, "PPP", {locale: es}) :
+                                                                <span>Pick a date</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar
+                                                            locale={es}
+                                                            mode="single"
+                                                            selected={dueDate}
+                                                            onSelect={(date) => setDueDate(new Date(format(date, "yyyy-MM-dd")))}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                {dueDate && (
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setDueDate(undefined)} >
+                                                        <CircleX />
                                                     </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar
-                                                        locale={es}
-                                                        mode="single"
-                                                        selected={dueDate}
-                                                        onSelect={(date) => setDueDate(new Date(format(date, "yyyy-MM-dd")))}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Impuestos</h3>
@@ -482,7 +499,9 @@ export default function Invoice() {
                                                         }}
                                                     >
                                                         <SelectTrigger className="w-full text-foreground">
-                                                            <SelectValue/>
+                                                            <span className="">
+                                                                Dirección
+                                                            </span>
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             <SelectGroup>

@@ -17,7 +17,7 @@ export default function Orders() {
 
     return (
         <>
-            <DataTable type={"orders"} create={false}/>
+            <DataTable type={"orders"} create={false} csvExport={true}/>
         </>
     )
 }

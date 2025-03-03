@@ -122,7 +122,7 @@ export const columnsFormat: any[] = [
     },
     {
         accessorKey: "orderNumber",
-        header: "Número de Pedido",
+        header: "Número de Orden",
         cell: ({ row } : any) => {
             return <div className="text-left font-medium">{row.getValue("orderNumber")}</div>
         },

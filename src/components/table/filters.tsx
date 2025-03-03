@@ -1,25 +1,66 @@
 
 export const filters : any = {
     projects : {
-        name: {
-            accessorKey: 'name',
+        projectNumber: {
+            accessorKey: 'projectNumber',
             type: 'string',
-            label: 'Nombre',
+            label: 'Número de Proyecto',
         },
-        orderNumber: {
-            accessorKey: 'orderNumber',
-            type: 'integer',
-            label: 'Número de Pedido',
-        },
-        status: {
-            accessorKey: 'status',
+        projectStatus : {
+            accessorKey: 'projectStatus',
             type: 'select',
             label: 'Estado',
             options: [
-                {label: 'Pending', value: 'pending'},
-                {label: 'In Progress', value: 'in_progress'},
-                {label: 'Completed', value: 'completed'},
+                {label: 'Creado', value: 'CREATED'},
+                {label: 'En Progreso', value: 'IN_PROGRESS'},
+                {label: 'Completado', value: 'COMPLETED'},
             ],
         }
     },
+    orders : {
+        orderNumber: {
+            accessorKey: 'orderNumber',
+            type: 'string',
+            label: 'Número de Orden',
+        },
+        orderStatus : {
+            accessorKey: 'orderStatus',
+            type: 'select',
+            label: 'Estado',
+            options: [
+                {label: 'Creado', value: 'CREATED'},
+                {label: 'Confirmado', value: 'CONFIRMED'},
+                {label: 'En Progreso', value: 'IN_PROGRESS'},
+                {label: 'Enviado', value: 'SENT'},
+                {label: 'Entregado', value: 'DELIVERED'},
+                {label: 'Cancelado', value: 'CANCELLED'},
+                {label: 'Devuelto', value: 'RETURNED'},
+            ],
+        }
+    },
+    invoices : {
+        invoiceNumber: {
+            accessorKey: 'invoiceNumber',
+            type: 'string',
+            label: 'Número de Factura',
+        },
+        orderNumber: {
+            accessorKey: 'orderNumber',
+            type: 'string',
+            label: 'Número de Orden',
+        },
+        invoiceStatus : {
+            accessorKey: 'invoiceStatus',
+            type: 'select',
+            label: 'Estado',
+            options: [
+                {label: 'Pendiente', value: 'PENDING'},
+                {label: 'Parcialmente pagado', value: 'PARTIALLY_PAID'},
+                {label: 'Pagado', value: 'PAID'},
+                {label: 'Vencido', value: 'DUE'},
+                {label: 'Reembolsado', value: 'REFUNDED'},
+                {label: 'Cancelado', value: 'CANCELLED'},
+            ],
+        }
+    }
 }

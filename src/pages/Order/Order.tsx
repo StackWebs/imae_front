@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import api from "../../utils/Api";
 import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
@@ -16,7 +16,7 @@ import {
     PopoverTrigger,
 } from "../../ui/popover"
 import {cn} from "../../lib/utils";
-import {CalendarIcon, DownloadIcon, Loader2, Link2 } from "lucide-react";
+import {CalendarIcon, DownloadIcon, Loader2, Link2, CircleX, Pencil} from "lucide-react";
 import { format } from "date-fns"
 import {es} from "date-fns/locale/es";
 import {Textarea} from "../../ui/textarea";
@@ -377,6 +377,9 @@ export default function Order() {
                                                         <SelectValue/>
                                                     </SelectTrigger>
                                                     <SelectContent>
+                                                        <SelectItem value={undefined}>
+                                                            Ninguno
+                                                        </SelectItem>
                                                         <SelectGroup>
                                                             {hauliers.map((item:any) => (
                                                                 <SelectItem key={item.id} value={item}>
@@ -452,6 +455,11 @@ export default function Order() {
                                                 />
                                             </PopoverContent>
                                         </Popover>
+                                        {sentDate && (
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setSentDate(undefined)} >
+                                                <CircleX />
+                                            </Button>
+                                        )}
                                     </div>
                                     <h3 className="text-sm font-normal text-muted-foreground pt-3">Fecha estimada de entrega</h3>
                                     <div className={"flex items-center gap-3"}>
@@ -479,6 +487,11 @@ export default function Order() {
                                                 />
                                             </PopoverContent>
                                         </Popover>
+                                        {estimatedDeliveryDate && (
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setEstimatedDeliveryDate(undefined)} >
+                                                <CircleX />
+                                            </Button>
+                                        )}
                                     </div>
                                     <h3 className="text-sm font-normal text-muted-foreground pt-3">Fecha de entrega</h3>
                                     <div className={"flex items-center gap-3"}>
@@ -506,6 +519,11 @@ export default function Order() {
                                                 />
                                             </PopoverContent>
                                         </Popover>
+                                        {deliveryDate && (
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setDeliveryDate(undefined)} >
+                                                <CircleX />
+                                            </Button>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
