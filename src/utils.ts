@@ -8,6 +8,7 @@ import {
     type ConfirmSignUpCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import config from "../config-cognito.json";
+import { jwtDecode } from 'jwt-decode';
 
 export const cognitoClient = new CognitoIdentityProviderClient({
     region: config.region,
@@ -28,12 +29,12 @@ export const signIn = async (username: string, password: string) => {
         const command = new InitiateAuthCommand(params);
         const { AuthenticationResult } = await cognitoClient.send(command);
         if (AuthenticationResult) {
-            sessionStorage.setItem("idToken", AuthenticationResult.IdToken || "");
-            sessionStorage.setItem(
+            localStorage.setItem("idToken", AuthenticationResult.IdToken || "");
+            localStorage.setItem(
                 "accessToken",
                 AuthenticationResult.AccessToken || "",
             );
-            sessionStorage.setItem(
+            localStorage.setItem(
                 "refreshToken",
                 AuthenticationResult.RefreshToken || "",
             );
@@ -41,6 +42,38 @@ export const signIn = async (username: string, password: string) => {
         }
     } catch (error) {
         console.error("Error signing in: ", error);
+        throw error;
+    }
+};
+
+export const refreshTokenAuth = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    const idToken = localStorage.getItem("idToken");
+    if (!refreshToken) {
+        throw new Error("No refresh token found. User must sign in again.");
+    }
+
+    const username = getUsernameFromIdToken(idToken || "");
+    const secretHash = await generateSecretHash(username, config.clientId, config.clientSecret);
+    const params: InitiateAuthCommandInput = {
+        AuthFlow: "REFRESH_TOKEN_AUTH",
+        ClientId: config.clientId,
+        AuthParameters: {
+            REFRESH_TOKEN: refreshToken,
+            SECRET_HASH: secretHash
+        },
+    };
+
+    try {
+        const command = new InitiateAuthCommand(params);
+        const { AuthenticationResult } = await cognitoClient.send(command);
+        if (AuthenticationResult) {
+            localStorage.setItem("idToken", AuthenticationResult.IdToken || "");
+            localStorage.setItem("accessToken", AuthenticationResult.AccessToken || "");
+            return AuthenticationResult;
+        }
+    } catch (error) {
+        console.error("Error refreshing token: ", error);
         throw error;
     }
 };
@@ -99,3 +132,13 @@ async function generateSecretHash(username: string, clientId: string, clientSecr
 
     return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }
+
+export const getUsernameFromIdToken = (idToken: string) => {
+    try {
+        const decoded: any = jwtDecode(idToken);
+        return decoded?.["cognito:username"] || null;
+    } catch (error) {
+        console.error("Error decoding ID Token:", error);
+        return null;
+    }
+};
