@@ -27,25 +27,28 @@ import { Toaster } from "./ui/toaster"
 import Providers from "./pages/Providers/Providers";
 import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
-import { Amplify } from 'aws-amplify';
-import { awsConfig } from "../aws-exports";
 import Invoice from "./pages/Invoice/Invoice";
 import { setTokens } from "./utils/Api"
+import { signIn} from "./utils";
 
-Amplify.configure(awsConfig)
 
+//export async function setUser(): Promise<void> {
+    //return setTokens(true)
+//}
 
-export async function setUser(): Promise<void> {
-    return setTokens(true)
+export async function login(username: string, password: string): Promise<any> {
+
+    username = 'gerard.rovellat'
+    password = 'IMAELogistics1!'
+    return signIn(username, password)
 }
-
 
 export default function App() {
 
     const [userSet, setUserSet] = React.useState(null)
 
     useEffect(() => {
-        setUser().then(() => {
+        login('gerard.rovellat','IMAELogistics1!').then(() => {
             setUserSet(true)
         })
     }, [])
