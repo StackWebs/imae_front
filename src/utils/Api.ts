@@ -71,7 +71,7 @@ async function send(method: any, relativePath: string, requestBody: any, respons
 
     options.headers = {
         ...options.headers,
-        'Authorization': 'Bearer ' + localStorage.getItem('AccessToken'),
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
         'responseType': responseType,
         'Content-Type': responseType === 'arraybuffer' ? 'application/pdf' : 'application/json'
     }
