@@ -58,7 +58,7 @@ const config: ForgeConfig = {
           name: 'imae_front'
         },
         authToken: process.env.GITHUB_TOKEN,
-        prerelease: true,
+        prerelease: false,
         draft: false,
       }
     }

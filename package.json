@@ -1,14 +1,14 @@
 {
   "name": "imae",
   "productName": "imae",
-  "version": "0.0.5",
+  "version": "0.0.1",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "set GITHUB_TOKEN=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 && electron-forge publish",
+    "publish": "set GITHUB_TOKEN=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 && electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
     "reinstall": "rm -rf node_modules && npm install",
     "stable": "rm -rf node_modules && npm ci"
