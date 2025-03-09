@@ -32,8 +32,8 @@ export default function Project() {
         api.get('/projects/' + projectId).then((res) => {
             setProjectStatus(res.projectStatus)
             setProjectNumber(res.projectNumber)
-            setCreationDate(new Date(res.creationDate))
-            setEndDate(new Date(res.endDate))
+            setCreationDate(res.creationDate ? new Date(res.creationDate) : null)
+            setEndDate(res.endDate ? new Date(res.endDate) : null)
         }).catch((err) => {})
     }, []);
 
@@ -41,22 +41,24 @@ export default function Project() {
         event.preventDefault()
 
         const body = {
-            projectStatus: projectStatus,
-            endDate: endDate,
+            projectStatus: projectStatus || null,
+            endDate: endDate || null,
         }
 
         api.put('/projects/' + projectId, body).then((res) => {
             console.log(res)
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
         }).catch((err) => {
             console.log(err)
         })

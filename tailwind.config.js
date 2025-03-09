@@ -16,6 +16,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        imae_background: "#a49a87",
+
         bar_backlog: "#e2e5ec",
         bar_todo: "#fa065e",
         bar_project_inprogress: "#20b8f7",

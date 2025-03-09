@@ -74,28 +74,28 @@ export default function Invoice() {
 
     useEffect(() => {
         api.get('/invoices/' + invoiceId).then((res) => {
-            setInvoiceType(res.invoiceType)
-            setInvoiceNumber(res.invoiceNumber)
-            setStatus(res.invoiceStatus)
-            setOrder(res.order)
-            setEmissionDate(res.emissionDate)
-            setDueDate(res.dueDate)
+            setInvoiceType(res.invoiceType || null)
+            setInvoiceNumber(res.invoiceNumber || null)
+            setStatus(res.invoiceStatus || null)
+            setOrder(res.order || null)
+            setEmissionDate(res.emissionDate || null)
+            setDueDate(res.dueDate || null)
             setTaxes(res.taxes * 100)
-            setItems(res.items)
+            setItems(res.items || null)
 
-            setAddressCity(res.address.city)
-            setAddressContactName(res.address.contactName)
-            setAddressPhone(res.address.phone)
-            setAddressProvince(res.address.province)
-            setAddressStreet(res.address.street)
-            setAddressPostalCode(res.address.postalCode)
-            setAddressCountry(res.address.country)
+            setAddressCity(res.address.city || null)
+            setAddressContactName(res.address.contactName || null)
+            setAddressPhone(res.address.phone || null)
+            setAddressProvince(res.address.province || null)
+            setAddressStreet(res.address.street || null)
+            setAddressPostalCode(res.address.postalCode || null)
+            setAddressCountry(res.address.country || null)
 
             if(res.invoiceType === 'INCOME') {
-                setCustomer(res.customer)
+                setCustomer(res.customer || null)
             }
             if(res.invoiceType === 'EXPENSE') {
-                setProvider(res.provider)
+                setProvider(res.provider || null)
             }
 
         }).catch((err) => {
@@ -105,7 +105,7 @@ export default function Invoice() {
 
 
     useEffect(() => {
-        api.get('/orders?hasInvoice=false').then((res) => {
+        api.get('/orders?hasInvoice=false&page=1&size=999').then((res) => {
             setOrders(res.content)
         }).catch((err) => {
             console.log(err)
@@ -125,14 +125,14 @@ export default function Invoice() {
 
     useEffect(() => {
         if(invoiceType === 'INCOME') {
-            api.get('/customers').then((res) => {
+            api.get('/customers?page=1&size=999').then((res) => {
                 setCustomers(res.content)
             }).catch((err) => {
                 console.log(err)
             })
         }
         if(invoiceType === 'EXPENSE') {
-            api.get('/providers').then((res) => {
+            api.get('/providers?page=1&size=999').then((res) => {
                 setProviders(res.content)
             }).catch((err) => {
                 console.log(err)
@@ -184,17 +184,18 @@ export default function Invoice() {
         }
 
         api.put('/invoices/' + invoiceId, body).then((res) => {
-            console.log(res)
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -466,7 +467,7 @@ export default function Invoice() {
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Impuestos</h3>
                                             <Input
                                                 id="taxes"
-                                                placeholder="taxes"
+                                                placeholder="Impuestos"
                                                 value={taxes}
                                                 type="number"
                                                 onChange={(e) => setTaxes(parseFloat(e.target.value))}
@@ -527,7 +528,7 @@ export default function Invoice() {
                                                     contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Nombre de contacto"
                                                     value={addressContactName}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -541,7 +542,7 @@ export default function Invoice() {
                                                     de contacto</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Teléfono de contacto"
                                                     value={addressPhone}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -556,7 +557,7 @@ export default function Invoice() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Dirección</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Dirección"
                                                     value={addressStreet}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -570,7 +571,7 @@ export default function Invoice() {
                                                     Postal</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Código Postal"
                                                     value={addressPostalCode}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -585,7 +586,7 @@ export default function Invoice() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Ciudad</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Ciudad"
                                                     value={addressCity}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -598,7 +599,7 @@ export default function Invoice() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Provincia</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="Provincia"
                                                     value={addressProvince}
                                                     type="text"
                                                     autoCapitalize="none"
@@ -611,7 +612,7 @@ export default function Invoice() {
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">País</h3>
                                                 <Input
                                                     id="name"
-                                                    placeholder="nombre"
+                                                    placeholder="País"
                                                     value={addressCountry}
                                                     type="text"
                                                     autoCapitalize="none"

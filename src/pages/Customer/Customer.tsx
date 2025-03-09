@@ -40,24 +40,25 @@ export default function Customer() {
         event.preventDefault()
 
         api.put('/customers/' + customerId, {
-            name: name,
-            nif: nif,
-            email: email,
-            iban: iban
+            name: name || null,
+            nif: nif || null,
+            email: email || null,
+            iban: iban || null
         }).then((res) => {
-            console.log(res)
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
         }).catch((err) => {
-            console.log(err)
+            console.log('customer error',err)
         })
     }
 
@@ -83,43 +84,58 @@ export default function Customer() {
                         </CardHeader>
                         <CardContent>
                             <div className={"flex items-center gap-3"}>
-                            <Input
-                                    id="name"
-                                    placeholder="nombre"
-                                    value={name}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="name"
-                                    autoCorrect="off"
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                                <Input
-                                    id="nif"
-                                    placeholder="nif"
-                                    value={nif}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="nif"
-                                    autoCorrect="off"
-                                    onChange={(e) => setNif(e.target.value)}/>
-                                <Input
-                                    id="email"
-                                    placeholder="email"
-                                    value={email}
-                                    type="email"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setEmail(e.target.value)}/>
-                                <Input
-                                    id="iban"
-                                    placeholder="iban"
-                                    value={iban}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="iban"
-                                    autoCorrect="off"
-                                    onChange={(e) => setIban(e.target.value)}/>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre</h3>
+                                    <Input
+                                        id="name"
+                                        placeholder="Nombre"
+                                        value={name}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="name"
+                                        autoCorrect="off"
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">NIF</h3>
+                                    <Input
+                                        id="nif"
+                                        placeholder="NIF"
+                                        value={nif}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="nif"
+                                        autoCorrect="off"
+                                        onChange={(e) => setNif(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Correo electrónico</h3>
+                                    <Input
+                                        id="email"
+                                        placeholder="Correo electrónico"
+                                        value={email}
+                                        type="email"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">IBAN</h3>
+                                    <Input
+                                        id="iban"
+                                        placeholder="IBAN"
+                                        value={iban}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="iban"
+                                        autoCorrect="off"
+                                        onChange={(e) => setIban(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

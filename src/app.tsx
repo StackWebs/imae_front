@@ -21,33 +21,20 @@ import Customer from "./pages/Customer/Customer";
 import Customers from "./pages/Cutomers/Customers";
 import Order from "./pages/Order/Order";
 import Address from "./pages/Address/Address";
-import {toast, ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Toaster } from "./ui/toaster"
 import Providers from "./pages/Providers/Providers";
 import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
-import { Amplify } from 'aws-amplify';
-import { awsConfig } from "../aws-exports";
 import Invoice from "./pages/Invoice/Invoice";
-import { setTokens } from "./utils/Api"
-
-Amplify.configure(awsConfig)
-
-
-export async function setUser(): Promise<void> {
-    return setTokens(true)
-}
-
+import { signIn } from "./utils/Cognito";
 
 export default function App() {
 
     const [userSet, setUserSet] = React.useState(null)
 
     useEffect(() => {
-        setUser().then(() => {
-            setUserSet(true)
-        })
+        signIn('gerard.rovellat','IMAELogistics1!').then(() => setUserSet(true))
     }, [])
 
     if(userSet) return (

@@ -15,7 +15,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="country"
-                    placeholder="country"
+                    placeholder="País"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -33,7 +33,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="postalCode"
-                    placeholder="postalCode"
+                    placeholder="Codigo postal"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -51,7 +51,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="street"
-                    placeholder="street"
+                    placeholder="Calle"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -69,7 +69,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="province"
-                    placeholder="province"
+                    placeholder="Provincia"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -87,7 +87,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="phone"
-                    placeholder="phone"
+                    placeholder="Teléfono"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -105,7 +105,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="name"
-                    placeholder="name"
+                    placeholder="Nombre"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -123,7 +123,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="city"
-                    placeholder="city"
+                    placeholder="Ciudad"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -170,7 +170,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="projectNumber"
-                    placeholder="projectNumber"
+                    placeholder="Numero de Proyecto"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -189,7 +189,7 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="description"
-                    placeholder="description"
+                    placeholder="Descripción"
                     value={test}
                     type="text"
                     autoCapitalize="none"
@@ -207,12 +207,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="height"
-                    placeholder="height"
+                    placeholder="Altura"
                     value={test}
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },
@@ -225,12 +225,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="width"
-                    placeholder="width"
+                    placeholder="Ancho"
                     value={test}
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },
@@ -243,12 +243,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="package_length"
-                    placeholder="length"
+                    placeholder="Longitud"
                     value={test}
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },
@@ -261,12 +261,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="weight"
-                    placeholder="weight"
+                    placeholder="Peso"
                     value={test}
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },
@@ -279,12 +279,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="units"
-                    placeholder="units"
+                    placeholder="Unidades"
                     value={test}
                     type="text"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },
@@ -297,12 +297,12 @@ export const editColumnsFormat: any[] = [
             return <div className="text-left font-medium">
                 <Input
                     id="unitPrice"
-                    placeholder="unitPrice"
+                    placeholder="Precio unitario"
                     value={test}
                     type="text"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    onChange={(e) => setTest(e.target.value || 0)}/>
             </div>
         },
     },

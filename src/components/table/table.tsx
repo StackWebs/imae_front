@@ -71,7 +71,7 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
                 get: '/invoices',
                 delete: '/invoices',
                 post: '/invoices',
-                export: '/invoices',
+                export: '/invoices/export',
             }
         }
         return data[dataType][call] || null;
@@ -404,16 +404,18 @@ export function DataTable<TData, TValue>(props: any) {
             })
             setData(updatedData)
 
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
 
             row.toggleSelected()
         }).catch((err) => {

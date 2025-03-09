@@ -51,22 +51,23 @@ export default function Haulier() {
         event.preventDefault()
 
         api.put('/hauliers/' + haulierId, {
-            name: name,
+            companyName: companyName,
             nif: nif,
             email: email,
             iban: iban
         }).then((res) => {
-            console.log(res)
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -93,43 +94,58 @@ export default function Haulier() {
                         </CardHeader>
                         <CardContent>
                             <div className={"flex items-center gap-3"}>
-                                <Input
-                                    id="name"
-                                    placeholder="nombre"
-                                    value={companyName}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="name"
-                                    autoCorrect="off"
-                                    onChange={(e) => setCompanyName(e.target.value)}
-                                />
-                                <Input
-                                    id="nif"
-                                    placeholder="nif"
-                                    value={nif}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="nif"
-                                    autoCorrect="off"
-                                    onChange={(e) => setNif(e.target.value)}/>
-                                <Input
-                                    id="iban"
-                                    placeholder="iban"
-                                    value={iban}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="iban"
-                                    autoCorrect="off"
-                                    onChange={(e) => setIban(e.target.value)}/>
-                                <Input
-                                    id="email"
-                                    placeholder="email"
-                                    value={email}
-                                    type="email"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setEmail(e.target.value)}/>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre</h3>
+                                    <Input
+                                        id="name"
+                                        placeholder="Nombre"
+                                        value={companyName}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="name"
+                                        autoCorrect="off"
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Nif</h3>
+                                    <Input
+                                        id="nif"
+                                        placeholder="NIF"
+                                        value={nif}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="nif"
+                                        autoCorrect="off"
+                                        onChange={(e) => setNif(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">IBAN</h3>
+                                    <Input
+                                        id="iban"
+                                        placeholder="IBAN"
+                                        value={iban}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="iban"
+                                        autoCorrect="off"
+                                        onChange={(e) => setIban(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Correo electrónico</h3>
+                                    <Input
+                                        id="email"
+                                        placeholder="Correo electrónico"
+                                        value={email}
+                                        type="email"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -141,70 +157,97 @@ export default function Haulier() {
                         </CardHeader>
                         <CardContent>
                             <div className={"flex items-center gap-3"}>
-                                <Input
-                                    id="addressCity"
-                                    placeholder="addressCity"
-                                    value={addressCity}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="name"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressCity(e.target.value)}
-                                />
-                                <Input
-                                    id="addressContactName"
-                                    placeholder="addressContactName"
-                                    value={addressContactName}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="nif"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressContactName(e.target.value)}/>
-                                <Input
-                                    id="addressPhone"
-                                    placeholder="addressPhone"
-                                    value={addressPhone}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="iban"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressPhone(e.target.value)}/>
-                                <Input
-                                    id="addressProvince"
-                                    placeholder="addressProvince"
-                                    value={addressProvince}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressProvince(e.target.value)}/>
-                                <Input
-                                    id="addressStreet"
-                                    placeholder="addressStreet"
-                                    value={addressStreet}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressStreet(e.target.value)}/>
-                                <Input
-                                    id="addressPostalCode"
-                                    placeholder="addressPostalCode"
-                                    value={addressPostalCode}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressPostalCode(e.target.value)}/>
-                                <Input
-                                    id="addressCountry"
-                                    placeholder="addressCountry"
-                                    value={addressCountry}
-                                    type="text"
-                                    autoCapitalize="none"
-                                    autoComplete="email"
-                                    autoCorrect="off"
-                                    onChange={(e) => setAddressCountry(e.target.value)}/>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Nombre de contacto</h3>
+                                    <Input
+                                        id="addressContactName"
+                                        placeholder="Nombre de contacto"
+                                        value={addressContactName}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="nif"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressContactName(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Calle</h3>
+                                    <Input
+                                        id="addressStreet"
+                                        placeholder="Calle"
+                                        value={addressStreet}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressStreet(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Codigo postal</h3>
+                                    <Input
+                                        id="addressPostalCode"
+                                        placeholder="Codigo postal"
+                                        value={addressPostalCode}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressPostalCode(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Ciudad</h3>
+                                    <Input
+                                        id="addressCity"
+                                        placeholder="Ciudad"
+                                        value={addressCity}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="name"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressCity(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Provincia</h3>
+                                    <Input
+                                        id="addressProvince"
+                                        placeholder="Provincia"
+                                        value={addressProvince}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressProvince(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Pais</h3>
+                                    <Input
+                                        id="addressCountry"
+                                        placeholder="País"
+                                        value={addressCountry}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="email"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressCountry(e.target.value)}
+                                    />
+                                </div>
+                                <div className={"w-full col-span-2"}>
+                                    <h3 className="text-sm font-normal text-muted-foreground px-1">Telefono</h3>
+                                    <Input
+                                        id="addressPhone"
+                                        placeholder="Teléfono"
+                                        value={addressPhone}
+                                        type="text"
+                                        autoCapitalize="none"
+                                        autoComplete="iban"
+                                        autoCorrect="off"
+                                        onChange={(e) => setAddressPhone(e.target.value)}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

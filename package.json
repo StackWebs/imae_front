@@ -1,7 +1,7 @@
 {
   "name": "imae",
   "productName": "imae",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
@@ -52,7 +52,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@aws-amplify/auth": "^6.11.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.760.0",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -84,7 +84,6 @@
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@tanstack/react-table": "^8.20.5",
-    "aws-amplify": "^6.13.0",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "cmdk": "^0.1.22",
@@ -92,6 +91,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "embla-carousel-react": "^8.5.1",
     "input-otp": "^1.4.1",
+    "jwt-decode": "^4.0.0",
     "lodash.template": "^4.5.0",
     "lucide-react": "^0.454.0",
     "next-themes": "^0.4.4",

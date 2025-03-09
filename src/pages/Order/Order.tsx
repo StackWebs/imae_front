@@ -90,58 +90,58 @@ export default function Order() {
     // Fetch data
     useEffect(() => {
         api.get('/orders/' + orderId).then((res) => {
-            setCreationDate(res.creationDate)
+            setCreationDate(res.creationDate || null)
 
 
             /******** TOP ********/
-            setStatus(res.orderStatus)
-            setOrderNumber(res.orderNumber)
-            setSentDate(new Date(res.sentDate))
-            setCustomerReference(res.customerReference)
-            setProjectNumber(res.project?.projectNumber)
+            setStatus(res.orderStatus || null)
+            setOrderNumber(res.orderNumber || null)
+            setSentDate(res.sentDate ? new Date(res.sentDate) : null)
+            setCustomerReference(res.customerReference || null)
+            setProjectNumber(res.project?.projectNumber || null)
 
             /******** Lateral 1 ********/
             //Customer
-            setCustomer(res.customer )
+            setCustomer(res.customer || null)
             //Haulier
-            setHaulier(res.haulier)
-            setInvoice(res.invoice)
+            setHaulier(res.haulier || null)
+            setInvoice(res.invoice || null)
 
             /******** Lateral 2 ********/
             // Fechas
-            setEstimatedDeliveryDate(new Date(res.estimatedDeliveryDate))
-            setDeliveryDate(new Date(res.deliveryDate))
+            setEstimatedDeliveryDate(res.estimatedDeliveryDate ? new Date(res.estimatedDeliveryDate) : null)
+            setDeliveryDate(res.deliveryDate ? new Date(res.deliveryDate) : null)
 
             /******** Central 1 ********/
             // Direccion de recogida
-            setSenderCity(res.sender?.city)
-            setSenderContactName(res.sender?.contactName)
-            setSenderPhone(res.sender?.phone)
-            setSenderProvince(res.sender?.province)
-            setSenderStreet(res.sender?.street)
-            setSenderPostalCode(res.sender?.postalCode)
-            setSenderCountry(res.sender?.country)
+            setSenderCity(res.sender?.city || null)
+            setSenderContactName(res.sender?.contactName || null)
+            setSenderPhone(res.sender?.phone || null)
+            setSenderProvince(res.sender?.province || null)
+            setSenderStreet(res.sender?.street || null)
+            setSenderPostalCode(res.sender?.postalCode || null)
+            setSenderCountry(res.sender?.country || null)
 
             /******** Central 2 ********/
             // Direccion de entrega
-            setReceiverCity(res.receiver?.city)
-            setReceiverContactName(res.receiver?.contactName)
-            setReceiverPhone(res.receiver?.phone)
-            setReceiverProvince(res.receiver?.province)
-            setReceiverStreet(res.receiver?.street)
-            setReceiverPostalCode(res.receiver?.postalCode)
-            setReceiverCountry(res.receiver?.country)
+            setReceiverCity(res.receiver?.city || null)
+            setReceiverContactName(res.receiver?.contactName || null)
+            setReceiverPhone(res.receiver?.phone || null)
+            setReceiverProvince(res.receiver?.province || null)
+            setReceiverStreet(res.receiver?.street || null)
+            setReceiverPostalCode(res.receiver?.postalCode || null)
+            setReceiverCountry(res.receiver?.country || null)
 
             /******** Central 3 ********/
             // Paquetes
-            setPackages(res.packages)
+            setPackages(res.packages || null)
 
             /******** Central 4 ********/
             // Notas ( deliveryNotes, internalNotes)
-            setDeliveryNotes(res.deliveryNotes)
-            setPickupNotes(res.pickupNotes)
-            setInternalNotes(res.internalNotes)
-            setConditions(res.conditions)
+            setDeliveryNotes(res.deliveryNotes || null)
+            setPickupNotes(res.pickupNotes || null)
+            setInternalNotes(res.internalNotes || null)
+            setConditions(res.conditions || null)
 
             console.log(res)
         }).catch((err) => {})
@@ -149,12 +149,12 @@ export default function Order() {
 
     // Fetch customers && hauliers
     useEffect(() => {
-        api.get('/customers').then((res) => {
+        api.get('/customers?page=1&size=999').then((res) => {
             setCustomers(res.content)
         }).catch((err) => {
 
         })
-        api.get('/hauliers').then((res) => {
+        api.get('/hauliers?page=1&size=999').then((res) => {
             setHauliers(res.content)
         }).catch((err) => {
 
@@ -198,51 +198,52 @@ export default function Order() {
         event.preventDefault()
 
         var body = {
-            "creationDate": creationDate,
-            "orderStatus": status,
-            "sentDate": sentDate,
-            "estimatedDeliveryDate": estimatedDeliveryDate,
-            "deliveryDate": deliveryDate,
+            "creationDate": creationDate || null,
+            "orderStatus": status || null,
+            "sentDate": sentDate || null,
+            "estimatedDeliveryDate": estimatedDeliveryDate || null,
+            "deliveryDate": deliveryDate || null,
             "sender": {
-                "contactName": senderContactName,
-                "city": senderCity,
-                "phone": senderPhone,
-                "street": senderStreet,
-                "province": senderProvince,
-                "postalCode": senderPostalCode,
-                "country": senderCountry
+                "contactName": senderContactName || null,
+                "city": senderCity || null,
+                "phone": senderPhone || null,
+                "street": senderStreet || null,
+                "province": senderProvince || null,
+                "postalCode": senderPostalCode || null,
+                "country": senderCountry || null
             },
             "receiver": {
-                "contactName": receiverContactName,
-                "city": receiverCity,
-                "phone": receiverPhone,
-                "street": receiverStreet,
-                "province": receiverProvince,
-                "postalCode": receiverPostalCode,
-                "country": receiverCountry
+                "contactName": receiverContactName || null,
+                "city": receiverCity || null,
+                "phone": receiverPhone || null,
+                "street": receiverStreet || null,
+                "province": receiverProvince || null,
+                "postalCode": receiverPostalCode || null,
+                "country": receiverCountry || null
             },
-            "haulierId": haulier?.id,
-            "customerId": customer?.id,
+            "haulierId": haulier?.id || null,
+            "customerId": customer?.id || null,
             //"deliveryNoteId": 0,
-            "customerReference": customerReference,
-            "deliveryNotes": deliveryNotes,
-            "pickupNotes": pickupNotes,
-            "internalNotes": internalNotes,
-            "conditions": conditions,
+            "customerReference": customerReference || null,
+            "deliveryNotes": deliveryNotes || null,
+            "pickupNotes": pickupNotes || null,
+            "internalNotes": internalNotes || null,
+            "conditions": conditions || null,
         }
 
         api.put('/orders/' + orderId, body).then((res) => {
-            console.log(res)
-            toast.success('Guardado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
+            if(!!res) {
+                toast.success('Guardado correctamente', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                })
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -827,7 +828,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas de entrega</h3>
                                                 <Textarea
                                                     value={deliveryNotes}
-                                                    placeholder="Type your message here."
+                                                    placeholder="Notas de entrega"
                                                     onChange={(e) => setDeliveryNotes(e.target.value)}
                                                     rows={4} cols={50} maxLength={200}
                                                 />
@@ -836,7 +837,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas de recogida</h3>
                                                 <Textarea
                                                     value={pickupNotes}
-                                                    placeholder="Type your message here."
+                                                    placeholder="Notas de recogida"
                                                     onChange={(e) => setPickupNotes(e.target.value)}
                                                     rows={4} cols={50} maxLength={200}
                                                 />
@@ -847,7 +848,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground">Notas internas</h3>
                                                 <Textarea
                                                     value={internalNotes}
-                                                    placeholder="Type your message here."
+                                                    placeholder="Notas internas"
                                                     onChange={(e) => setInternalNotes(e.target.value)}
                                                     rows={4} cols={50} maxLength={200}
                                                 />
@@ -856,7 +857,7 @@ export default function Order() {
                                                 <h3 className="text-sm font-normal text-muted-foreground">Condiciones</h3>
                                                 <Textarea
                                                     value={conditions}
-                                                    placeholder="Type your message here."
+                                                    placeholder="Condiciones"
                                                     onChange={(e) => setConditions(e.target.value)}
                                                     rows={4} cols={50} maxLength={200}
                                                 />

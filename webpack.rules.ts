@@ -34,5 +34,9 @@ export const rules: Required<ModuleOptions>['rules'] = [
     test: /\.css$/,
     include: [path.resolve(__dirname, 'app/src')],
     use: ['style-loader', 'css-loader','postcss-loader'],
-  }
+  },
+  {
+    test: /\.(png|jpg|jpeg|gif|svg)$/i,
+    type: "asset/resource",
+  },
 ];
