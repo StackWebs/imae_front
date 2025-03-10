@@ -212,7 +212,7 @@ export const editColumnsFormat: any[] = [
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },
@@ -230,7 +230,7 @@ export const editColumnsFormat: any[] = [
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },
@@ -248,7 +248,7 @@ export const editColumnsFormat: any[] = [
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },
@@ -266,7 +266,7 @@ export const editColumnsFormat: any[] = [
                     type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },
@@ -281,10 +281,10 @@ export const editColumnsFormat: any[] = [
                     id="units"
                     placeholder="Unidades"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },
@@ -299,10 +299,10 @@ export const editColumnsFormat: any[] = [
                     id="unitPrice"
                     placeholder="Precio unitario"
                     value={test}
-                    type="text"
+                    type="number"
                     autoCapitalize="none"
                     form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value || 0)}/>
+                    onChange={(e) => setTest(e.target.value)}/>
             </div>
         },
     },

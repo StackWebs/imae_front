@@ -121,6 +121,7 @@ function apiCalls(dataType : string, call: string, id: string, parentId: string 
         },
         invoices: {
             navigate: '/invoice/' + id,
+            delete: '/invoices/' + id
         },
         items: {
             post: '/invoices/' + id + '/items',
@@ -389,6 +390,7 @@ export function DataTable<TData, TValue>(props: any) {
         var formData : any = {}
         for (var i = 0; i < event.target.length; i++) {
             if(event.target[i].type === 'submit') continue
+            if(event.target[i].type === 'number' && !event.target[i].value) event.target[i].value = 0
             formData[event.target[i].id === 'package_length' ? 'length' : event.target[i].id] = event.target[i].value
         }
         const formId = event.target.getAttribute('element-id')

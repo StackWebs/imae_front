@@ -88,7 +88,7 @@ export default function Project() {
                                         >
                                             <CalendarIcon className="mr-2 h-4 w-4"/>
                                             {endDate ? format(endDate, "PPP", {locale: es}) :
-                                                <span>Pick a date</span>}
+                                                <span>Seleccionar fecha</span>}
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0">

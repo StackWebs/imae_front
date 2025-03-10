@@ -215,6 +215,7 @@ export default function Invoice() {
     async function downloadInvoice(event: React.SyntheticEvent) {
         event.preventDefault()
 
+        setGetingInvoice(true)
         api.get('/invoices/' + invoiceId + '/generate_pdf', 'arraybuffer').then((res) => {
             const blob = new Blob([res], { type: "application/pdf" });
             const pdfUrl = URL.createObjectURL(blob);
@@ -222,8 +223,10 @@ export default function Invoice() {
             a.href = pdfUrl;
             a.download = 'Factura_' + invoiceNumber + '.pdf';
             a.click();
+            setGetingInvoice(false)
         }).catch((err) => {
             console.log(err)
+            setGetingInvoice(false)
         })
     }
 
@@ -414,7 +417,7 @@ export default function Invoice() {
                                                     >
                                                         <CalendarIcon className="mr-2 h-4 w-4"/>
                                                         {emissionDate ? format(emissionDate, "PPP", {locale: es}) :
-                                                            <span>Pick a date</span>}
+                                                            <span>Seleccionar fecha</span>}
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0">
@@ -443,7 +446,7 @@ export default function Invoice() {
                                                         >
                                                             <CalendarIcon className="mr-2 h-4 w-4"/>
                                                             {dueDate ? format(dueDate, "PPP", {locale: es}) :
-                                                                <span>Pick a date</span>}
+                                                                <span>Seleccionar fecha</span>}
                                                         </Button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0">

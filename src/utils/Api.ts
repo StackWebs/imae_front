@@ -1,8 +1,8 @@
 import {toast} from "react-toastify";
 // import { Auth } from 'aws-amplify'
 
-const apiBaseUrl = 'http://imae-logistics-api-pro.eba-wyx8azbd.eu-west-3.elasticbeanstalk.com/api'
-//const apiBaseUrl = 'http://localhost:8080/api'
+//const apiBaseUrl = 'http://imae-logistics-api-pro.eba-wyx8azbd.eu-west-3.elasticbeanstalk.com/api'
+const apiBaseUrl = 'http://localhost:8080/api'
 const requiresCors = false
 
 const  Api = {

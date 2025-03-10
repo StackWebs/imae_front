@@ -443,7 +443,7 @@ export default function Order() {
                                                 >
                                                     <CalendarIcon className="mr-2 h-4 w-4"/>
                                                     {sentDate ? format(sentDate, "PPP", {locale: es}) :
-                                                        <span>Pick a date</span>}
+                                                        <span>Seleccionar fecha</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
@@ -475,7 +475,7 @@ export default function Order() {
                                                 >
                                                     <CalendarIcon className="mr-2 h-4 w-4"/>
                                                     {estimatedDeliveryDate ? format(estimatedDeliveryDate, "PPP", {locale: es}) :
-                                                        <span>Pick a date</span>}
+                                                        <span>Seleccionar fecha</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
@@ -507,7 +507,7 @@ export default function Order() {
                                                 >
                                                     <CalendarIcon className="mr-2 h-4 w-4"/>
                                                     {deliveryDate ? format(deliveryDate, "PPP", {locale: es}) :
-                                                        <span>Pick a date</span>}
+                                                        <span>Seleccionar fecha</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
