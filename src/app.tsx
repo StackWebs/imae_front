@@ -27,17 +27,9 @@ import Providers from "./pages/Providers/Providers";
 import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
 import Invoice from "./pages/Invoice/Invoice";
-import { signIn } from "./utils/Cognito";
 
 export default function App() {
-
-    const [userSet, setUserSet] = React.useState(null)
-
-    useEffect(() => {
-        signIn('gerard.rovellat','IMAELogistics1!').then(() => setUserSet(true))
-    }, [])
-
-    if(userSet) return (
+    return (
         <>
             <html lang="en" className="light_blue" >
                 <head />
@@ -77,8 +69,6 @@ export default function App() {
             </html>
         </>
     );
-
-    return null
 }
 
 const root = createRoot(document.body);
