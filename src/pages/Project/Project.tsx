@@ -33,7 +33,7 @@ export default function Project() {
             setProjectStatus(res.projectStatus)
             setProjectNumber(res.projectNumber)
             setCreationDate(res.creationDate ? new Date(res.creationDate) : null)
-            setEndDate(res.endDate ? new Date(res.endDate) : null)
+            setEndDate(res.endDate ? new Date(format(res.endDate, "yyyy-MM-dd")) : null)
         }).catch((err) => {})
     }, []);
 

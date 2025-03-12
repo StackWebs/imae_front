@@ -96,7 +96,7 @@ export default function Order() {
             /******** TOP ********/
             setStatus(res.orderStatus || null)
             setOrderNumber(res.orderNumber || null)
-            setSentDate(res.sentDate ? new Date(res.sentDate) : null)
+            setSentDate(res.sentDate ? new Date(format(res.sentDate, "yyyy-MM-dd")) : null)
             setCustomerReference(res.customerReference || null)
             setProjectNumber(res.project?.projectNumber || null)
 
@@ -109,8 +109,8 @@ export default function Order() {
 
             /******** Lateral 2 ********/
             // Fechas
-            setEstimatedDeliveryDate(res.estimatedDeliveryDate ? new Date(res.estimatedDeliveryDate) : null)
-            setDeliveryDate(res.deliveryDate ? new Date(res.deliveryDate) : null)
+            setEstimatedDeliveryDate(res.estimatedDeliveryDate ? new Date(format(res.estimatedDeliveryDate, "yyyy-MM-dd")) : null)
+            setDeliveryDate(res.deliveryDate ? new Date(format(res.deliveryDate, "yyyy-MM-dd")) : null)
 
             /******** Central 1 ********/
             // Direccion de recogida
