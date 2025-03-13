@@ -54,6 +54,15 @@ export default function Haulier() {
             companyName: companyName,
             nif: nif,
             email: email,
+            address: {
+                city: addressCity,
+                contactName: addressContactName,
+                phone: addressPhone,
+                province: addressProvince,
+                street: addressStreet,
+                postalCode: addressPostalCode,
+                country: addressCountry
+            },
             iban: iban
         }).then((res) => {
             if(!!res) {
