@@ -28,6 +28,7 @@ import {NavSecondary} from "./nav-secondary";
 import {NavUser} from "./nav-user";
 import {SearchForm} from "./search-form";
 import Logo from "../../assets/logo.png"
+import {useStore} from "../../store";
 
 const data = {
   user: {
@@ -89,6 +90,9 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const { user } = useStore()
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -114,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/*<NavSecondary items={data.navSecondary} className="mt-auto" />*/}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user.userName} />
       </SidebarFooter>
     </Sidebar>
   )
