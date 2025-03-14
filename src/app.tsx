@@ -28,8 +28,6 @@ import Provider from "./pages/Provider/Provider";
 import Invoices from "./pages/Invoices/Invoices";
 import Invoice from "./pages/Invoice/Invoice";
 
-// 'gerard.rovellat','IMAELogistics1!'
-
 export default function App() {
    return (
         <>

@@ -31,10 +31,10 @@ export default function Login() {
             return
         }
 
-        signIn('gerard.rovellat','IMAELogistics1!').then((result) => {
+        signIn(email,password).then((result) => {
             if(!!result.AccessToken) {
                 setUser({
-                    userName: 'gerard.rovellat',
+                    userName: email,
                     accessToken: result.AccessToken || "",
                     expiresIn: result.ExpiresIn || 0,
                     idToken: result.IdToken || "",
