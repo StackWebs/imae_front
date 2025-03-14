@@ -1,9 +1,9 @@
 import {toast} from "react-toastify";
-// import { Auth } from 'aws-amplify'
+import {refreshTokenAuth, signIn} from "./Cognito";
+const axios = require('axios').default;
 
 const apiBaseUrl = 'http://imae-logistics-api-pro.eba-wyx8azbd.eu-west-3.elasticbeanstalk.com/api'
 //const apiBaseUrl = 'http://localhost:8080/api'
-const requiresCors = false
 
 const  Api = {
     get: async function(relativePath: any, responseType: any = 'json') {
@@ -23,23 +23,26 @@ const  Api = {
     },
 }
 
-async function getData(response: Response, relativePath: string, responseType: any = 'json') {
 
-    let data = null
-    if (response.status !== 204 && responseType === 'json') {
-        data = await response.json()
-    }
-
-    if(responseType === 'arraybuffer') {
-        data = await response.arrayBuffer()
-    }
-
-    console.log('response',response)
-    console.log('data',data)
-
-    if (!response.ok) {
-        if (data.message && data.message !== "" && data.message !== " " && data.message !== "null") {
-            toast.error(data.message, {
+async function send(method: any, relativePath:any, data:any, responseType: any = 'application/json') {
+    return await axios({
+        method: method,
+        baseURL: apiBaseUrl,
+        url: relativePath,
+        data: data,
+        responseType: responseType,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+        }
+    }).then(function(response:any) {
+        return response.data || null;
+    }).catch(function(error:any) {
+        if(error.status === 401) {
+            return refreshTokenAuth().then(() => send(method, relativePath, data, responseType)).catch(() => signIn('gerard.rovellat','IMAELogistics1!').then(() => send(method, relativePath, data, responseType)))
+        }
+        else {
+            toast.error(error.data.message, {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -49,42 +52,8 @@ async function getData(response: Response, relativePath: string, responseType: a
                 progress: undefined,
                 theme: "colored",
             });
+            throw error
         }
-        throw {status: response.status, details: data}
-    }
-    return data
-}
-
-async function send(method: any, relativePath: string, requestBody: any, responseType: any) {
-    let options : RequestInit = {}
-    if(requiresCors) {
-        options.credentials = 'include'
-    }
-    options.method = method
-    if(requestBody) {
-        options.headers = {
-            'Content-Type': 'application/json',
-        }
-        options.body = JSON.stringify(requestBody)
-        //options.mode = 'no-cors'
-    }
-
-    options.headers = {
-        ...options.headers,
-        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-        'responseType': responseType,
-        'Content-Type': responseType === 'arraybuffer' ? 'application/pdf' : 'application/json'
-    }
-
-    return await fetch(apiBaseUrl + relativePath, options).then((response) => {
-        if(method === 'DELETE' && response.status === 200) {
-            return
-        }
-        return getData(response,relativePath,responseType)
-    }).catch((error) => {
-        console.error(error)
     })
-
 }
-
 export default Api
