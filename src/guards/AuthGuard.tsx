@@ -1,12 +1,13 @@
 import React, {ReactNode, useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import Api from "../utils/Api";
+import { useStore } from "../store";
 
 interface AuthGuardProps {
     component: ReactNode;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ component }) => {
+    const { user, clearUser } = useStore();
     const [status, setStatus] = useState(false);
     const navigate = useNavigate();
 
@@ -15,7 +16,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ component }) => {
     }, []);
 
     const checkAuth = async () => {
-        setStatus(true)
+        setStatus(!!user);
+        if (!user) {
+            clearUser();
+            navigate("/auth/login");
+        }
     }
 
     return status ? <React.Fragment>{component}</React.Fragment> : <React.Fragment></React.Fragment>;

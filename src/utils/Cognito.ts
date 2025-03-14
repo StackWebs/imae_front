@@ -28,16 +28,8 @@ export const signIn = async (username: string, password: string) => {
     try {
         const command = new InitiateAuthCommand(params);
         const { AuthenticationResult } = await cognitoClient.send(command);
+        console.log('AuthenticationResult',AuthenticationResult);
         if (AuthenticationResult) {
-            localStorage.setItem("idToken", AuthenticationResult.IdToken || "");
-            localStorage.setItem(
-                "accessToken",
-                AuthenticationResult.AccessToken || "",
-            );
-            localStorage.setItem(
-                "refreshToken",
-                AuthenticationResult.RefreshToken || "",
-            );
             return AuthenticationResult;
         }
     } catch (error) {
