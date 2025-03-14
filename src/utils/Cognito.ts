@@ -28,8 +28,11 @@ export const signIn = async (username: string, password: string) => {
     try {
         const command = new InitiateAuthCommand(params);
         const { AuthenticationResult } = await cognitoClient.send(command);
-        console.log('AuthenticationResult',AuthenticationResult);
         if (AuthenticationResult) {
+            localStorage.setItem("idToken", AuthenticationResult.IdToken || "" );
+            localStorage.setItem("accessToken",  AuthenticationResult.AccessToken || "" );
+            localStorage.setItem("refreshToken", AuthenticationResult.RefreshToken || "" );
+            localStorage.setItem("username", username );
             return AuthenticationResult;
         }
     } catch (error) {
@@ -42,6 +45,8 @@ export const refreshTokenAuth = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     const idToken = localStorage.getItem("idToken");
     if (!refreshToken) {
+        localStorage.clear()
+        window.location.reload()
         throw new Error("No refresh token found. User must sign in again.");
     }
 
@@ -64,8 +69,15 @@ export const refreshTokenAuth = async () => {
             localStorage.setItem("accessToken", AuthenticationResult.AccessToken || "");
             return AuthenticationResult;
         }
+        else {
+            console.log('Error refreshing token')
+            localStorage.clear()
+            window.location.reload()
+        }
     } catch (error) {
         console.error("Error refreshing token: ", error);
+        localStorage.clear()
+        window.location.reload()
         throw error;
     }
 };

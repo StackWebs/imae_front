@@ -7,7 +7,6 @@ interface AuthGuardProps {
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ component }) => {
-    const { user, clearUser } = useStore();
     const [status, setStatus] = useState(false);
     const navigate = useNavigate();
 
@@ -16,9 +15,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ component }) => {
     }, []);
 
     const checkAuth = async () => {
+        const user = localStorage.getItem("username");
         setStatus(!!user);
         if (!user) {
-            clearUser();
             navigate("/auth/login");
         }
     }

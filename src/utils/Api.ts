@@ -39,7 +39,7 @@ async function send(method: any, relativePath:any, data:any, responseType: any =
         return response.data || null;
     }).catch(function(error:any) {
         if(error.status === 401) {
-            return refreshTokenAuth().then(() => send(method, relativePath, data, responseType)).catch(() => signIn('gerard.rovellat','IMAELogistics1!').then(() => send(method, relativePath, data, responseType)))
+            return refreshTokenAuth().then(() => send(method, relativePath, data, responseType))
         }
         else {
             toast.error(error.data.message, {
