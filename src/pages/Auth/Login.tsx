@@ -69,11 +69,10 @@ export default function Login() {
                                 <div className="grid gap-6">
                                     <div className="grid gap-6">
                                         <div className="grid gap-2">
-                                            <Label htmlFor="email">Correo electrónico</Label>
+                                            <Label htmlFor="email">Usuario</Label>
                                             <Input
-                                                id="email"
-                                                type="email"
-                                                placeholder="email@example.com"
+                                                id="user"
+                                                type="text"
                                                 required
                                                 onChange={(e) => setEmail(e.target.value)}
                                             />
