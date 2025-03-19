@@ -74,5 +74,12 @@ export const activeColumns: any = {
         "street",
         "postalCode",
         "country"
+    ],
+    items: [
+        "id",
+        "description",
+        "units",
+        "unitPrice",
+        "totalAmount"
     ]
 }

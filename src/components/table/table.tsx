@@ -13,7 +13,6 @@ import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash, X,Search,ChevronRigh
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
-import {DropdownMenuCheckboxItemProps} from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
 import {useNavigate} from "react-router-dom";
@@ -225,6 +224,7 @@ export function DataTable<TData, TValue>(props: any) {
     const edit = props.edit || false
     const create = props.create !== false
     const csvExport = props.csvExport || false
+    const editHook = props.editHook || null
 
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
@@ -341,6 +341,7 @@ export function DataTable<TData, TValue>(props: any) {
     }, [props,sortedColumns,page,pageSize])
 
     useEffect(() => {
+        console.log('getDatauseEffect data')
         if(!data || data.length === 0) return
         const { columns, newSortedColumns } = getColumns(type,data,sortedColumns,sortByKey,edit)
 
@@ -381,7 +382,15 @@ export function DataTable<TData, TValue>(props: any) {
 
 
     const rowChange = function(event : any,row : any) {
-        if(!row.getIsSelected()) row.toggleSelected()
+
+        if(editHook) {
+            let dataClon = [...data]
+            dataClon.forEach((item: any, index: any) => {
+                if (index === row.index) item[event.target.id] = event.target.value
+            })
+            editHook(dataClon)
+        }
+        else if(!row.getIsSelected()) row.toggleSelected()
     }
 
     const rowUpdate = function(event : any, row:any) {
@@ -426,6 +435,14 @@ export function DataTable<TData, TValue>(props: any) {
     }
 
     const addNew = function() {
+
+        if(editHook) {
+            let newObject: any = {}
+            activeColumns[type].forEach((column: any) => { newObject[column] = '' })
+            editHook([...data, newObject])
+            return
+        }
+
         const path = apiCalls(type, 'post', id || null )
         if(!path) return
         api.post(path,{}).then((res : any) => {
@@ -457,6 +474,14 @@ export function DataTable<TData, TValue>(props: any) {
     }
 
     const removeRow = function(row : any) {
+
+        if(editHook) {
+            let dataClon = [...data];
+            dataClon = dataClon.filter((item: any, index: any) => index !== row.index);
+            editHook(dataClon);
+            return;
+        }
+
         const path = apiCalls(type, 'delete', row.original.id, id)
         if(!path) return
         api.delete(path).then((res) => {
@@ -678,6 +703,13 @@ export function DataTable<TData, TValue>(props: any) {
                                         {row.getVisibleCells().map((cell) => {
                                             const isAction = cell.id.includes('actions')
 
+                                            if(isAction && edit && editHook) return (
+                                                <TableCell key={cell.id}>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => removeRow(row)}>
+                                                        <Trash/>
+                                                    </Button>
+                                                </TableCell>
+                                            )
                                             return (
                                                 <TableCell key={cell.id}>
                                                     <>

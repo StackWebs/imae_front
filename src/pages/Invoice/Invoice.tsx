@@ -36,13 +36,14 @@ import {
     CommandSeparator, CommandShortcut
 } from "../../ui/command";
 import {toast} from "react-toastify";
+import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 
 
 export default function Invoice() {
     const { invoiceId } = useParams();
 
     const [invoiceNumber, setInvoiceNumber] = React.useState<string | undefined>(undefined)
-    const [invoiceType, setInvoiceType] = React.useState<string | undefined>(undefined)
+    const [invoiceType, setInvoiceType] = React.useState<string | undefined>('INCOME')
     const [status, setStatus] = React.useState<string | undefined>(undefined)
     const [orders, setOrders] = React.useState<any | undefined>(undefined)
     const [order, setOrder] = React.useState<any | undefined>(undefined)
@@ -64,7 +65,7 @@ export default function Invoice() {
     const [addressPostalCode, setAddressPostalCode] = React.useState<string | undefined>(undefined)
     const [addressCountry, setAddressCountry] = React.useState<string | undefined>(undefined)
 
-    const [items, setItems] = React.useState<any | undefined>(undefined)
+    const [items, setItems] = React.useState<any | undefined>([])
 
 
     const [ordersOpen, setOrdersopen] = React.useState(false)
@@ -81,7 +82,7 @@ export default function Invoice() {
             setEmissionDate(res.emissionDate || null)
             setDueDate(res.dueDate || null)
             setTaxes(res.taxes * 100)
-            setItems(res.items || null)
+            //setItems(res.items || null)
 
             setAddressCity(res.address.city || null)
             setAddressContactName(res.address.contactName || null)
@@ -111,17 +112,6 @@ export default function Invoice() {
             console.log(err)
         })
     }, []);
-
-    // useEffect(() => {
-    //     if(!orders) return
-    //     // Local filter
-    //     if(!orderSearch) {
-    //         setOrders(orders.slice(0, 10))
-    //         return
-    //     }
-    //     setOrders(orders.filter((item: any) => item.orderNumber.includes(orderSearch)))
-    // }, [orderSearch]);
-
 
     useEffect(() => {
         if(invoiceType === 'INCOME') {
@@ -159,6 +149,10 @@ export default function Invoice() {
             console.log(err)
         })
     }, [provider]);
+
+    useEffect(() => {
+        console.log('items',items)
+    }, [items]);
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
@@ -237,7 +231,6 @@ export default function Invoice() {
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
                         <h2 className="text-3xl font-bold tracking-tight w-full ">{invoiceNumber}</h2>
-                        <p className="text-muted-foreground">{invoiceType}</p>
                     </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
                         {!getingInvoice ? (
@@ -275,7 +268,17 @@ export default function Invoice() {
                 </div>
                 <Separator/>
 
-                <div className="h-full py-6">
+                <Tabs defaultValue="INCOME" className="space-y-4 py-6" onValueChange={setInvoiceType}>
+                    <TabsList>
+                        <TabsTrigger value="INCOME">Ingreso</TabsTrigger>
+                        <TabsTrigger value="EXPENSE">Gasto</TabsTrigger>
+                        <TabsTrigger value="AMENDED_INCOME">Ingresos rectificados</TabsTrigger>
+                        <TabsTrigger value="AMENDED_EXPENSE">Gastos rectificados</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
+
+                <div className="h-full py-0">
                     <div className="md:order-1">
                         <div className={"w-full flex items-start gap-3"}>
                             <Card className={"w-full"}>
@@ -283,6 +286,11 @@ export default function Invoice() {
                                     <CardTitle>Información</CardTitle>
                                 </CardHeader>
                                 <CardContent>
+
+
+                                    {(invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') && (
+                                        <h1>SELECTOR DE INVOICE</h1>
+                                    )}
 
 
                                     {orders && (
@@ -402,8 +410,8 @@ export default function Invoice() {
                                         )}
                                     </div>
 
-                                    <div className={"grid grid-cols-3 grid-flow-col  gap-3 pt-3"}>
-                                        <div className={"w-full"}>
+                                    <div className={"grid grid-cols-2 grid-flow-col  gap-3 pt-3"}>
+                                        {/*<div clasName={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
                                                 Emisión</h3>
                                             <Popover>
@@ -430,10 +438,9 @@ export default function Invoice() {
                                                     />
                                                 </PopoverContent>
                                             </Popover>
-                                        </div>
+                                        </div>*/}
                                         <div className={"w-full"}>
-                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
-                                                Vencimiento</h3>
+                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de Vencimiento</h3>
                                             <div className={"flex items-center gap-3"}>
                                                 <Popover>
                                                     <PopoverTrigger asChild>
@@ -636,9 +643,7 @@ export default function Invoice() {
                                     <CardTitle>Conceptos</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    {items &&
-                                        <DataTable type={"items"} content={items} edit={true} id={invoiceId}/>
-                                    }
+                                    <DataTable type={"items"} content={items} edit={true} id={invoiceId}  editHook={setItems}/>
                                 </CardContent>
                             </Card>
                         </div>
