@@ -34,6 +34,7 @@ export default function Order() {
     const [sentDate, setSentDate] = React.useState<Date>(undefined)
     const [customerReference , setCustomerReference] = React.useState<string | undefined>(undefined)
     const [projectNumber, setProjectNumber] = React.useState<any | undefined>(undefined)
+    const [deliveryNote, setDeliveryNote] = React.useState<any | undefined>(undefined)
 
     /******** Lateral 1 ********/
     //Customer
@@ -99,6 +100,7 @@ export default function Order() {
             setSentDate(res.sentDate ? new Date(format(res.sentDate, "yyyy-MM-dd")) : null)
             setCustomerReference(res.customerReference || null)
             setProjectNumber(res.project?.projectNumber || null)
+            setDeliveryNote(res.deliveryNote || null)
 
             /******** Lateral 1 ********/
             //Customer
@@ -223,7 +225,7 @@ export default function Order() {
             },
             "haulierId": haulier?.id || null,
             "customerId": customer?.id || null,
-            //"deliveryNoteId": 0,
+            "deliveryNoteId": deliveryNote?.id || null,
             "customerReference": customerReference || null,
             "deliveryNotes": deliveryNotes || null,
             "pickupNotes": pickupNotes || null,
@@ -255,6 +257,7 @@ export default function Order() {
         setGetingAlbran(true)
 
         api.post('/orders/' + orderId + '/delivery_note',{}).then((res) => {
+            setDeliveryNote(res)
             if(!res.id) return;
             api.get('/delivery_notes/' + res.id + '/generate_pdf', 'arraybuffer').then((doc) => {
                 const blob = new Blob([doc], { type: "application/pdf" });
