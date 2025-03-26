@@ -2,8 +2,8 @@ import {toast} from "react-toastify";
 import {refreshTokenAuth, signIn} from "./Cognito";
 const axios = require('axios').default;
 
-const apiBaseUrl = 'http://imae-logistics-api-pro.eba-wyx8azbd.eu-west-3.elasticbeanstalk.com/api'
-//const apiBaseUrl = 'http://localhost:8080/api'
+//const apiBaseUrl = 'http://imae-logistics-api-pro.eba-wyx8azbd.eu-west-3.elasticbeanstalk.com/api'
+const apiBaseUrl = 'http://localhost:8080/api'
 
 const  Api = {
     get: async function(relativePath: any, responseType: any = 'json') {

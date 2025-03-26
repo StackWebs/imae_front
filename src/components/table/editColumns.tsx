@@ -184,17 +184,14 @@ export const editColumnsFormat: any[] = [
         accessorKey: "description",
         header: "Descripcion",
         cell: ({ row } : any) => {
-            const [test, setTest] = React.useState(row.getValue("description"))
-
             return <div className="text-left font-medium">
                 <Input
                     id="description"
                     placeholder="Descripción"
-                    value={test}
+                    value={row.getValue("description")}
                     type="text"
                     autoCapitalize="none"
-                    form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    form={'form-' + row.id} />
             </div>
         },
     },
@@ -274,17 +271,14 @@ export const editColumnsFormat: any[] = [
         accessorKey: "units",
         header: "Unidades",
         cell: ({ row } : any) => {
-            const [test, setTest] = React.useState(row.getValue("units"))
-
             return <div className="text-left font-medium">
                 <Input
                     id="units"
                     placeholder="Unidades"
-                    value={test}
+                    value={row.getValue("units")}
                     type="number"
                     autoCapitalize="none"
-                    form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    form={'form-' + row.id} />
             </div>
         },
     },
@@ -292,17 +286,14 @@ export const editColumnsFormat: any[] = [
         accessorKey: "unitPrice",
         header: "Precio unitario",
         cell: ({ row } : any) => {
-            const [test, setTest] = React.useState(row.getValue("unitPrice"))
-
             return <div className="text-left font-medium">
                 <Input
                     id="unitPrice"
                     placeholder="Precio unitario"
-                    value={test}
+                    value={row.getValue("unitPrice")}
                     type="number"
                     autoCapitalize="none"
-                    form={'form-' + row.id}
-                    onChange={(e) => setTest(e.target.value)}/>
+                    form={'form-' + row.id} />
             </div>
         },
     },
@@ -310,7 +301,9 @@ export const editColumnsFormat: any[] = [
         accessorKey: "totalAmount",
         header: "Importe total",
         cell: ({ row } : any) => {
-            return <div className="text-left font-medium">{row.getValue("totalAmount")}</div>
+            let totalAmount = row.getValue("units") * row.getValue("unitPrice")
+            if(isNaN(totalAmount)) totalAmount = row.getValue("totalAmount")
+            return <div className="text-left font-medium">{totalAmount}</div>
         },
     },
     {
