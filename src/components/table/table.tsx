@@ -9,11 +9,10 @@ import {columnsFormat} from "./columns";
 import {editColumnsFormat} from "./editColumns";
 import {actions} from "./actions";
 import {Button} from "../../ui/button";
-import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash, X,Search,ChevronRight,ChevronLeft,MonitorDown } from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash, Minus, X,Search,ChevronRight,ChevronLeft,MonitorDown } from "lucide-react";
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
-import {DropdownMenuCheckboxItemProps} from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
 import {useNavigate} from "react-router-dom";
@@ -28,17 +27,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../../ui/alert-dialog"
-import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {toast} from "react-toastify";
 import {Input} from "../../ui/input";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-    DropdownMenuCheckboxItem
-} from "../../ui/dropdown-menu";
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
@@ -225,6 +216,7 @@ export function DataTable<TData, TValue>(props: any) {
     const edit = props.edit || false
     const create = props.create !== false
     const csvExport = props.csvExport || false
+    const editHook = props.editHook || null
 
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
@@ -242,6 +234,17 @@ export function DataTable<TData, TValue>(props: any) {
     const [elements, setElements] = React.useState(1)
     const [activeFilters, setActiveFilters] = React.useState<any[]>(filters[type])
 
+    useEffect(() => {
+        getData()
+    }, [props,sortedColumns,page,pageSize])
+
+    useEffect(() => {
+        if(!data || data.length === 0) return
+        const { columns, newSortedColumns } = getColumns(type,data,sortedColumns,sortByKey,edit)
+
+        setColumns(columns)
+        setSortedColumns(newSortedColumns)
+    }, [data])
 
     function sortByKey(sortedColumns : any[],key : string) {
         let sorted = sortedColumns.find((sortedColumn) => sortedColumn.accessorKey === key)
@@ -336,24 +339,6 @@ export function DataTable<TData, TValue>(props: any) {
         })
     }
 
-    useEffect(() => {
-        getData()
-    }, [props,sortedColumns,page,pageSize])
-
-    useEffect(() => {
-        if(!data || data.length === 0) return
-        const { columns, newSortedColumns } = getColumns(type,data,sortedColumns,sortByKey,edit)
-
-        setColumns(columns)
-        setSortedColumns(newSortedColumns)
-    }, [data])
-
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    })
-
     const downloadCSV = function() {
         let call = apiCalls(type, 'export',null)
         if(!call) return
@@ -381,18 +366,25 @@ export function DataTable<TData, TValue>(props: any) {
 
 
     const rowChange = function(event : any,row : any) {
-        if(!row.getIsSelected()) row.toggleSelected()
+        let dataClon = [...data]
+        dataClon.forEach((item: any, index: any) => {
+            if (index === row.index) item[event.target.id] = event.target.value
+        })
+        setData(dataClon)
+
+        if(!editHook && !row.getIsSelected()) row.toggleSelected()
     }
 
     const rowUpdate = function(event : any, row:any) {
         event.preventDefault()
 
-        var formData : any = {}
-        for (var i = 0; i < event.target.length; i++) {
-            if(event.target[i].type === 'submit') continue
-            if(event.target[i].type === 'number' && !event.target[i].value) event.target[i].value = 0
-            formData[event.target[i].id === 'package_length' ? 'length' : event.target[i].id] = event.target[i].value
-        }
+        var formData :any = data.filter((item: any, index: any) => {
+            if(row.original.id) return item.id === row.original.id
+            return index === row.index
+        })
+        if(formData.length === 0) return
+        formData = formData[0]
+
         const formId = event.target.getAttribute('element-id')
         const call = apiCalls(type, 'patch', formId, id)
         if(!call) return
@@ -425,7 +417,15 @@ export function DataTable<TData, TValue>(props: any) {
         })
     }
 
-    const addNew = function() {
+    const addRow = function() {
+
+        if(editHook) {
+            let newObject: any = {}
+            activeColumns[type].forEach((column: any) => { newObject[column] = '' })
+            editHook([...data, newObject])
+            return;
+        }
+
         const path = apiCalls(type, 'post', id || null )
         if(!path) return
         api.post(path,{}).then((res : any) => {
@@ -436,6 +436,32 @@ export function DataTable<TData, TValue>(props: any) {
             else {
                 setData([...data,res])
             }
+        }).catch((err) => {
+            console.error('Error: ', err)
+        })
+    }
+
+    const removeRow = function(row : any) {
+
+        if(editHook) {
+            editHook(data.filter((item) => item !== row.original))
+            return;
+        }
+
+        const path = apiCalls(type, 'delete', row.original.id, id)
+        if(!path) return
+        api.delete(path).then((res:any) => {
+            setData(data.filter((item:any) => item?.id !== row.original.id))
+            toast.success('Eliminado correctamente', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            })
         }).catch((err) => {
             console.error('Error: ', err)
         })
@@ -456,26 +482,13 @@ export function DataTable<TData, TValue>(props: any) {
         }
     }
 
-    const removeRow = function(row : any) {
-        const path = apiCalls(type, 'delete', row.original.id, id)
-        if(!path) return
-        api.delete(path).then((res) => {
-            // @ts-ignore
-            setData(data.filter((item) => item?.id !== row.original.id))
-            toast.success('Eliminado correctamente', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
-        }).catch((err) => {
-            console.error('Error: ', err)
-        })
-    }
+
+
+    const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+    })
 
     return (
         <div className="py-4">
@@ -625,7 +638,7 @@ export function DataTable<TData, TValue>(props: any) {
                                             </>
                                         )}
                                         {create && (
-                                            <Button onClick={addNew}>
+                                            <Button onClick={addRow}>
                                                 <SquarePlus/> Añadir
                                             </Button>
                                         )}
@@ -683,34 +696,38 @@ export function DataTable<TData, TValue>(props: any) {
                                                     <>
                                                         {isAction ? (
                                                             <div className={"flex items-end justify-end"}>
-                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                                <AlertDialog>
-                                                                    <AlertDialogTrigger>
-                                                                        <Button variant="ghost" size="icon"
-                                                                                className="h-8 w-8 p-0">
-                                                                            <Trash/>
-                                                                        </Button>
-                                                                    </AlertDialogTrigger>
-                                                                    <AlertDialogContent>
-                                                                        <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Estas
-                                                                                seguro?</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                Esta accion no se puede deshacer. Esto
-                                                                                lo eliminara permanentemente y removera
-                                                                                los
-                                                                                datos de nuestros servidores.
-                                                                            </AlertDialogDescription>
-                                                                        </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                                            <AlertDialogAction
-                                                                                onClick={() => removeRow(row)}>
-                                                                                Eliminar
-                                                                            </AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </AlertDialogContent>
-                                                                </AlertDialog>
+                                                                {editHook ? (
+                                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => removeRow(row)}>
+                                                                        <Minus />
+                                                                    </Button>
+                                                                ) : (
+                                                                    <>
+                                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                                        <AlertDialog>
+                                                                            <AlertDialogTrigger>
+                                                                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                                                                    <Trash/>
+                                                                                </Button>
+                                                                            </AlertDialogTrigger>
+                                                                            <AlertDialogContent>
+                                                                                <AlertDialogHeader>
+                                                                                    <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+                                                                                    <AlertDialogDescription>
+                                                                                        Esta accion no se puede deshacer. Esto
+                                                                                        lo eliminara permanentemente y removera
+                                                                                        los datos de nuestros servidores.
+                                                                                    </AlertDialogDescription>
+                                                                                </AlertDialogHeader>
+                                                                                <AlertDialogFooter>
+                                                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                                    <AlertDialogAction onClick={() => removeRow(row)}>
+                                                                                        Eliminar
+                                                                                    </AlertDialogAction>
+                                                                                </AlertDialogFooter>
+                                                                            </AlertDialogContent>
+                                                                        </AlertDialog>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         ) : (
                                                             <>
@@ -799,7 +816,7 @@ export function DataTable<TData, TValue>(props: any) {
 
             {edit && create && (
                 <div className="flex flex-row-reverse items-center py-4">
-                    <Button onClick={addNew}>
+                    <Button onClick={addRow}>
                         <SquarePlus/> Añadir
                     </Button>
                 </div>

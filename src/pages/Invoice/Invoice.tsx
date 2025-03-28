@@ -64,7 +64,7 @@ export default function Invoice() {
     const [addressPostalCode, setAddressPostalCode] = React.useState<string | undefined>(undefined)
     const [addressCountry, setAddressCountry] = React.useState<string | undefined>(undefined)
 
-    const [items, setItems] = React.useState<any | undefined>(undefined)
+    const [items, setItems] = React.useState<any | undefined>([])
 
 
     const [ordersOpen, setOrdersopen] = React.useState(false)
@@ -180,7 +180,8 @@ export default function Invoice() {
                 country: addressCountry
             },
             taxes: taxes / 100,
-            orderId: order?.id
+            orderId: order?.id,
+            items: items
         }
 
         api.put('/invoices/' + invoiceId, body).then((res) => {
@@ -636,9 +637,7 @@ export default function Invoice() {
                                     <CardTitle>Conceptos</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    {items &&
-                                        <DataTable type={"items"} content={items} edit={true} id={invoiceId}/>
-                                    }
+                                    <DataTable type={"items"} content={items} editHook={setItems} edit={true} id={invoiceId}/>
                                 </CardContent>
                             </Card>
                         </div>
