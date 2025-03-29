@@ -4,20 +4,14 @@ import {useParams} from "react-router-dom";
 import api from "../../utils/Api";
 import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../ui/card";
+import {Card, CardContent, CardHeader, CardTitle} from "../../ui/card";
 import {Input} from "../../ui/input";
 import {
-    Calculator,
     CalendarIcon,
-    CreditCard,
     DownloadIcon,
-    Settings,
-    Smile,
-    User,
-    ChevronsUpDown,
-    Check,
     Loader2, CircleX
 } from "lucide-react";
+import {CustomSelect} from "../../components/ui/select/select";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
 import {invoiceStatusess} from "../../components/table/data";
 import {Popover, PopoverContent, PopoverTrigger} from "../../ui/popover";
@@ -26,23 +20,17 @@ import {format} from "date-fns";
 import {es} from "date-fns/locale/es";
 import {Calendar} from "../../ui/calendar";
 import {DataTable} from "../../components/table/table";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator, CommandShortcut
-} from "../../ui/command";
 import {toast} from "react-toastify";
+import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 
 
 export default function Invoice() {
     const { invoiceId } = useParams();
 
+    const [disabled, setDisabled] = React.useState<boolean>(false)
+
     const [invoiceNumber, setInvoiceNumber] = React.useState<string | undefined>(undefined)
-    const [invoiceType, setInvoiceType] = React.useState<string | undefined>(undefined)
+    const [invoiceType, setInvoiceType] = React.useState<string | undefined>('INCOME')
     const [status, setStatus] = React.useState<string | undefined>(undefined)
     const [orders, setOrders] = React.useState<any | undefined>(undefined)
     const [order, setOrder] = React.useState<any | undefined>(undefined)
@@ -54,6 +42,8 @@ export default function Invoice() {
     const [customer, setCustomer] = React.useState<any | undefined>(undefined)
     const [providers, setProviders] = React.useState<any | undefined>(undefined)
     const [provider, setProvider] = React.useState<any | undefined>(undefined)
+    const [invoices, setInvoices] = React.useState<any | undefined>(undefined)
+    const [invoice, setInvoice] = React.useState<any | undefined>(undefined)
 
     const [directions, setDirections] = React.useState<any | undefined>(undefined)
     const [addressCity, setAddressCity] = React.useState<string | undefined>(undefined)
@@ -69,10 +59,15 @@ export default function Invoice() {
 
     const [ordersOpen, setOrdersopen] = React.useState(false)
     const [orderSearch, setOrderSearch] = React.useState<string | undefined>(undefined)
+    const [customerSearch, setCustomerSearch] = React.useState<string | undefined>(undefined)
+    const [providerSearch, setProviderSearch] = React.useState<string | undefined>(undefined)
+    const [invoiceSearch, setInvoiceSearch] = React.useState<string | undefined>(undefined)
 
     const [getingInvoice, setGetingInvoice] = React.useState<boolean>(false)
 
+    // GET INVOICE
     useEffect(() => {
+        if(invoiceId === 'new') return;
         api.get('/invoices/' + invoiceId).then((res) => {
             setInvoiceType(res.invoiceType || null)
             setInvoiceNumber(res.invoiceNumber || null)
@@ -81,7 +76,7 @@ export default function Invoice() {
             setEmissionDate(res.emissionDate || null)
             setDueDate(res.dueDate || null)
             setTaxes(res.taxes * 100)
-            setItems(res.items || null)
+            setItems(res.items || [])
 
             setAddressCity(res.address.city || null)
             setAddressContactName(res.address.contactName || null)
@@ -104,42 +99,59 @@ export default function Invoice() {
     }, []);
 
 
+    // ORDER SEARCH
     useEffect(() => {
-        api.get('/orders?hasInvoice=false&page=1&size=999').then((res) => {
-            setOrders(res.content)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }, []);
+        const delayDebounceFn = setTimeout(() => {
+            api.get(`/orders?page=1&size=5${orderSearch ? `&orderNumber=${orderSearch}` : ''}`).then((res) => { // hasInvoice=false
+                setOrders(res.content)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }, 500)
 
-    // useEffect(() => {
-    //     if(!orders) return
-    //     // Local filter
-    //     if(!orderSearch) {
-    //         setOrders(orders.slice(0, 10))
-    //         return
-    //     }
-    //     setOrders(orders.filter((item: any) => item.orderNumber.includes(orderSearch)))
-    // }, [orderSearch]);
+        return () => clearTimeout(delayDebounceFn)
+    }, [orderSearch]);
 
-
+    // CUSTOMER SEARCH
     useEffect(() => {
-        if(invoiceType === 'INCOME') {
-            api.get('/customers?page=1&size=999').then((res) => {
+        const delayDebounceFn = setTimeout(() => {
+            api.get(`/customers?page=1&size=5${customerSearch ? `&name=${customerSearch}` : ''}`).then((res) => {
                 setCustomers(res.content)
             }).catch((err) => {
                 console.log(err)
             })
-        }
-        if(invoiceType === 'EXPENSE') {
-            api.get('/providers?page=1&size=999').then((res) => {
+        }, 500)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [customerSearch]);
+
+    // PROVIDER SEARCH
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            api.get(`/providers?page=1&size=5${providerSearch ? `&name=${providerSearch}` : ''}`).then((res) => {
                 setProviders(res.content)
             }).catch((err) => {
                 console.log(err)
             })
-        }
-    }, [invoiceType]);
+        }, 500)
 
+        return () => clearTimeout(delayDebounceFn)
+    }, [providerSearch]);
+
+    // INVOICE SEARCH
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            api.get(`/invoices?page=1&size=5${invoiceSearch ? `&invoiceNumber=${invoiceSearch}` : ''}`).then((res) => {
+                setInvoices(res.content)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }, 500)
+
+        return () => clearTimeout(delayDebounceFn)
+    }, [invoiceSearch]);
+
+    // CUSTOMER ADDRESSES
     useEffect(() => {
         if(!customer) return
         api.get('/customers/' + customer.id ).then((res) => {
@@ -150,6 +162,7 @@ export default function Invoice() {
         })
     }, [customer]);
 
+    // PROVIDER ADDRESSES
     useEffect(() => {
         if(!provider) return
         api.get('/providers/' + provider.id ).then((res) => {
@@ -159,6 +172,11 @@ export default function Invoice() {
             console.log(err)
         })
     }, [provider]);
+
+    // PROVIDER ADDRESSES
+    useEffect(() => {
+        setDisabled((invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') && invoiceId !== 'new')
+    }, [invoiceType,invoiceId]);
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
@@ -184,22 +202,42 @@ export default function Invoice() {
             items: items
         }
 
-        api.put('/invoices/' + invoiceId, body).then((res) => {
-            if(!!res) {
-                toast.success('Guardado correctamente', {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                })
-            }
-        }).catch((err) => {
-            console.log(err)
-        })
+        if(invoiceId === 'new') {
+            api.post('/invoices/' + (invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME' ? 'final' : 'draft'), body).then((res) => {
+                if(!!res) {
+                    toast.success('Creado correctamente', {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                    })
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
+        else {
+            api.put('/invoices/' + invoiceId, body).then((res) => {
+                if(!!res) {
+                    toast.success('Guardado correctamente', {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                    })
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
     }
 
 
@@ -234,23 +272,27 @@ export default function Invoice() {
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
+                {invoiceId}
                 <div
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
-                        <h2 className="text-3xl font-bold tracking-tight w-full ">{invoiceNumber}</h2>
-                        <p className="text-muted-foreground">{invoiceType}</p>
+                        <h2 className="text-3xl font-bold tracking-tight w-full ">{invoiceNumber || 'Nueva factura'}</h2>
                     </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
-                        {!getingInvoice ? (
-                            <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadInvoice}>
-                                Descargar
-                                <DownloadIcon className="ml-2 h-4 w-4"/>
-                            </Button>
-                        ) : (
-                            <Button disabled>
-                                <Loader2 className="animate-spin"/>
-                                Descargando...
-                            </Button>
+                        {disabled && (
+                            <>
+                                {!getingInvoice ? (
+                                    <Button variant="outline" className={"w-[300px] justify-between"} onClick={downloadInvoice}>
+                                        Descargar
+                                        <DownloadIcon className="ml-2 h-4 w-4"/>
+                                    </Button>
+                                ) : (
+                                    <Button disabled>
+                                        <Loader2 className="animate-spin"/>
+                                        Descargando...
+                                    </Button>
+                                )}
+                            </>
                         )}
                         <Select
                             value={status}
@@ -271,12 +313,24 @@ export default function Invoice() {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                        <Button onClick={submitForm}>Guardar</Button>
+                        <Button onClick={submitForm}>
+                            {invoiceId === 'new' && 'Crear' ||'Guardar'}
+                        </Button>
                     </div>
                 </div>
                 <Separator/>
 
-                <div className="h-full py-6">
+                <Tabs defaultValue="INCOME" className="space-y-4 py-6" onValueChange={setInvoiceType}>
+                    <TabsList>
+                        <TabsTrigger value="INCOME" disabled={disabled}>Ingreso</TabsTrigger>
+                        <TabsTrigger value="EXPENSE" disabled={invoiceId !== 'new'}>Gasto</TabsTrigger>
+                        <TabsTrigger value="AMENDED_INCOME" disabled={disabled}>Ingresos rectificados</TabsTrigger>
+                        <TabsTrigger value="AMENDED_EXPENSE" disabled={invoiceId !== 'new'}>Gastos rectificados</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
+
+                <div className="h-full py-0">
                     <div className="md:order-1">
                         <div className={"w-full flex items-start gap-3"}>
                             <Card className={"w-full"}>
@@ -285,126 +339,84 @@ export default function Invoice() {
                                 </CardHeader>
                                 <CardContent>
 
+                                    <div className={"grid grid-cols-2 grid-flow-col  gap-3 pt-3"}>
 
-                                    {orders && (
-                                        <>
-                                            <h3 className="text-sm font-normal text-muted-foreground">Orden</h3>
-                                            <div className={"flex"}>
-                                                <Popover open={ordersOpen} onOpenChange={setOrdersopen}>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            role="combobox"
-                                                            aria-label="Load a preset..."
-                                                            aria-expanded={ordersOpen}
-                                                            className="flex-1 justify-between w-full"
-                                                        >
-                                                            {order ? order.orderNumber : "Ordenes..."}
-                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[350px] p-0">
-                                                        <Command>
-                                                            <CommandInput placeholder="Buscar orden..."
-                                                              onValueChange={(value) => {
-                                                                  setOrderSearch(value)
-                                                              }}
-                                                            />
-                                                            <CommandEmpty>No presets found.</CommandEmpty>
-                                                            <CommandGroup heading="Ordenes" className={"h-[200px] overflow-y-scroll"}>
-                                                                {orders.map((item: any, index: any) => (
-                                                                    <>
-                                                                        <CommandItem key={item.id}
-                                                                                     onSelect={() => {
-                                                                                         setOrder(item)
-                                                                                         setOrdersopen(false)
-                                                                                     }}
-                                                                        >
-                                                                            {item.orderNumber}
-                                                                            <Check
-                                                                                className={cn(
-                                                                                    "ml-auto h-4 w-4",
-                                                                                    order?.id === item.id
-                                                                                        ? "opacity-100"
-                                                                                        : "opacity-0"
-                                                                                )}
-                                                                            />
-                                                                        </CommandItem>
-                                                                    </>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </Command>
-                                                    </PopoverContent>
-                                                </Popover>
-                                                {order && (
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setOrder(undefined)} >
-                                                        <CircleX />
-                                                    </Button>
-                                                )}
+                                        {orders && (
+                                            <div className={"w-full"}>
+                                                <h3 className="text-sm font-normal text-muted-foreground">Orden</h3>
+
+                                                <CustomSelect
+                                                    type={"single"}
+                                                    options={orders}
+                                                    value={order}
+                                                    modifier={setOrder}
+                                                    identifier={'id'}
+                                                    name={'orderNumber'}
+                                                    searchValue={orderSearch}
+                                                    searchValueModifier={setOrderSearch}
+                                                    disabled={disabled}
+                                                />
                                             </div>
-                                        </>
-                                    )}
+                                        )}
 
-                                    <div className={""}>
+                                        {(invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') && (
+                                            <div className={"w-full"}>
+                                                <h3 className="text-sm font-normal text-muted-foreground">Factura</h3>
+
+                                                <CustomSelect
+                                                    type={"single"}
+                                                    options={invoices}
+                                                    value={invoice}
+                                                    modifier={setInvoice}
+                                                    identifier={'id'}
+                                                    name={'invoiceNumber'}
+                                                    searchValue={invoiceSearch}
+                                                    searchValueModifier={setInvoiceSearch}
+                                                    disabled={disabled}
+                                                />
+                                            </div>
+                                        )}
+
                                         {invoiceType === 'INCOME' && customers && (
-                                            <>
+                                            <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Cliente</h3>
-                                                <div className={"w-full flex items-center gap-3 "}>
-                                                    <Select
-                                                        value={customers.find((item: any) => item.id === customer?.id)}
-                                                        onValueChange={(value) => {
-                                                            setCustomer(value)
-                                                        }}
-                                                    >
-                                                        <SelectTrigger className="w-full text-foreground">
-                                                            <SelectValue/>
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value={undefined}>
-                                                                Ninguno
-                                                            </SelectItem>
-                                                            <SelectGroup>
-                                                                {customers.map((item: any) => (
-                                                                    <SelectItem key={item.id} value={item}>
-                                                                        {item.name}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </>
+
+                                                <CustomSelect
+                                                    type={"single"}
+                                                    options={customers}
+                                                    value={customer}
+                                                    modifier={setCustomer}
+                                                    identifier={'id'}
+                                                    name={'name'}
+                                                    searchValue={customerSearch}
+                                                    searchValueModifier={setCustomerSearch}
+                                                    disabled={disabled}
+                                                />
+                                            </div>
                                         )}
+
                                         {invoiceType === 'EXPENSE' && providers && (
-                                            <>
+                                            <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Proveedor</h3>
-                                                <div className={"w-full flex items-center gap-3 "}>
-                                                    <Select
-                                                        value={providers.find((item: any) => item.id === provider?.id)}
-                                                        onValueChange={(value) => {
-                                                            setProvider(value)
-                                                        }}
-                                                    >
-                                                        <SelectTrigger className="w-full text-foreground">
-                                                            <SelectValue/>
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                {providers.map((item: any) => (
-                                                                    <SelectItem key={item.id} value={item}>
-                                                                        {item.name}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </>
+
+                                                <CustomSelect
+                                                    type={"single"}
+                                                    options={providers}
+                                                    value={provider}
+                                                    modifier={setProvider}
+                                                    identifier={'id'}
+                                                    name={'name'}
+                                                    searchValue={providerSearch}
+                                                    searchValueModifier={setProviderSearch}
+                                                    disabled={disabled}
+                                                />
+                                            </div>
                                         )}
+
                                     </div>
 
-                                    <div className={"grid grid-cols-3 grid-flow-col  gap-3 pt-3"}>
-                                        <div className={"w-full"}>
+                                    <div className={"grid grid-cols-2 grid-flow-col  gap-3 pt-3"}>
+                                        {/*<div clasName={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
                                                 Emisión</h3>
                                             <Popover>
@@ -431,10 +443,9 @@ export default function Invoice() {
                                                     />
                                                 </PopoverContent>
                                             </Popover>
-                                        </div>
+                                        </div>*/}
                                         <div className={"w-full"}>
-                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
-                                                Vencimiento</h3>
+                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de Vencimiento</h3>
                                             <div className={"flex items-center gap-3"}>
                                                 <Popover>
                                                     <PopoverTrigger asChild>
@@ -444,6 +455,7 @@ export default function Invoice() {
                                                                 "w-full justify-start text-left font-normal",
                                                                 !dueDate && "text-muted-foreground"
                                                             )}
+                                                            disabled={disabled}
                                                         >
                                                             <CalendarIcon className="mr-2 h-4 w-4"/>
                                                             {dueDate ? format(dueDate, "PPP", {locale: es}) :
@@ -460,7 +472,7 @@ export default function Invoice() {
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
-                                                {dueDate && (
+                                                {dueDate && !disabled && (
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setDueDate(undefined)} >
                                                         <CircleX />
                                                     </Button>
@@ -475,6 +487,7 @@ export default function Invoice() {
                                                 value={taxes}
                                                 type="number"
                                                 onChange={(e) => setTaxes(parseFloat(e.target.value))}
+                                                disabled={disabled}
                                             />
                                         </div>
                                     </div>
@@ -502,6 +515,7 @@ export default function Invoice() {
                                                         onValueChange={(value) => {
                                                             setDates(value)
                                                         }}
+                                                        disabled={disabled}
                                                     >
                                                         <SelectTrigger className="w-full text-foreground">
                                                             <span className="">
@@ -539,6 +553,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressContactName(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -553,6 +568,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressPhone(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                         </div>
@@ -568,6 +584,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressStreet(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -582,6 +599,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressPostalCode(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                         </div>
@@ -597,6 +615,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressCity(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -610,6 +629,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressProvince(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                             <div className={"w-full"}>
@@ -623,6 +643,7 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAddressCountry(e.target.value)}
+                                                    disabled={disabled}
                                                 />
                                             </div>
                                         </div>
@@ -637,7 +658,7 @@ export default function Invoice() {
                                     <CardTitle>Conceptos</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <DataTable type={"items"} content={items} editHook={setItems} edit={true} id={invoiceId}/>
+                                    <DataTable type={"items"} content={items} edit={!disabled} id={invoiceId}  editHook={setItems} create={!disabled} remove={!disabled}/>
                                 </CardContent>
                             </Card>
                         </div>

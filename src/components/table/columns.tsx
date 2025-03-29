@@ -386,5 +386,19 @@ export const columnsFormat: any[] = [
             return <div className="text-left font-medium">{row.getValue("customerReference")}</div>
         },
     },
+    {
+        accessorKey: "units",
+        header: "Unidades",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("units")}</div>
+        },
+    },
+    {
+        accessorKey: "unitPrice",
+        header: "Precio unitario",
+        cell: ({ row } : any) => {
+            return <div className="text-left font-medium">{row.getValue("unitPrice")}</div>
+        },
+    },
 ]
 

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Check, ChevronsUpDown } from "lucide-react"
+import {Check, ChevronsUpDown, Search} from "lucide-react"
 import {
     Popover,
     PopoverContent,
@@ -15,6 +15,8 @@ import {
     CommandList,
 } from "../../../ui/command"
 import { cn } from "../../../lib/utils"
+import {Label} from "../../../ui/label";
+import {Input} from "../../../ui/input";
 
 export function SelectSingle(props:any) {
     const [open, setOpen] = React.useState(false)
@@ -24,8 +26,10 @@ export function SelectSingle(props:any) {
     const modifier = props.modifier
     const identifier = props.identifier || "id"
     const name = props.name || "name"
+    const searchValue = props.searchValue
     const searchValueModifier = props.searchValueModifier
-
+    const placeholder = props.placeholder
+    const disabled = props.disabled
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -36,22 +40,26 @@ export function SelectSingle(props:any) {
                     aria-label="Load a preset..."
                     aria-expanded={open}
                     className="flex-1 justify-between w-full"
+                    disabled={disabled}
                 >
-                    {value ? value.name : "Load a preset..."}
+                    {value ? value?.[name] : placeholder || "Seleccionar..."}
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0">
                 <Command>
-                    <CommandInput
-                        placeholder="Search presets..."
-                        onValueChange={(value) => {
-                            if(searchValueModifier) searchValueModifier(value)
-                        }}
-                    />
                     <CommandList>
+                        <div className="p-2">
+                            <Input
+                                id="search"
+                                type="email"
+                                placeholder="Buscar..."
+                                value={searchValue}
+                                onChange={(e) => searchValueModifier(e.target.value)}
+                            />
+                        </div>
                         <CommandEmpty>No presets found.</CommandEmpty>
-                        <CommandGroup heading="Examples">
+                        <CommandGroup>
                             {options.map((option:any) => (
                                 <CommandItem
                                     key={option[identifier]}

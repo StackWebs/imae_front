@@ -1,6 +1,6 @@
 import React from "react"
 import {Button} from "../../ui/button";
-import {Pencil, DownloadIcon, Eye, ListTree, Loader2} from "lucide-react";
+import {Pencil, DownloadIcon, Eye, ListTree, Loader2, Save} from "lucide-react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import Api from "../../utils/Api";
 import api from "../../utils/Api";
@@ -185,6 +185,13 @@ export const actions: any[] = [
                     </Button>
                 </>
             )
+        },
+    },
+    {
+        type: "items",
+        cell: ({ row } : any) => {
+
+            return <></>
         },
     },
 ]

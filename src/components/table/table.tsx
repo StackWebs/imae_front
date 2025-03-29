@@ -13,6 +13,7 @@ import {ArrowDown, ArrowUp, ArrowUpDown, SquarePlus, Trash, Minus, X,Search,Chev
 import api from "../../utils/Api";
 import {activeColumns} from "./activeColumns";
 import {filters} from "./filters";
+import {DropdownMenuCheckboxItemProps} from "@radix-ui/react-dropdown-menu"
 import {editActions} from "./editActions";
 import {Loader} from "../../ui/loader";
 import {useNavigate} from "react-router-dom";
@@ -27,9 +28,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../../ui/alert-dialog"
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "../../ui/select";
+import {Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectGroup} from "../../ui/select";
 import {toast} from "react-toastify";
 import {Input} from "../../ui/input";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuCheckboxItem
+} from "../../ui/dropdown-menu";
 
 
 function apiCalls(dataType : string, call: string, id: string, parentId: string = null) {
@@ -215,8 +224,10 @@ export function DataTable<TData, TValue>(props: any) {
     const content = props.content
     const edit = props.edit || false
     const create = props.create !== false
+    const remove = props.remove !== false
     const csvExport = props.csvExport || false
     const editHook = props.editHook || null
+    const addNewToDb = props.addNewToDb
 
     const [hasResults, setHasResults] = React.useState(false)
     const [data, setData] = React.useState<TData[]>([])
@@ -417,7 +428,11 @@ export function DataTable<TData, TValue>(props: any) {
         })
     }
 
-    const addRow = function() {
+    const addNew = function() {
+        if(!addNewToDb && addNewToDb !== undefined) {
+            navigate(apiCalls(type,'navigate', 'new' ))
+            return;
+        }
 
         if(editHook) {
             let newObject: any = {}
@@ -465,21 +480,6 @@ export function DataTable<TData, TValue>(props: any) {
         }).catch((err) => {
             console.error('Error: ', err)
         })
-    }
-
-    const addNewInvoice = function(invoiceType : string) {
-        return function() {
-            const path = apiCalls('invoices', 'post', id )
-            if(!path) return
-            api.post(path + '?type=' + invoiceType,{}).then((res : any) => {
-                if(!res.id) return;
-                if(!edit) {
-                    navigate(apiCalls('invoices','navigate', res.id ))
-                }
-            }).catch((err) => {
-                console.error('Error: ', err)
-            })
-        }
     }
 
 
@@ -600,51 +600,23 @@ export function DataTable<TData, TValue>(props: any) {
 
                 {(create || csvExport) && (
                     <>
-                        {type == "invoices" ? (
-                            <>
-                                <div className="flex items-center py-4 space-x-2">
-                                    {csvExport && (
-                                        <>
-                                            <div className="flex items-center py-4 mr-3">
-                                                <Button variant="outline" size="sm" onClick={downloadCSV}>
-                                                    <MonitorDown/>
-                                                </Button>
-                                            </div>
-                                        </>
-                                    )}
-                                    {create && (
-                                        <>
-                                            <Button onClick={addNewInvoice('INCOME')} variant="constructive">
-                                                <SquarePlus/> Ingreso
+                        {!edit && (
+                            <div className="flex items-center py-4">
+                                {csvExport && (
+                                    <>
+                                        <div className="flex items-center py-4 mr-3">
+                                            <Button variant="outline" size="sm" onClick={downloadCSV}>
+                                                <MonitorDown/>
                                             </Button>
-                                            <Button onClick={addNewInvoice('EXPENSE')} variant="destructive">
-                                                <SquarePlus/> Gasto
-                                            </Button>
-                                        </>
-                                    )}
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                {!edit && (
-                                    <div className="flex items-center py-4">
-                                        {csvExport && (
-                                            <>
-                                                <div className="flex items-center py-4 mr-3">
-                                                    <Button variant="outline" size="sm" onClick={downloadCSV}>
-                                                        <MonitorDown/>
-                                                    </Button>
-                                                </div>
-                                            </>
-                                        )}
-                                        {create && (
-                                            <Button onClick={addRow}>
-                                                <SquarePlus/> Añadir
-                                            </Button>
-                                        )}
-                                    </div>
+                                        </div>
+                                    </>
                                 )}
-                            </>
+                                {create && (
+                                    <Button onClick={addNew}>
+                                        <SquarePlus/> Añadir
+                                    </Button>
+                                )}
+                            </div>
                         )}
                     </>
                 )}
@@ -696,36 +668,38 @@ export function DataTable<TData, TValue>(props: any) {
                                                     <>
                                                         {isAction ? (
                                                             <div className={"flex items-end justify-end"}>
-                                                                {editHook ? (
+                                                                {editHook && remove ? (
                                                                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => removeRow(row)}>
                                                                         <Minus />
                                                                     </Button>
                                                                 ) : (
                                                                     <>
                                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                                        <AlertDialog>
-                                                                            <AlertDialogTrigger>
-                                                                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                                                                    <Trash/>
-                                                                                </Button>
-                                                                            </AlertDialogTrigger>
-                                                                            <AlertDialogContent>
-                                                                                <AlertDialogHeader>
-                                                                                    <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
-                                                                                    <AlertDialogDescription>
-                                                                                        Esta accion no se puede deshacer. Esto
-                                                                                        lo eliminara permanentemente y removera
-                                                                                        los datos de nuestros servidores.
-                                                                                    </AlertDialogDescription>
-                                                                                </AlertDialogHeader>
-                                                                                <AlertDialogFooter>
-                                                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                                                    <AlertDialogAction onClick={() => removeRow(row)}>
-                                                                                        Eliminar
-                                                                                    </AlertDialogAction>
-                                                                                </AlertDialogFooter>
-                                                                            </AlertDialogContent>
-                                                                        </AlertDialog>
+                                                                        {remove && (
+                                                                            <AlertDialog>
+                                                                                <AlertDialogTrigger>
+                                                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                                                                        <Trash/>
+                                                                                    </Button>
+                                                                                </AlertDialogTrigger>
+                                                                                <AlertDialogContent>
+                                                                                    <AlertDialogHeader>
+                                                                                        <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+                                                                                        <AlertDialogDescription>
+                                                                                            Esta accion no se puede deshacer. Esto
+                                                                                            lo eliminara permanentemente y removera
+                                                                                            los datos de nuestros servidores.
+                                                                                        </AlertDialogDescription>
+                                                                                    </AlertDialogHeader>
+                                                                                    <AlertDialogFooter>
+                                                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                                        <AlertDialogAction onClick={() => removeRow(row)}>
+                                                                                            Eliminar
+                                                                                        </AlertDialogAction>
+                                                                                    </AlertDialogFooter>
+                                                                                </AlertDialogContent>
+                                                                            </AlertDialog>
+                                                                        )}
                                                                     </>
                                                                 )}
                                                             </div>
@@ -816,7 +790,7 @@ export function DataTable<TData, TValue>(props: any) {
 
             {edit && create && (
                 <div className="flex flex-row-reverse items-center py-4">
-                    <Button onClick={addRow}>
+                    <Button onClick={addNew}>
                         <SquarePlus/> Añadir
                     </Button>
                 </div>
