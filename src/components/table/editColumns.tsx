@@ -299,11 +299,11 @@ export const editColumnsFormat: any[] = [
     },
     {
         accessorKey: "totalAmount",
-        header: "Importe total",
+        header: () => <div className="text-right">Importe total</div>,
         cell: ({ row } : any) => {
             let totalAmount = row.getValue("units") * row.getValue("unitPrice")
             if(isNaN(totalAmount)) totalAmount = row.getValue("totalAmount")
-            return <div className="text-left font-medium">{totalAmount}</div>
+            return <div className="text-right font-medium">{totalAmount.toFixed(2)}€</div>
         },
     },
     {

@@ -312,7 +312,6 @@ export function DataTable<TData, TValue>(props: any) {
                     activeFilter[filter.accessorKey].value = parseInt(value)
                     break
                 case 'select':
-                    console.log('value',value)
                     activeFilter[filter.accessorKey].filter = activeFilter[filter.accessorKey].value !== value
                     activeFilter[filter.accessorKey].value = value
                     break
@@ -675,7 +674,7 @@ export function DataTable<TData, TValue>(props: any) {
                                                                 ) : (
                                                                     <>
                                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                                        {remove && (
+                                                                        {remove && type !== 'invoices' && (
                                                                             <AlertDialog>
                                                                                 <AlertDialogTrigger>
                                                                                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0">

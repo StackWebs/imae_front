@@ -3,6 +3,8 @@ import {Input} from "../../ui/input";
 import {Status} from "./status";
 import {format} from "date-fns";
 import {es} from "date-fns/locale/es";
+import { Badge } from "../../ui/badge"
+import {InvoiceType} from "./specialColumns/invoiceType";
 
 
 const liveChange = function(type: any, id: any, key: any, value: any) {
@@ -313,8 +315,11 @@ export const columnsFormat: any[] = [
         accessorKey: "invoiceType",
         header: "Tipo de Factura",
         cell: ({ row } : any) => {
-            return <div className={`text-left font-medium ${row.getValue("invoiceType") === "INCOME" ? "text-green-500" : "text-red-500"}
-            `}>{row.getValue("invoiceType") === "INCOME" ? "Ingreso" : "Gasto"}</div>
+            return (
+                <>
+                    <InvoiceType type={row.getValue("invoiceType")} />
+                </>
+            )
         },
     },
     {

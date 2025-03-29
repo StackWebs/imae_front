@@ -7,7 +7,6 @@ import api from "../../utils/Api";
 
 
 async function downloadInvoice(row: any, action = 'download') {
-    console.log('downloading invoice',row)
     api.get('/invoices/' + row.original?.id + '/generate_pdf', 'arraybuffer').then((res) => {
         const blob = new Blob([res], { type: "application/pdf" });
         const pdfUrl = URL.createObjectURL(blob);
@@ -160,28 +159,33 @@ export const actions: any[] = [
 
             const [downloading, setDownloading] = React.useState<boolean>(false)
             const editLink = `/invoice/${row.original.id}`
+            const invoiceType = row.getValue("invoiceType")
 
             return (
                 <>
+                    {(invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') && (
+                        <>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => {
+                                setDownloading(true)
+                                downloadInvoice(row,'download').then(() => {
+                                    setDownloading(false)
+                                })
+                            }}>
+                                {!downloading ? (
+                                    <DownloadIcon />
+                                ) : (
+                                    <Loader2 className="animate-spin" />
+                                )}
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row,'preview')}>
+                                <Eye />
+                            </Button>
+                        </>
+                    )}
                     <Button variant="ghost" size="icon" className="h-8 w-8 p-0" >
                         <Link to={editLink}>
                             <Pencil />
                         </Link>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => {
-                        setDownloading(true)
-                        downloadInvoice(row,'download').then(() => {
-                            setDownloading(false)
-                        })
-                    }}>
-                        {!downloading ? (
-                            <DownloadIcon />
-                        ) : (
-                            <Loader2 className="animate-spin" />
-                        )}
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => downloadInvoice(row,'preview')}>
-                        <Eye />
                     </Button>
                 </>
             )

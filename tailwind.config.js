@@ -39,6 +39,15 @@ module.exports = {
         bar_due: "#20b8f7",
         bar_refunded: "#6806fa",
 
+        invoice_income: "#32b950",
+        invoice_income_bg: "rgba(50,185,80,0.2)",
+        invoice_expense: "#f85149",
+        invoice_expense_bg: "rgba(248,81,73,0.2)",
+        invoice_amended_income: "#225bb2",
+        invoice_amended_income_bg: "rgba(34,91,178,0.2)",
+        invoice_amended_expense: "#c07e01",
+        invoice_amended_expense_bg: "rgba(192,126,1,0.2)",
+
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

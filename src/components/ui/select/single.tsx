@@ -21,6 +21,8 @@ import {Input} from "../../../ui/input";
 export function SelectSingle(props:any) {
     const [open, setOpen] = React.useState(false)
 
+    console.log('props',props)
+
     const options = props.options
     const value = props.value
     const modifier = props.modifier
@@ -30,6 +32,13 @@ export function SelectSingle(props:any) {
     const searchValueModifier = props.searchValueModifier
     const placeholder = props.placeholder
     const disabled = props.disabled
+
+    if(
+        !options ||
+        !modifier ||
+        !identifier ||
+        !name
+    ) return null
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

@@ -15,6 +15,10 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
+        invoice_income: "border-invoice_income bg-invoice_income_bg text-invoice_income shadow",
+        invoice_expense: "border-invoice_expense bg-invoice_expense_bg text-invoice_expense shadow",
+        invoice_amended_income: "border-invoice_amended_income bg-invoice_amended_income_bg text-invoice_amended_income shadow",
+        invoice_amended_expense: "border-invoice_amended_expense bg-invoice_amended_expense_bg text-invoice_amended_expense shadow",
       },
     },
     defaultVariants: {

@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import api from "../../utils/Api";
 import {Button} from "../../ui/button";
 import {Separator} from "../../ui/separator";
@@ -25,18 +25,21 @@ import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs";
 
 
 export default function Invoice() {
+
     const { invoiceId } = useParams();
+    const [id, setId] = React.useState<string | undefined>(invoiceId)
 
     const [disabled, setDisabled] = React.useState<boolean>(false)
 
     const [invoiceNumber, setInvoiceNumber] = React.useState<string | undefined>(undefined)
     const [invoiceType, setInvoiceType] = React.useState<string | undefined>('INCOME')
-    const [status, setStatus] = React.useState<string | undefined>(undefined)
+    const [status, setStatus] = React.useState<string | undefined>('PENDING')
     const [orders, setOrders] = React.useState<any | undefined>(undefined)
     const [order, setOrder] = React.useState<any | undefined>(undefined)
     const [emissionDate, setEmissionDate] = React.useState<Date>(undefined)
     const [dueDate, setDueDate] = React.useState<Date>(undefined)
     const [taxes, setTaxes] = React.useState<number | undefined>(undefined)
+    const [amendmentReason, setAmendmentReason] = React.useState<string | undefined>(null)
 
     const [customers, setCustomers] = React.useState<any | undefined>(undefined)
     const [customer, setCustomer] = React.useState<any | undefined>(undefined)
@@ -65,34 +68,38 @@ export default function Invoice() {
 
     const [getingInvoice, setGetingInvoice] = React.useState<boolean>(false)
 
+    function setData(res:any) {
+        setInvoiceType(res.invoiceType || null)
+        setInvoiceNumber(res.invoiceNumber || null)
+        setStatus(res.invoiceStatus || null)
+        setOrder(res.orders ? res.orders[0] : null)
+        setEmissionDate(res.emissionDate || null)
+        setDueDate(res.dueDate || null)
+        setTaxes(res.taxes * 100)
+        setItems(res.items || [])
+        setInvoice(res.amendedInvoice || null)
+
+        setAddressCity(res.address.city || null)
+        setAddressContactName(res.address.contactName || null)
+        setAddressPhone(res.address.phone || null)
+        setAddressProvince(res.address.province || null)
+        setAddressStreet(res.address.street || null)
+        setAddressPostalCode(res.address.postalCode || null)
+        setAddressCountry(res.address.country || null)
+
+        if(res.invoiceType === 'INCOME' || res.invoiceType === 'AMENDED_INCOME') {
+            setCustomer(res.customer || null)
+        }
+        if(res.invoiceType === 'EXPENSE' || res.invoiceType === 'AMENDED_EXPENSE') {
+            setProvider(res.provider || null)
+        }
+    }
+
     // GET INVOICE
     useEffect(() => {
-        if(invoiceId === 'new') return;
-        api.get('/invoices/' + invoiceId).then((res) => {
-            setInvoiceType(res.invoiceType || null)
-            setInvoiceNumber(res.invoiceNumber || null)
-            setStatus(res.invoiceStatus || null)
-            setOrder(res.order || null)
-            setEmissionDate(res.emissionDate || null)
-            setDueDate(res.dueDate || null)
-            setTaxes(res.taxes * 100)
-            setItems(res.items || [])
-
-            setAddressCity(res.address.city || null)
-            setAddressContactName(res.address.contactName || null)
-            setAddressPhone(res.address.phone || null)
-            setAddressProvince(res.address.province || null)
-            setAddressStreet(res.address.street || null)
-            setAddressPostalCode(res.address.postalCode || null)
-            setAddressCountry(res.address.country || null)
-
-            if(res.invoiceType === 'INCOME') {
-                setCustomer(res.customer || null)
-            }
-            if(res.invoiceType === 'EXPENSE') {
-                setProvider(res.provider || null)
-            }
-
+        if(id === 'new') return;
+        api.get('/invoices/' + id).then((res) => {
+            setData(res)
         }).catch((err) => {
             console.log(err)
         })
@@ -173,10 +180,14 @@ export default function Invoice() {
         })
     }, [provider]);
 
+    useEffect(() => {
+        console.log('invoices',invoices)
+    }, [invoices]);
+
     // PROVIDER ADDRESSES
     useEffect(() => {
-        setDisabled((invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') && invoiceId !== 'new')
-    }, [invoiceType,invoiceId]);
+        setDisabled((invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') && id !== 'new')
+    }, [invoiceType,id]);
 
     function submitForm(event: React.SyntheticEvent) {
         event.preventDefault()
@@ -186,8 +197,8 @@ export default function Invoice() {
             invoiceType: invoiceType,
             emissionDate: emissionDate,
             dueDate: dueDate,
-            customerId: customer?.id,
-            providerId: provider?.id,
+            customerId: customer?.id || null,
+            providerId: provider?.id || null,
             address: {
                 contactName: addressContactName,
                 city: addressCity,
@@ -198,12 +209,14 @@ export default function Invoice() {
                 country: addressCountry
             },
             taxes: taxes / 100,
-            orderId: order?.id,
-            items: items
+            orderId: [order?.id],
+            items: items.map(({ totalAmount, ...rest } : any) => rest),
+            amendmentReason: amendmentReason,
+            amendedInvoiceId: invoice?.id || null,
         }
 
-        if(invoiceId === 'new') {
-            api.post('/invoices/' + (invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME' ? 'final' : 'draft'), body).then((res) => {
+        if(id === 'new') {
+            api.post('/invoices/final?type=' + (invoiceType), body).then((res) => {
                 if(!!res) {
                     toast.success('Creado correctamente', {
                         position: "bottom-right",
@@ -215,28 +228,50 @@ export default function Invoice() {
                         progress: undefined,
                         theme: "colored",
                     })
+                    setData(res)
+                    setId(res.id)
                 }
             }).catch((err) => {
                 console.log(err)
             })
         }
         else {
-            api.put('/invoices/' + invoiceId, body).then((res) => {
-                if(!!res) {
-                    toast.success('Guardado correctamente', {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                    })
-                }
-            }).catch((err) => {
-                console.log(err)
-            })
+            if(invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') {
+                api.patch('/invoices/' + id, {invoiceStatus: status}).then((res) => {
+                    if(!!res) {
+                        toast.success('Guardado correctamente', {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                        })
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+            else {
+                api.put('/invoices/' + id, body).then((res) => {
+                    if(!!res) {
+                        toast.success('Guardado correctamente', {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                        })
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
         }
     }
 
@@ -255,7 +290,7 @@ export default function Invoice() {
         event.preventDefault()
 
         setGetingInvoice(true)
-        api.get('/invoices/' + invoiceId + '/generate_pdf', 'arraybuffer').then((res) => {
+        api.get('/invoices/' + id + '/generate_pdf', 'arraybuffer').then((res) => {
             const blob = new Blob([res], { type: "application/pdf" });
             const pdfUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -269,14 +304,20 @@ export default function Invoice() {
         })
     }
 
+
+    let invoiceTypeText = "INGRESO"
+    if(invoiceType === "EXPENSE") invoiceTypeText = "GASTO"
+    if(invoiceType === "AMENDED_INCOME") invoiceTypeText = "INGRESO RECTIFICATIVO"
+    if(invoiceType === "AMENDED_EXPENSE") invoiceTypeText = "GASTO RECTIFICATIVO"
+
     return (
         <>
             <div className="hidden h-full flex-col md:flex">
-                {invoiceId}
                 <div
                     className="flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-30">
                     <div className="ml-auto flex flex-col w-full space-x-2 sm:justify-end">
                         <h2 className="text-3xl font-bold tracking-tight w-full ">{invoiceNumber || 'Nueva factura'}</h2>
+                        <p className="text-muted-foreground">{invoiceTypeText}</p>
                     </div>
                     <div className="ml-auto flex w-full space-x-2 sm:justify-end">
                         {disabled && (
@@ -314,23 +355,25 @@ export default function Invoice() {
                             </SelectContent>
                         </Select>
                         <Button onClick={submitForm}>
-                            {invoiceId === 'new' && 'Crear' ||'Guardar'}
+                            {id === 'new' && 'Crear' ||'Guardar'}
                         </Button>
                     </div>
                 </div>
                 <Separator/>
 
-                <Tabs defaultValue="INCOME" className="space-y-4 py-6" onValueChange={setInvoiceType}>
-                    <TabsList>
-                        <TabsTrigger value="INCOME" disabled={disabled}>Ingreso</TabsTrigger>
-                        <TabsTrigger value="EXPENSE" disabled={invoiceId !== 'new'}>Gasto</TabsTrigger>
-                        <TabsTrigger value="AMENDED_INCOME" disabled={disabled}>Ingresos rectificados</TabsTrigger>
-                        <TabsTrigger value="AMENDED_EXPENSE" disabled={invoiceId !== 'new'}>Gastos rectificados</TabsTrigger>
-                    </TabsList>
-                </Tabs>
+                {invoiceId === 'new' && (
+                    <Tabs defaultValue="INCOME" className="space-y-4 py-6" onValueChange={setInvoiceType}>
+                        <TabsList>
+                            <TabsTrigger value="INCOME">Ingreso</TabsTrigger>
+                            <TabsTrigger value="EXPENSE">Gasto</TabsTrigger>
+                            <TabsTrigger value="AMENDED_INCOME">Ingresos rectificados</TabsTrigger>
+                            <TabsTrigger value="AMENDED_EXPENSE">Gastos rectificados</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                )}
 
 
-                <div className="h-full py-0">
+                <div className={"h-full py-" + (invoiceId === 'new' ? '0' : '6')}>
                     <div className="md:order-1">
                         <div className={"w-full flex items-start gap-3"}>
                             <Card className={"w-full"}>
@@ -339,7 +382,7 @@ export default function Invoice() {
                                 </CardHeader>
                                 <CardContent>
 
-                                    <div className={"grid grid-cols-2 grid-flow-col  gap-3 pt-3"}>
+                                    <div className={"grid grid-cols-" + ((invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') ? '3' : '2') + " grid-flow-col  gap-3 pt-3"}>
 
                                         {orders && (
                                             <div className={"w-full"}>
@@ -359,9 +402,9 @@ export default function Invoice() {
                                             </div>
                                         )}
 
-                                        {(invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') && (
+                                        {(invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') && invoices && (
                                             <div className={"w-full"}>
-                                                <h3 className="text-sm font-normal text-muted-foreground">Factura</h3>
+                                                <h3 className="text-sm font-normal text-muted-foreground">Factura a rectificar</h3>
 
                                                 <CustomSelect
                                                     type={"single"}
@@ -377,7 +420,7 @@ export default function Invoice() {
                                             </div>
                                         )}
 
-                                        {invoiceType === 'INCOME' && customers && (
+                                        {(invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') && customers && (
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Cliente</h3>
 
@@ -395,7 +438,7 @@ export default function Invoice() {
                                             </div>
                                         )}
 
-                                        {invoiceType === 'EXPENSE' && providers && (
+                                        {(invoiceType === 'EXPENSE' || invoiceType === 'AMENDED_EXPENSE') && providers && (
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Proveedor</h3>
 
@@ -491,6 +534,24 @@ export default function Invoice() {
                                             />
                                         </div>
                                     </div>
+                                    {(invoiceType === 'AMENDED_INCOME' || invoiceType === 'AMENDED_EXPENSE') && (
+                                        <div className={"grid grid-cols-1 grid-flow-col  gap-3 pt-3"}>
+                                            <div className={"w-full"}>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Motivo de la modificación</h3>
+                                                <Input
+                                                    id="amendmentReason"
+                                                    placeholder="Motivo de la modificación"
+                                                    value={amendmentReason}
+                                                    type="text"
+                                                    autoCapitalize="none"
+                                                    autoComplete="name"
+                                                    autoCorrect="off"
+                                                    onChange={(e) => setAmendmentReason(e.target.value)}
+                                                    disabled={disabled}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                             <Card className={"w-full"}>
@@ -498,7 +559,7 @@ export default function Invoice() {
                                     <CardTitle>Dirección</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    {directions && (
+                                    {directions && !disabled && (
                                         <div className={"pt-3"}>
                                             <>
                                                 <h3 className="text-sm font-normal text-muted-foreground">Dirección</h3>
@@ -658,7 +719,7 @@ export default function Invoice() {
                                     <CardTitle>Conceptos</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <DataTable type={"items"} content={items} edit={!disabled} id={invoiceId}  editHook={setItems} create={!disabled} remove={!disabled}/>
+                                    <DataTable type={"items"} content={items} edit={!disabled} id={id} editHook={setItems}  create={!disabled} remove={!disabled}/>
                                 </CardContent>
                             </Card>
                         </div>
