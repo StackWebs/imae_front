@@ -41,7 +41,7 @@ export function SelectSingle(props:any) {
     ) return null
 
     return (
-        <div className={"flex items-center gap-3"}>
+        <div className={disabled ? "flex items-center gap-3 cursor-not-allowed" : "flex items-center gap-3"}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button

@@ -109,7 +109,7 @@ export default function Invoice() {
     // ORDER SEARCH
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            api.get(`/orders?page=1&size=5${orderSearch ? `&orderNumber=${orderSearch}` : ''}`).then((res) => { // hasInvoice=false
+            api.get(`/orders?page=1&size=5${orderSearch ? `&orderNumber=${orderSearch}` : ''}${invoiceType === 'INCOME' ? '&hasInvoice=false' : ''}`).then((res) => {
                 setOrders(res.content)
             }).catch((err) => {
                 console.log(err)
@@ -117,7 +117,7 @@ export default function Invoice() {
         }, 500)
 
         return () => clearTimeout(delayDebounceFn)
-    }, [orderSearch]);
+    }, [orderSearch,invoiceType]);
 
     // CUSTOMER SEARCH
     useEffect(() => {
@@ -148,7 +148,7 @@ export default function Invoice() {
     // INVOICE SEARCH
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            api.get(`/invoices?page=1&size=5${invoiceSearch ? `&invoiceNumber=${invoiceSearch}` : ''}`).then((res) => {
+            api.get(`/invoices?page=1&size=5${invoiceSearch ? `&invoiceNumber=${invoiceSearch}` : ''}${invoiceType === 'AMENDED_INCOME' ? '&invoiceType=INCOME' : invoiceType === 'AMENDED_EXPENSE' ? '&invoiceType=EXPENSE' : ''}`).then((res) => {
                 setInvoices(res.content)
             }).catch((err) => {
                 console.log(err)
@@ -156,7 +156,7 @@ export default function Invoice() {
         }, 500)
 
         return () => clearTimeout(delayDebounceFn)
-    }, [invoiceSearch]);
+    }, [invoiceSearch,invoiceType]);
 
     // CUSTOMER ADDRESSES
     useEffect(() => {
