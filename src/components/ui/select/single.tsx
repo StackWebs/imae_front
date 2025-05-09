@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Check, ChevronsUpDown, Search} from "lucide-react"
+import {Check, ChevronsUpDown, CircleX, Search} from "lucide-react"
 import {
     Popover,
     PopoverContent,
@@ -41,57 +41,64 @@ export function SelectSingle(props:any) {
     ) return null
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-label="Load a preset..."
-                    aria-expanded={open}
-                    className="flex-1 justify-between w-full"
-                    disabled={disabled}
-                >
-                    {value ? value?.[name] : placeholder || "Seleccionar..."}
-                    <ChevronsUpDown className="opacity-50" />
+        <div className={"flex items-center gap-3"}>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-label="Load a preset..."
+                        aria-expanded={open}
+                        className="flex-1 justify-between w-full"
+                        disabled={disabled}
+                    >
+                        {value ? value?.[name] : placeholder || "Seleccionar..."}
+                        <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[300px] p-0">
+                    <Command>
+                        <CommandList>
+                            <div className="p-2">
+                                <Input
+                                    id="search"
+                                    type="email"
+                                    placeholder="Buscar..."
+                                    value={searchValue}
+                                    onChange={(e) => searchValueModifier(e.target.value)}
+                                />
+                            </div>
+                            <CommandEmpty>No presets found.</CommandEmpty>
+                            <CommandGroup>
+                                {options.map((option:any) => (
+                                    <CommandItem
+                                        key={option[identifier]}
+                                        onSelect={() => {
+                                            modifier(option)
+                                            setOpen(false)
+                                        }}
+                                    >
+                                        {option[name]}
+                                        <Check
+                                            className={cn(
+                                                "ml-auto",
+                                                value?.[identifier] === option[identifier]
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                            )}
+                                        />
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            {value && !disabled && (
+                <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => modifier(null)}>
+                    <CircleX />
                 </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[300px] p-0">
-                <Command>
-                    <CommandList>
-                        <div className="p-2">
-                            <Input
-                                id="search"
-                                type="email"
-                                placeholder="Buscar..."
-                                value={searchValue}
-                                onChange={(e) => searchValueModifier(e.target.value)}
-                            />
-                        </div>
-                        <CommandEmpty>No presets found.</CommandEmpty>
-                        <CommandGroup>
-                            {options.map((option:any) => (
-                                <CommandItem
-                                    key={option[identifier]}
-                                    onSelect={() => {
-                                        modifier(option)
-                                        setOpen(false)
-                                    }}
-                                >
-                                    {option[name]}
-                                    <Check
-                                        className={cn(
-                                            "ml-auto",
-                                            value?.[identifier] === option[identifier]
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                        )}
-                                    />
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
+            )}
+        </div>
     )
 }
