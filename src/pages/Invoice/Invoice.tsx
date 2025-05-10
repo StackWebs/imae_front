@@ -78,6 +78,7 @@ export default function Invoice() {
         setTaxes(res.taxes * 100)
         setItems(res.items || [])
         setInvoice(res.amendedInvoice || null)
+        setAmendmentReason(res.amendmentReason || null)
 
         setAddressCity(res.address.city || null)
         setAddressContactName(res.address.contactName || null)
@@ -218,6 +219,8 @@ export default function Invoice() {
         if(id === 'new') {
             api.post('/invoices/final?type=' + (invoiceType), body).then((res) => {
                 if(!!res) {
+                    console.log('res',res,res.id)
+                    setId(res.id)
                     toast.success('Creado correctamente', {
                         position: "bottom-right",
                         autoClose: 5000,
@@ -229,7 +232,6 @@ export default function Invoice() {
                         theme: "colored",
                     })
                     setData(res)
-                    setId(res.id)
                 }
             }).catch((err) => {
                 console.log(err)
@@ -239,6 +241,7 @@ export default function Invoice() {
             if(invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME') {
                 api.patch('/invoices/' + id, {invoiceStatus: status}).then((res) => {
                     if(!!res) {
+                        setId(res.id)
                         toast.success('Guardado correctamente', {
                             position: "bottom-right",
                             autoClose: 5000,
@@ -249,6 +252,7 @@ export default function Invoice() {
                             progress: undefined,
                             theme: "colored",
                         })
+                        setData(res)
                     }
                 }).catch((err) => {
                     console.log(err)
@@ -361,7 +365,7 @@ export default function Invoice() {
                 </div>
                 <Separator/>
 
-                {invoiceId === 'new' && (
+                {id === 'new' && (
                     <Tabs defaultValue="INCOME" className="space-y-4 py-6" onValueChange={setInvoiceType}>
                         <TabsList>
                             <TabsTrigger value="INCOME">Ingreso</TabsTrigger>
@@ -373,7 +377,7 @@ export default function Invoice() {
                 )}
 
 
-                <div className={"h-full py-" + (invoiceId === 'new' ? '0' : '6')}>
+                <div className={"h-full py-" + (id === 'new' ? '0' : '6')}>
                     <div className="md:order-1">
                         <div className={"w-full flex items-start gap-3"}>
                             <Card className={"w-full"}>

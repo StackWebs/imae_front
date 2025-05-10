@@ -107,7 +107,7 @@ export default function Order() {
             setCustomer(res.customer || null)
             //Haulier
             setHaulier(res.haulier || null)
-            setInvoice(res.invoice || null)
+            setInvoice(res.invoices.find((item:any) => item.invoiceType === 'INCOME') || null)
 
             /******** Lateral 2 ********/
             // Fechas
