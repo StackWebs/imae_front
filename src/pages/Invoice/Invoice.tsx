@@ -210,7 +210,7 @@ export default function Invoice() {
                 country: addressCountry
             },
             taxes: taxes / 100,
-            orderId: [order?.id],
+            orderId: order?.id && [order?.id] || null,
             items: items.map(({ totalAmount, ...rest } : any) => rest),
             amendmentReason: amendmentReason,
             amendedInvoiceId: invoice?.id || null,
