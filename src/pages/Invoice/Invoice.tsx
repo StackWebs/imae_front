@@ -40,6 +40,7 @@ export default function Invoice() {
     const [dueDate, setDueDate] = React.useState<Date>(undefined)
     const [taxes, setTaxes] = React.useState<number | undefined>(undefined)
     const [amendmentReason, setAmendmentReason] = React.useState<string | undefined>(null)
+    const [providerInvoiceRef, setProviderInvoiceRef] = React.useState<string | undefined>(null)
 
     const [customers, setCustomers] = React.useState<any | undefined>(undefined)
     const [customer, setCustomer] = React.useState<any | undefined>(undefined)
@@ -79,6 +80,7 @@ export default function Invoice() {
         setItems(res.items || [])
         setInvoice(res.amendedInvoice || null)
         setAmendmentReason(res.amendmentReason || null)
+        setProviderInvoiceRef(res.providerInvoiceRef || null)
 
         setAddressCity(res.address.city || null)
         setAddressContactName(res.address.contactName || null)
@@ -462,35 +464,42 @@ export default function Invoice() {
 
                                     </div>
 
-                                    <div className={"grid grid-cols-2 grid-flow-col  gap-3 pt-3"}>
-                                        {/*<div clasName={"w-full"}>
-                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de
-                                                Emisión</h3>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal",
-                                                            !emissionDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-4 w-4"/>
-                                                        {emissionDate ? format(emissionDate, "PPP", {locale: es}) :
-                                                            <span>Seleccionar fecha</span>}
+                                    <div className={"grid grid-cols-3 grid-flow-col  gap-3 pt-3"}>
+                                        <div clasName={"w-full"}>
+                                            <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de Emisión</h3>
+                                            <div className={"flex items-center gap-3"}>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full justify-start text-left font-normal",
+                                                                !emissionDate && "text-muted-foreground"
+                                                            )}
+                                                            disabled={disabled}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4"/>
+                                                            {emissionDate ? format(emissionDate, "PPP", {locale: es}) :
+                                                                <span>Seleccionar fecha</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar
+                                                            locale={es}
+                                                            mode="single"
+                                                            selected={emissionDate}
+                                                            onSelect={(date) => setEmissionDate(new Date(format(date, "yyyy-MM-dd")))}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                {emissionDate && !disabled && (
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => setEmissionDate(undefined)} >
+                                                        <CircleX />
                                                     </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar
-                                                        locale={es}
-                                                        mode="single"
-                                                        selected={emissionDate}
-                                                        onSelect={(date) => setEmissionDate(new Date(format(date, "yyyy-MM-dd")))}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>*/}
+                                                )}
+                                            </div>
+                                        </div>
                                         <div className={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de Vencimiento</h3>
                                             <div className={"flex items-center gap-3"}>
@@ -551,6 +560,24 @@ export default function Invoice() {
                                                     autoComplete="name"
                                                     autoCorrect="off"
                                                     onChange={(e) => setAmendmentReason(e.target.value)}
+                                                    disabled={disabled}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                    {(invoiceType === 'EXPENSE' || invoiceType === 'AMENDED_EXPENSE') && (
+                                        <div className={"grid grid-cols-1 grid-flow-col  gap-3 pt-3"}>
+                                            <div className={"w-full"}>
+                                                <h3 className="text-sm font-normal text-muted-foreground px-1">Referencia de la factura del proveedor</h3>
+                                                <Input
+                                                    id="providerInvoiceRef"
+                                                    placeholder="Referencia de la factura del proveedor"
+                                                    value={providerInvoiceRef}
+                                                    type="text"
+                                                    autoCapitalize="none"
+                                                    autoComplete="name"
+                                                    autoCorrect="off"
+                                                    onChange={(e) => setProviderInvoiceRef(e.target.value)}
                                                     disabled={disabled}
                                                 />
                                             </div>
