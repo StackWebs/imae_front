@@ -42,7 +42,7 @@ async function send(method: any, relativePath:any, data:any, responseType: any =
             return refreshTokenAuth().then(() => send(method, relativePath, data, responseType))
         }
         else {
-            toast.error(error.data.message, {
+            toast.error(error.response.data.message, {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,
