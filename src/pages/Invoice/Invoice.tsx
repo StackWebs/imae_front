@@ -36,7 +36,7 @@ export default function Invoice() {
     const [status, setStatus] = React.useState<string | undefined>('PENDING')
     const [orders, setOrders] = React.useState<any | undefined>(undefined)
     const [order, setOrder] = React.useState<any | undefined>(undefined)
-    const [emissionDate, setEmissionDate] = React.useState<Date>(undefined)
+    const [emissionDate, setEmissionDate] = React.useState<Date>(new Date())
     const [dueDate, setDueDate] = React.useState<Date>(undefined)
     const [taxes, setTaxes] = React.useState<number | undefined>(undefined)
     const [amendmentReason, setAmendmentReason] = React.useState<string | undefined>(null)
