@@ -199,6 +199,7 @@ export default function Invoice() {
             invoiceStatus: status,
             invoiceType: invoiceType,
             emissionDate: emissionDate,
+            providerInvoiceId: providerInvoiceId,
             dueDate: dueDate,
             customerId: customer?.id || null,
             providerId: provider?.id || null,
