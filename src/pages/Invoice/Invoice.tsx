@@ -40,7 +40,7 @@ export default function Invoice() {
     const [dueDate, setDueDate] = React.useState<Date>(undefined)
     const [taxes, setTaxes] = React.useState<number | undefined>(undefined)
     const [amendmentReason, setAmendmentReason] = React.useState<string | undefined>(null)
-    const [providerInvoiceRef, setProviderInvoiceRef] = React.useState<string | undefined>(null)
+    const [providerInvoiceId, setProviderInvoiceId] = React.useState<string | undefined>(null)
 
     const [customers, setCustomers] = React.useState<any | undefined>(undefined)
     const [customer, setCustomer] = React.useState<any | undefined>(undefined)
@@ -80,7 +80,7 @@ export default function Invoice() {
         setItems(res.items || [])
         setInvoice(res.amendedInvoice || null)
         setAmendmentReason(res.amendmentReason || null)
-        setProviderInvoiceRef(res.providerInvoiceRef || null)
+        setProviderInvoiceId(res.providerInvoiceId || null)
 
         setAddressCity(res.address.city || null)
         setAddressContactName(res.address.contactName || null)
@@ -570,14 +570,14 @@ export default function Invoice() {
                                             <div className={"w-full"}>
                                                 <h3 className="text-sm font-normal text-muted-foreground px-1">Referencia de la factura del proveedor</h3>
                                                 <Input
-                                                    id="providerInvoiceRef"
+                                                    id="providerInvoiceId"
                                                     placeholder="Referencia de la factura del proveedor"
-                                                    value={providerInvoiceRef}
+                                                    value={providerInvoiceId}
                                                     type="text"
                                                     autoCapitalize="none"
                                                     autoComplete="name"
                                                     autoCorrect="off"
-                                                    onChange={(e) => setProviderInvoiceRef(e.target.value)}
+                                                    onChange={(e) => setProviderInvoiceId(e.target.value)}
                                                     disabled={disabled}
                                                 />
                                             </div>
