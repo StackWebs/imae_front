@@ -476,7 +476,7 @@ export default function Invoice() {
                                                                 "w-full justify-start text-left font-normal",
                                                                 !emissionDate && "text-muted-foreground"
                                                             )}
-                                                            disabled={disabled}
+                                                            disabled={disabled/* || (invoiceType === 'INCOME' || invoiceType === 'AMENDED_INCOME')*/}
                                                         >
                                                             <CalendarIcon className="mr-2 h-4 w-4"/>
                                                             {emissionDate ? format(emissionDate, "PPP", {locale: es}) :
