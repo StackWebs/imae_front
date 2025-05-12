@@ -466,7 +466,7 @@ export default function Invoice() {
                                     </div>
 
                                     <div className={"grid grid-cols-3 grid-flow-col  gap-3 pt-3"}>
-                                        <div clasName={"w-full"}>
+                                        <div className={"w-full"}>
                                             <h3 className="text-sm font-normal text-muted-foreground px-1">Fecha de Emisión</h3>
                                             <div className={"flex items-center gap-3"}>
                                                 <Popover>
