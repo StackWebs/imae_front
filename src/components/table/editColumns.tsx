@@ -239,7 +239,7 @@ export const editColumnsFormat: any[] = [
 
             return <div className="text-left font-medium">
                 <Input
-                    id="package_length"
+                    id="length"
                     placeholder="Longitud"
                     value={test}
                     type="number"
