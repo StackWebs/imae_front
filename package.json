@@ -1,8 +1,8 @@
 {
   "name": "imae",
   "productName": "imae",
-  "version": "1.0.1",
-  "description": "My Electron application description",
+  "version": "1.0.3",
+  "description": "Imae",
   "main": ".webpack/main",
   "repository": {
     "type": "git",

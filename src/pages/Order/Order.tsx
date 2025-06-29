@@ -45,6 +45,7 @@ export default function Order() {
     const [haulier, setHaulier] = React.useState<any | undefined>(undefined)
 
     const [invoice, setInvoice] = React.useState<any | undefined>(undefined)
+    const [expense, setExpense] = React.useState<any | undefined>(undefined)
 
     /******** Lateral 2 ********/
     // Fechas
@@ -108,6 +109,7 @@ export default function Order() {
             //Haulier
             setHaulier(res.haulier || null)
             setInvoice(res.invoices.find((item:any) => item.invoiceType === 'INCOME') || null)
+            setExpense(res.invoices.find((item:any) => item.invoiceType === 'EXPENSE') || null)
 
             /******** Lateral 2 ********/
             // Fechas
@@ -418,6 +420,20 @@ export default function Order() {
                                         {invoice ? (
                                             <Button variant="outline" className={"w-[300px] justify-between"} onClick={() => { navigate('/invoice/' + invoice.id)}}>
                                                 {invoice.invoiceNumber}
+                                                <Link2  className="ml-2 h-4 w-4"/>
+                                            </Button>
+                                        ) : (
+                                            <Button variant="outline" className={"w-[300px] justify-between"} disabled>
+                                                Sin factura
+                                            </Button>
+                                        )}
+
+                                    </div>
+                                    <h3 className="text-sm font-normal text-muted-foreground pt-3">Factura Gasto</h3>
+                                    <div className={"flex items-center gap-3"}>
+                                        {expense ? (
+                                            <Button variant="outline" className={"w-[300px] justify-between"} onClick={() => { navigate('/invoice/' + expense.id)}}>
+                                                {expense.invoiceNumber}
                                                 <Link2  className="ml-2 h-4 w-4"/>
                                             </Button>
                                         ) : (
